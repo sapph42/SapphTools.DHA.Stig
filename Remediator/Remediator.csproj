@@ -1,0 +1,107 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>SapphTools.DHA.Stig.Remediator</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Artifacts\B500E2230656EEC.sha256" />
+    <None Remove="Artifacts\B500E2230656EEC.sst" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Artifacts\1069556\B500E2230656EEC.hash">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Artifacts\1069556\B500E2230656EEC.sst">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.12" />
+    <PackageReference Include="System.Text.Json" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="SapphTools.DHA.Stig.Common.Classes" />
+    <Using Include="SapphTools.DHA.Stig.Common.Converters" />
+    <Using Include="SapphTools.DHA.Stig.Common.Enums" />
+    <Using Include="SapphTools.DHA.Stig.Common.Interfaces" />
+    <Using Include="SapphTools.DHA.Stig.Common.WinApi" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Editor\Controls\CertificatesValueSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Editor\Controls\SeRightsSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Editor\Controls\RegistryValuePatternSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Editor\Controls\RegistryValueSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Editor\Controls\RegistryAclSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Editor\Forms\File\FileAceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Editor\Forms\File\FileAclEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Editor\Forms\File\FileAclEditor.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
