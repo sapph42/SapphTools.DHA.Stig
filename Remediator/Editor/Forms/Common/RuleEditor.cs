@@ -143,7 +143,7 @@ public partial class RuleEditor : Form {
     #endregion Event Handlers
     #region Helper Methods
     private bool CanMoveDown(DataGridViewRow row) =>
-        row.Cells["OrderDgv"].Value is int i && i < SettingsTable.Rows.Count;
+        row.Cells["OrderDgv"].Value is int i && i < SettingsTable.Rows.Count - 1;
     private static bool CanMoveUp(DataGridViewRow row) =>
         row.Cells["OrderDgv"].Value is int and not 0;
     private void CheckValidity() {
