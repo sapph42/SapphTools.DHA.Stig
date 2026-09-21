@@ -296,6 +296,7 @@ public partial class Main : Form {
                             bool autoRem = ruleAvail && !drakeMallard;
                             _ = FindingsTable.Rows.Add(autoRem, ruleid, desc, host, drakeMallard, ruleAvail);
                             if (ruleAvail) {
+                                count ??= 0;
                                 count++;
                             }
                         }
