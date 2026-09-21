@@ -45,8 +45,15 @@ public class ArtifactFirstBuild : IArtifact {
         };
     }
     public static implicit operator ArtifactCatalog(ArtifactFirstBuild art) => (ArtifactCatalog)art.Clone();
-    public IArtifact Clone() {
+    IArtifact IArtifact.Clone() {
         return new ArtifactCatalog() {
+            RelativePath = RelativePath,
+            Hash = Hash,
+            HashAlgorithm = HashAlgorithm
+        };
+    }
+    public ArtifactCatalog Clone() {
+        return new() {
             RelativePath = RelativePath,
             Hash = Hash,
             HashAlgorithm = HashAlgorithm
@@ -67,8 +74,15 @@ public class ArtifactCatalog : IArtifact {
     public required string HashAlgorithm { get; set; }
     public string FullPath => Path.Combine(localPath, RelativePath);
     public static implicit operator ArtifactFirstBuild(ArtifactCatalog art) => (ArtifactFirstBuild)art.Clone();
-    public IArtifact Clone() {
+    IArtifact IArtifact.Clone() {
         return new ArtifactCatalog() {
+            RelativePath = RelativePath,
+            Hash = Hash,
+            HashAlgorithm = HashAlgorithm
+        };
+    }
+    public ArtifactCatalog Clone() {
+        return new() {
             RelativePath = RelativePath,
             Hash = Hash,
             HashAlgorithm = HashAlgorithm
