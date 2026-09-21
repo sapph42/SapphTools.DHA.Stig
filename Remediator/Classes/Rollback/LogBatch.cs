@@ -1,22 +1,52 @@
 ﻿using System.Collections;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.PortableExecutable;
 
-namespace SapphTools.DHA.Stig.Remediator.Classes.Rollback; 
-internal class LogBatch {
-    internal readonly Guid Batch;
-    private readonly LogMachineCollection _machines;
-    public ReadOnlyDictionary <string, LogMachine> MachineLogs => _machines.MachineLogs;
-    public LogBatch(RemediationAction action) {
-        Batch = action.RemediationBatch;
-        _machines = new(action);
+namespace SapphTools.DHA.Stig.Remediator.Classes.Rollback;
+internal class LogBatchCollection : IEnumerable {
+    private readonly Dictionary<Guid, LogBatch> _batches = [];
+    public LogBatchCollection() { }
+    public LogBatchCollection(RemediationAction action) {
+        Add(action);
     }
+    public void Add(RemediationAction action) {
+        if (_batches.TryGetValue(action.RemediationBatch, out LogBatch? value)) {
+            value.Add(action);
+        } else {
+            _batches.Add(action.RemediationBatch, new(action));
+        }
+    }
+    public IEnumerable<LogAction> Flatten() {
+        foreach (LogBatch batch in this) {
+            foreach (LogMachine machine in batch) {
+                foreach (LogRule rule in machine) {
+                    foreach (LogSetting setting in rule) {
+                        foreach (LogAction action in setting) {
+                            yield return action;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    public Dictionary<Guid, LogBatch>.ValueCollection.Enumerator GetEnumerator() => _batches.Values.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}
+internal class LogBatch(RemediationAction action) :IEnumerable {
+    internal readonly Guid Batch = action.RemediationBatch;
+    private readonly LogMachineCollection _machines = new(action);
+    public ReadOnlyDictionary <string, LogMachine> MachineLogs => _machines.MachineLogs;
+
     public void Add(RemediationAction action) {
         if (action.RemediationBatch != Batch) {
             throw new ArgumentException("Provided value is not a proper child of this Batch instance");
         }
         _machines.Add(action);
     }
+    public Dictionary<string, LogMachine>.ValueCollection.Enumerator GetEnumerator() => _machines.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 internal class LogMachineCollection : IEnumerable {
     internal readonly Guid Batch;
@@ -43,7 +73,7 @@ internal class LogMachineCollection : IEnumerable {
     public Dictionary<string, LogMachine>.ValueCollection.Enumerator GetEnumerator() => _machines.Values.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
-internal class LogMachine(RemediationAction action) {
+internal class LogMachine(RemediationAction action) : IEnumerable {
     internal readonly RemediationAction Source = action;
     private readonly LogRuleCollection _rules = new(action);
     public ReadOnlyDictionary<string, LogRule> RuleLogs => _rules.RuleCollection;
@@ -56,6 +86,8 @@ internal class LogMachine(RemediationAction action) {
         }
         _rules.Add(action);
     }
+    public Dictionary<string, LogRule>.ValueCollection.Enumerator GetEnumerator() => _rules.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 internal class LogRuleCollection : IEnumerable {
     internal readonly RemediationAction Source;
@@ -83,7 +115,7 @@ internal class LogRuleCollection : IEnumerable {
     public Dictionary<string, LogRule>.ValueCollection.Enumerator GetEnumerator() => _rules.Values.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
-internal class LogRule(RemediationAction action) {
+internal class LogRule(RemediationAction action) : IEnumerable {
     internal readonly RemediationAction Source = action;
     private readonly LogSettingCollection _settings = new(action);
     public ReadOnlyDictionary<int, LogSetting> SettingLogs => _settings.SettingCollection;
@@ -97,6 +129,8 @@ internal class LogRule(RemediationAction action) {
         }
         _settings.Add(action);
     }
+    public Dictionary<int, LogSetting>.ValueCollection.Enumerator GetEnumerator() => _settings.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 internal class LogSettingCollection : IEnumerable {
     internal readonly RemediationAction Source;
@@ -123,9 +157,7 @@ internal class LogSettingCollection : IEnumerable {
     public bool ContainsKey(int settingIndex) => _settings.ContainsKey(settingIndex);
     public bool ContainsValue(LogSetting index) => _settings.ContainsValue(index);
     public Dictionary<int, LogSetting>.ValueCollection.Enumerator GetEnumerator() => _settings.Values.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 internal class LogSetting : IEnumerable {
     internal readonly RemediationAction Source;
