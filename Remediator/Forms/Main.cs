@@ -315,8 +315,6 @@ public partial class Main : Form {
                     FindingsCount.Text = $"Findings loaded. {count} findings available for remediation.";
                 }
                 Cursor = Cursors.Default;
-                report?.Close();
-                excel?.Quit();
             }
         }
     }
