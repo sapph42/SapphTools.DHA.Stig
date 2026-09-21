@@ -1,5 +1,6 @@
 ﻿using SapphTools.DHA.Stig.Common.Classes;
 using SapphTools.SecurityDescriptor.Classes;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 
@@ -55,6 +56,8 @@ public partial class LsaConnection : IDisposable {
             using SafeHBuffer buff = SidToSidBuffer(sid) ?? throw new LsaException(LsaExceptionReason.SidBufferCreation);
             try {
                 AddAccountRights(buff, _priv);
+            } catch (Win32Exception wex) when (wex.NativeErrorCode == 0x2) {
+                throw new LsaException(LsaExceptionReason.ObjectNameNotFound, wex);
             } catch (Exception ex) {
                 throw new LsaException(LsaExceptionReason.AddAccountToRight, ex);
             }
@@ -110,7 +113,7 @@ public partial class LsaConnection : IDisposable {
             );
             strings.Clear();
             if (status != 0) {
-                throw new System.ComponentModel.Win32Exception(LsaNtStatusToWinError(status));
+                throw new Win32Exception(LsaNtStatusToWinError(status));
             }
         } finally {
             if (policySuccess) {

@@ -111,6 +111,8 @@ internal class LsaRemediator : IRemediator {
                             AccountNames = accounts
                         }
                     );
+                } catch (LsaException lex) when (lex.Reason == LsaExceptionReason.ObjectNameNotFound) {
+                    Logger.LogNoAction(preAction, TargetType.SeRight, value.Target, before);
                 } catch (Exception ex) {
                     Logger.LogError(
                         preAction,

@@ -7,6 +7,7 @@ public enum LsaExceptionReason {
     SidBufferCreation,
     OpenPolicy,
     QueryRight,
+    ObjectNameNotFound,
     AddAccountToRight,
     RemoveAccountFromRight
 }
@@ -38,6 +39,7 @@ public class LsaException : Exception {
             LsaExceptionReason.OpenPolicy => "An exception occured while attempting to open the LSA Policy object.",
             LsaExceptionReason.SidBufferCreation => "An exception occured while attempting to create unmanaged buffers for account SIDs",
             LsaExceptionReason.QueryRight => "An exception occured while attempting to query a right from LSA policy.",
+            LsaExceptionReason.ObjectNameNotFound => "An object in the LSA policy database was not found.",
             LsaExceptionReason.AddAccountToRight => "An exception occured while attempting to add a SID to an LSA right.",
             LsaExceptionReason.RemoveAccountFromRight => "An exception occured while attempting to remove a SID from an LSA right.",
             _ => "An unknown exception in the LSA API stack occured.",
