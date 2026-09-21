@@ -41,10 +41,10 @@
             LoadFindingsMenu = new ToolStripMenuItem();
             FilterFindingsMenu = new ToolStripMenuItem();
             SimulationModeMenu = new ToolStripMenuItem();
-            CatalogPath = new Label();
             toolStripSeparator1 = new ToolStripSeparator();
             RemediateMenu = new ToolStripMenuItem();
-            logsAndRollbackToolStripMenuItem = new ToolStripMenuItem();
+            LogsMenu = new ToolStripMenuItem();
+            CatalogPath = new Label();
             ((System.ComponentModel.ISupportInitialize)Catalog).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Findings).BeginInit();
             Menu.SuspendLayout();
@@ -175,7 +175,7 @@
             // 
             // remediatorToolStripMenuItem
             // 
-            remediatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { SetCatalogPathMenu, EditCatalogMenu, LoadFindingsMenu, FilterFindingsMenu, SimulationModeMenu, toolStripSeparator1, RemediateMenu, logsAndRollbackToolStripMenuItem });
+            remediatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { SetCatalogPathMenu, EditCatalogMenu, LoadFindingsMenu, FilterFindingsMenu, SimulationModeMenu, toolStripSeparator1, RemediateMenu, LogsMenu });
             remediatorToolStripMenuItem.Name = "remediatorToolStripMenuItem";
             remediatorToolStripMenuItem.Size = new Size(80, 20);
             remediatorToolStripMenuItem.Text = "Remediator";
@@ -219,14 +219,6 @@
             SimulationModeMenu.Text = "Simulation Mode (What If)";
             SimulationModeMenu.Click += SimulationModeMenu_Click;
             // 
-            // CatalogPath
-            // 
-            CatalogPath.AutoSize = true;
-            CatalogPath.Location = new Point(103, 40);
-            CatalogPath.Name = "CatalogPath";
-            CatalogPath.Size = new Size(0, 15);
-            CatalogPath.TabIndex = 15;
-            // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
@@ -239,11 +231,20 @@
             RemediateMenu.Text = "Remediate";
             RemediateMenu.Click += Remediate_Click;
             // 
-            // logsAndRollbackToolStripMenuItem
+            // LogsMenu
             // 
-            logsAndRollbackToolStripMenuItem.Name = "logsAndRollbackToolStripMenuItem";
-            logsAndRollbackToolStripMenuItem.Size = new Size(214, 22);
-            logsAndRollbackToolStripMenuItem.Text = "Logs and Rollback";
+            LogsMenu.Name = "LogsMenu";
+            LogsMenu.Size = new Size(214, 22);
+            LogsMenu.Text = "Logs and Rollback";
+            LogsMenu.Click += LogsMenu_Click;
+            // 
+            // CatalogPath
+            // 
+            CatalogPath.AutoSize = true;
+            CatalogPath.Location = new Point(103, 40);
+            CatalogPath.Name = "CatalogPath";
+            CatalogPath.Size = new Size(0, 15);
+            CatalogPath.TabIndex = 15;
             // 
             // Main
             // 
@@ -299,6 +300,6 @@
         private ToolStripMenuItem SimulationModeMenu;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem RemediateMenu;
-        private ToolStripMenuItem logsAndRollbackToolStripMenuItem;
+        private ToolStripMenuItem LogsMenu;
     }
 }

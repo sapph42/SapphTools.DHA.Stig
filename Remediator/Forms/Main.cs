@@ -9,7 +9,7 @@ using StigRule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.Forms;
 public partial class Main : Form {
-    private bool _supressUiCascade = true;
+    private bool _supressUiCascade = false;
     private static readonly string localPath = Path.GetDirectoryName(Environment.ProcessPath!)!;
     private readonly BindingSource catalogSource;
     private readonly BindingSource findingSource;
