@@ -109,6 +109,11 @@ public partial class Logs : Form {
         Actions.AutoGenerateColumns = false;
         Actions.Columns.AddRange([
             new DataGridViewTextBoxColumn() {
+               DataPropertyName = "RemediationBatch",
+               Name = "RemediationBatch",
+               Visible = false
+            },
+            new DataGridViewTextBoxColumn() {
                DataPropertyName = "ComputerName",
                HeaderText = "Computer Name",
                Name = "ComputerName",
@@ -241,8 +246,10 @@ public partial class Logs : Form {
         _preventCascade = true;
         foreach (DataGridViewRow selected in Actions.SelectedRows.Cast<DataGridViewRow>()) {
             foreach (DataGridViewRow sibling in Actions.Rows.Cast<DataGridViewRow>().Where(
-                        r => r.Cells["ComputerName"].Value.Equals(selected.Cells["ComputerName"].Value) &&
-                        r.Cells["RuleId"].Value.Equals(selected.Cells["RuleId"].Value)
+                        r => r.Cells["RemediationBatch"].Value.Equals(selected.Cells["RemediationBatch"].Value) &&
+                        r.Cells["ComputerName"].Value.Equals(selected.Cells["ComputerName"].Value) &&
+                        r.Cells["RuleId"].Value.Equals(selected.Cells["RuleId"].Value) &&
+                        r.Cells["SettingIndex"].Value.Equals(selected.Cells["SettingIndex"].Value)
                     )) {
                 sibling.Selected = true;
             }
