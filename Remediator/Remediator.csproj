@@ -24,6 +24,7 @@
   <ItemGroup>
     <None Remove="Artifacts\B500E2230656EEC.sha256" />
     <None Remove="Artifacts\B500E2230656EEC.sst" />
+    <None Remove="catalog.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
     <Content Include="Artifacts\1069556\B500E2230656EEC.sst">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="catalog.json" />
   </ItemGroup>
 
   <ItemGroup>
