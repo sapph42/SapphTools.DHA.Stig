@@ -1,6 +1,4 @@
-﻿using Microsoft.Office.Core;
-using SapphTools.DHA.Stig.Common.Classes;
-using System.Data;
+﻿using System.Data;
 using Rule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Forms.Common;
