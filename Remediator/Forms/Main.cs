@@ -415,7 +415,8 @@ public partial class Main : Form {
         SimulationModeMenu.Checked = WhatIf.Checked;
         _supressUiCascade = false;
     }
-
-    [LibraryImport("user32.dll", SetLastError = true)]
-    private static partial uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+    private void LogsMenu_Click(object sender, EventArgs e) {
+        Logs logs = new();
+        logs.Show();
+    }
 }
