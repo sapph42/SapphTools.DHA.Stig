@@ -78,7 +78,7 @@ public class LockoutValue : SamValue<SamUserModalInfo3, LockoutValue> {
 }
 public class RegistryKeyValue : IValue<RegistryKeyValue> {
     [JsonInclude]
-    public TargetType Action => TargetType.RegistryAcl;
+    public TargetType Action => TargetType.RegistryKey;
     public required string Target { get; set; }
     public required string Name { get; set; }
     public string TargetString => Target;
