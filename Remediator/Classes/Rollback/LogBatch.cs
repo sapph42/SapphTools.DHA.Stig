@@ -158,6 +158,7 @@ internal class LogAction(RemediationAction action) {
     internal string? Description => _source.Description;
     internal string ComputerName => _source.ComputerName;
     internal int SettingIndex => _source.SettingIndex;
+    public ActionSource Source => _source.Source;
     public TargetType TargetType => _source.TargetType;
     public string Target => _source.Target;
     public RollbackCapability RollbackCapability => _source.RollbackCapability;

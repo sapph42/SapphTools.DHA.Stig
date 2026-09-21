@@ -5,6 +5,7 @@ public class RemediationAction {
     public string? Description { get; set; }
     public required string ComputerName { get; set; }
     public required int SettingIndex { get; set; }
+    public ActionSource Source { get; set; } = ActionSource.Catalog;
     public TargetType TargetType { get; set; }
     public required string Target { get; set; }
     public RollbackCapability RollbackCapability { get; set; }
