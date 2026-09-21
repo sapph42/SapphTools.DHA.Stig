@@ -88,21 +88,21 @@ public partial class FileAceEditor : Form {
         }
     }
     private void Clear_Click(object sender, EventArgs e) {
-        FullControl.Enabled = false;
-        Traverse.Enabled = false;
-        ListFolder.Enabled = false;
-        ReadAttributes.Enabled = false;
-        ReadExtendedAttributes.Enabled = false;
-        CreateFiles.Enabled = false;
-        WriteAttributes.Enabled = false;
-        WriteExtendedAttributes.Enabled = false;
-        CreateFiles.Enabled = false;
-        CreateFolders.Enabled = false;
-        DeleteSubfolders.Enabled = false;
-        Delete.Enabled = false;
-        ReadPermissions.Enabled = false;
-        ChangePermissions.Enabled = false;
-        TakeOwnership.Enabled = false;
+        FullControl.Checked = false;
+        Traverse.Checked = false;
+        ListFolder.Checked = false;
+        ReadAttributes.Checked = false;
+        ReadExtendedAttributes.Checked = false;
+        CreateFiles.Checked = false;
+        WriteAttributes.Checked = false;
+        WriteExtendedAttributes.Checked = false;
+        CreateFiles.Checked = false;
+        CreateFolders.Checked = false;
+        DeleteSubfolders.Checked = false;
+        Delete.Checked = false;
+        ReadPermissions.Checked = false;
+        ChangePermissions.Checked = false;
+        TakeOwnership.Checked = false;
         OnlyApply.Checked = false;
     }
     private void Ok_Click(object sender, EventArgs e) {
