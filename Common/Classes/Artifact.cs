@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 namespace SapphTools.DHA.Stig.Common.Classes; 
 public class ArtifactFirstBuild : IArtifact {
     private string? _algo;
-    private static readonly string localPath = Path.GetDirectoryName(Environment.ProcessPath!)!;
+    private static readonly string targetPath = @"\\eamcfs01\dept$\_EAMC_DATA\workgroup\IMD\System Administration\_AdminApps\Stig Remediator\Artifacts";
     public required string RelativePath { get; set; }
     public required string Hash { get; set; }
     public required string HashAlgorithm {
@@ -31,7 +31,7 @@ public class ArtifactFirstBuild : IArtifact {
         string hashString = Convert.ToHexString(result);
         string name = hashString[..15];
         string ext = Path.GetExtension(filePath);
-        string destFolder = Path.Combine(localPath, ruleId);
+        string destFolder = Path.Combine(targetPath, ruleId);
         if (!Directory.Exists(destFolder)) {
             Directory.CreateDirectory(destFolder);
         }
@@ -53,7 +53,7 @@ public class ArtifactFirstBuild : IArtifact {
         };
     }
     public bool Verify() {
-        string absPath = Path.Combine(localPath, RelativePath);
+        string absPath = Path.Combine(targetPath, RelativePath);
         HashAlgorithmName algo = new (HashAlgorithm);
         using IncrementalHash hash = IncrementalHash.CreateHash(algo);
         hash.AppendData(File.ReadAllBytes(absPath));
