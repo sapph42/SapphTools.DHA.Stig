@@ -36,36 +36,35 @@ internal class CertificateRemediator : IRemediator {
                         null,
                         val
                     );
-                    return;
+                } else {
+                    CryptoWinApi.AddCerts(targetHost, val.Target, artifact.FullPath, out int success, out int noAction, out int failed);
+                    if (success == 0 && failed == 0) {
+                        Logger.LogNoAction(
+                            pre,
+                            TargetType.CertStore,
+                            val.Target,
+                            val
+                        );
+                    } else if (failed == 0) {
+                        Logger.LogSuccess(
+                            pre,
+                            TargetType.CertStore,
+                            val.Target,
+                            RollbackCapability.NotApplicable,
+                            null,
+                            val
+                        );
+                        return;
+                    } else {
+                        Logger.LogError(
+                            pre,
+                            TargetType.CertStore,
+                            val.Target,
+                            $"{success} certificates were added, {failed} certificates failed to add, {noAction} certificates were already present",
+                            whatIf
+                        );
+                    }
                 }
-                CryptoWinApi.AddCerts(targetHost, val.Target, artifact.FullPath, out int success, out int noAction, out int failed);
-                if (success == 0 && failed == 0) {
-                    Logger.LogNoAction(
-                        pre,
-                        TargetType.CertStore,
-                        val.Target,
-                        val
-                    );
-                    return;
-                }
-                if (failed == 0) {
-                    Logger.LogSuccess(
-                        pre,
-                        TargetType.CertStore,
-                        val.Target,
-                        RollbackCapability.NotApplicable,
-                        null,
-                        val
-                    );
-                    return;
-                }
-                Logger.LogError(
-                    pre,
-                    TargetType.CertStore,
-                    val.Target,
-                    $"{success} certificates were added, {failed} certificates failed to add, {noAction} certificates were already present",
-                    whatIf
-                );
             }
         }
         
