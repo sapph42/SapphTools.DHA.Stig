@@ -108,7 +108,7 @@ public partial class FileAceEditor : Form {
     private void Ok_Click(object sender, EventArgs e) {
         SddlRight right;
         if (FullControl.Checked) {
-            right = SddlRight.Construct(SddlRights.SDDL_KEY_ALL);
+            right = SddlRight.Construct(SddlRights.SDDL_FILE_ALL);
         } else {
             uint rights = 0;
             if (Traverse.Checked)
