@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection.PortableExecutable;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Rollback;
 internal class LogBatchCollection : IEnumerable {
