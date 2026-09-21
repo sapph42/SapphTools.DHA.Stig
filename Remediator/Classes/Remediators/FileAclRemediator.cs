@@ -1,8 +1,4 @@
-﻿using SapphTools.DHA.Stig.Common.Interfaces;
-using SapphTools.DHA.Stig.Remediator.Extensions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-
-namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
+﻿namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal class FileAclRemediator : IRemediator {
     public static void Remediate(Rule rule, int settingIndex, Guid batch, string? computerName, bool whatIf = true) {
         if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
