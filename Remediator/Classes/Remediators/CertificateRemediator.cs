@@ -17,56 +17,54 @@ internal class CertificateRemediator : IRemediator {
             ComputerName = targetHost,
             SettingIndex = settingIndex
         };
-        foreach (ArtifactCatalog artifact in val.Artifacts.Cast<ArtifactCatalog>()) {
-            if (!artifact.Verify()) {
-                Logger.LogError(
+        if (!val.CatalogArtifact.Verify()) {
+            Logger.LogError(
+                pre,
+                TargetType.CertStore,
+                val.Target,
+                $"Artifact {val.CatalogArtifact.FullPath} failed validation",
+                whatIf
+            );
+        } else {
+            if (whatIf) {
+                Logger.LogWhatIf(
                     pre,
                     TargetType.CertStore,
                     val.Target,
-                    $"Artifact {artifact.FullPath} failed validation",
-                    whatIf
+                    RollbackCapability.NotApplicable,
+                    null,
+                    val
                 );
-            } else {
-                if (whatIf) {
-                    Logger.LogWhatIf(
-                        pre,
-                        TargetType.CertStore,
-                        val.Target,
-                        RollbackCapability.NotApplicable,
-                        null,
-                        val
-                    );
-                } else {
-                    CryptoWinApi.AddCerts(targetHost, val.Target, artifact.FullPath, out int success, out int noAction, out int failed);
-                    if (success == 0 && failed == 0) {
-                        Logger.LogNoAction(
-                            pre,
-                            TargetType.CertStore,
-                            val.Target,
-                            val
-                        );
-                    } else if (failed == 0) {
-                        Logger.LogSuccess(
-                            pre,
-                            TargetType.CertStore,
-                            val.Target,
-                            RollbackCapability.NotApplicable,
-                            null,
-                            val
-                        );
-                        return;
-                    } else {
-                        Logger.LogError(
-                            pre,
-                            TargetType.CertStore,
-                            val.Target,
-                            $"{success} certificates were added, {failed} certificates failed to add, {noAction} certificates were already present",
-                            whatIf
-                        );
-                    }
-                }
+                return;
             }
+            CryptoWinApi.AddCerts(targetHost, val.Target, val.CatalogArtifact.FullPath, out int success, out int noAction, out int failed);
+            if (success == 0 && failed == 0) {
+                Logger.LogNoAction(
+                    pre,
+                    TargetType.CertStore,
+                    val.Target,
+                    val
+                );
+                return;
+            }
+            if (failed == 0) {
+                Logger.LogSuccess(
+                    pre,
+                    TargetType.CertStore,
+                    val.Target,
+                    RollbackCapability.NotApplicable,
+                    null,
+                    val
+                );
+                return;
+            } 
+            Logger.LogError(
+                pre,
+                TargetType.CertStore,
+                val.Target,
+                $"{success} certificates were added, {failed} certificates failed to add, {noAction} certificates were already present",
+                whatIf
+            );
         }
-        
     }
 }

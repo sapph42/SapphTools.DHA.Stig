@@ -28,9 +28,8 @@
             label2 = new Label();
             ErrorProvider = new ErrorProvider(components);
             Target = new TextBox();
-            ArtifactsList = new ListBox();
-            Add = new Button();
-            Remove = new Button();
+            Browse = new Button();
+            ArtifactPath = new TextBox();
             ((System.ComponentModel.ISupportInitialize)ErrorProvider).BeginInit();
             SuspendLayout();
             // 
@@ -48,9 +47,9 @@
             label2.AutoSize = true;
             label2.Location = new Point(5, 56);
             label2.Name = "label2";
-            label2.Size = new Size(51, 15);
+            label2.Size = new Size(46, 15);
             label2.TabIndex = 4;
-            label2.Text = "Artifacts";
+            label2.Text = "Artifact";
             // 
             // ErrorProvider
             // 
@@ -63,47 +62,34 @@
             Target.Size = new Size(425, 23);
             Target.TabIndex = 5;
             // 
-            // ArtifactsList
+            // Browse
             // 
-            ArtifactsList.FormattingEnabled = true;
-            ArtifactsList.ItemHeight = 15;
-            ArtifactsList.Location = new Point(103, 56);
-            ArtifactsList.Name = "ArtifactsList";
-            ArtifactsList.Size = new Size(425, 94);
-            ArtifactsList.TabIndex = 6;
+            Browse.Location = new Point(103, 88);
+            Browse.Name = "Browse";
+            Browse.Size = new Size(60, 23);
+            Browse.TabIndex = 7;
+            Browse.Text = "Browse";
+            Browse.UseVisualStyleBackColor = true;
+            Browse.Click += Browse_Click;
             // 
-            // Add
+            // ArtifactPath
             // 
-            Add.Location = new Point(103, 156);
-            Add.Name = "Add";
-            Add.Size = new Size(60, 23);
-            Add.TabIndex = 7;
-            Add.Text = "Add";
-            Add.UseVisualStyleBackColor = true;
-            Add.Click += Add_Click;
-            // 
-            // Remove
-            // 
-            Remove.Location = new Point(169, 156);
-            Remove.Name = "Remove";
-            Remove.Size = new Size(60, 23);
-            Remove.TabIndex = 8;
-            Remove.Text = "Remove";
-            Remove.UseVisualStyleBackColor = true;
-            Remove.Click += Remove_Click;
+            ArtifactPath.Location = new Point(103, 48);
+            ArtifactPath.Name = "ArtifactPath";
+            ArtifactPath.Size = new Size(425, 23);
+            ArtifactPath.TabIndex = 9;
             // 
             // CertificatesValueSettings
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(Remove);
-            Controls.Add(Add);
-            Controls.Add(ArtifactsList);
+            Controls.Add(ArtifactPath);
+            Controls.Add(Browse);
             Controls.Add(Target);
             Controls.Add(label2);
             Controls.Add(label1);
             Name = "CertificatesValueSettings";
-            Size = new Size(565, 196);
+            Size = new Size(565, 129);
             ((System.ComponentModel.ISupportInitialize)ErrorProvider).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -115,7 +101,8 @@
         private ErrorProvider ErrorProvider;
         private TextBox Target;
         private Button Remove;
-        private Button Add;
+        private Button Browse;
+        private TextBox ArtifactPath;
         private ListBox ArtifactsList;
     }
 }

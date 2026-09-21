@@ -159,17 +159,14 @@ public class CertificatesValue : IValue<CertificatesValue> {
     [JsonInclude]
     public TargetType Action => TargetType.CertStore;
     public required string Target { get; set; }
-    public required List<IArtifact> Artifacts { get; set; }
+    public required IArtifact Artifact { get; set; }
+    public ArtifactCatalog CatalogArtifact => (ArtifactCatalog)Artifact;
     public string TargetString => $"Local Machine\\{Target}";
 
     public CertificatesValue Clone() {
-        List<IArtifact> clonedArtifacts = [];
-        foreach (IArtifact artifact in Artifacts) {
-            clonedArtifacts.Add(artifact.Clone());
-        }
         return new() {
             Target = Target,
-            Artifacts = clonedArtifacts
+            Artifact = Artifact.Clone()
         };
     }
     public override string ToString() => TargetString;
