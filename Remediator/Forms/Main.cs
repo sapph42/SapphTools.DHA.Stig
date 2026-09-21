@@ -210,7 +210,7 @@ public partial class Main : Form {
             try {
                 string json = File.ReadAllText(ofd.FileName);
                 Catalog? catalog = JsonSerializer.Deserialize<Catalog>(
-                    File.ReadAllText(Settings.Default.CatalogPath),
+                    json,
                     GlobalConstants.JsonSerializerOptions
                 );
                 if (catalog is not null && catalog.Rules.Count > 0) {
@@ -218,7 +218,7 @@ public partial class Main : Form {
                     StigCatalog = catalog;
                     RuleTable.Rows.Clear();
                     foreach (StigRule rule in StigCatalog.Rules) {
-                        RuleTable.Rows.Add(rule.RuleId, rule.Description, rule.Clone());
+                        RuleTable.Rows.Add(rule.RuleId, rule.Description, rule.Settings.Any(r => r.Dangerous), rule.Clone());
                     }
                 }
             } catch (Exception ex) {
