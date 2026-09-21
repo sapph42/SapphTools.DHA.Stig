@@ -1,7 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
-using SapphTools.SecurityDescriptor.Classes;
+﻿using SapphTools.SecurityDescriptor.Classes;
 using System.ComponentModel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
 internal class LsaRemediator : IRemediator {
@@ -28,99 +26,109 @@ internal class LsaRemediator : IRemediator {
     private static void SetRights(RemediationPreAction preAction, SeRightsValue value, bool whatIf = true) {
         LsaConnection? conn = null;
         try {
-            conn = new(preAction.ComputerName, value);
-        } catch (ArgumentOutOfRangeException privEx) {
-            Logger.LogError(
-                preAction,
-                TargetType.SeRight,
-                value.Target,
-                $"Exception instantiating LsaConnection: {privEx.Message}",
-                whatIf);
-            return;
-        } catch (ArgumentException namesEx) {
-            Logger.LogError(
-                preAction,
-                TargetType.SeRight,
-                string.Join(", ", value.AccountNames.Select(t => t.Sid)),
-                $"Exception instantiating LsaConnection: {namesEx.Message}",
-                whatIf);
-            return;
-        } catch (Win32Exception winEx) {
-            Logger.LogError(
-                preAction,
-                TargetType.SeRight,
-                string.Join(", ", value.AccountNames.Select(t => t.Sid)),
-                $"Exception instantiating LsaConnection: {winEx.Message}",
-                whatIf);
-            return;
-        } catch (LsaException lsaEx) {
-            Logger.LogError(
-                preAction,
-                TargetType.SeRight,
-                string.Join(", ", value.AccountNames.Select(t => t.Sid)),
-                $"Exception instantiating LsaConnection ({lsaEx.Reason}): {lsaEx.Message}",
-                whatIf);
-            return;
-        } finally {
-            conn?.Dispose();
-        }
-        try {
-            SeRightsValue before = conn.GetBeforeValue();
-            if (conn.RightMatchesList()) {
-                Logger.LogNoAction(
+            try {
+                conn = new(preAction.ComputerName, value);
+            } catch (ArgumentOutOfRangeException privEx) {
+                Logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     value.Target,
-                    before
-                );
+                    $"Exception instantiating LsaConnection: {privEx.Message}",
+                    whatIf);
                 return;
-            }
-            Trustee[] accounts = new Trustee[value.AccountNames.Length];
-            for (int i = 0; i < accounts.Length; i++) {
-                accounts[i] = value.AccountNames[i].Clone();
-            }
-            if (whatIf) {
-                Logger.LogWhatIf(
+            } catch (ArgumentException namesEx) {
+                Logger.LogError(
                     preAction,
                     TargetType.SeRight,
-                    value.Target,
-                    RollbackCapability.NotApplicable,
-                    before,
-                    new SeRightsValue() {
-                        Target = before.Target,
-                        AccountNames = accounts
-                    }
-                );
+                    string.Join(", ", value.AccountNames.Select(t => t.Sid)),
+                    $"Argument Exception instantiating LsaConnection: {namesEx.Message}",
+                    whatIf);
+                return;
+            } catch (Win32Exception winEx) {
+                Logger.LogError(
+                    preAction,
+                    TargetType.SeRight,
+                    string.Join(", ", value.AccountNames.Select(t => t.Sid)),
+                    $"Win32 Exception instantiating LsaConnection: {winEx.Message}",
+                    whatIf);
+                return;
+            } catch (LsaException lsaEx) {
+                Logger.LogError(
+                    preAction,
+                    TargetType.SeRight,
+                    string.Join(", ", value.AccountNames.Select(t => t.Sid)),
+                    $"Lsa Exception instantiating LsaConnection ({lsaEx.Reason}): {lsaEx.Message}",
+                    whatIf);
+                return;
+            } catch (Exception ex) {
+                Logger.LogError(
+                    preAction,
+                    TargetType.SeRight,
+                    string.Join(", ", value.AccountNames.Select(t => t.Sid)),
+                    $"Exception instantiating LsaConnection: {ex.Message}",
+                    whatIf);
                 return;
             }
             try {
-                conn.SetAccountRights();
-                Logger.LogSuccess(
-                    preAction,
-                    TargetType.SeRight,
-                    value.Target,
-                    RollbackCapability.Automatic,
-                    before,
-                    new SeRightsValue() {
-                        Target = before.Target,
-                        AccountNames = accounts
-                    }
-                );
+                SeRightsValue before = conn.GetBeforeValue();
+                if (conn.RightMatchesList()) {
+                    Logger.LogNoAction(
+                        preAction,
+                        TargetType.SeRight,
+                        value.Target,
+                        before
+                    );
+                    return;
+                }
+                Trustee[] accounts = new Trustee[value.AccountNames.Length];
+                for (int i = 0; i < accounts.Length; i++) {
+                    accounts[i] = value.AccountNames[i].Clone();
+                }
+                if (whatIf) {
+                    Logger.LogWhatIf(
+                        preAction,
+                        TargetType.SeRight,
+                        value.Target,
+                        RollbackCapability.NotApplicable,
+                        before,
+                        new SeRightsValue() {
+                            Target = before.Target,
+                            AccountNames = accounts
+                        }
+                    );
+                    return;
+                }
+                try {
+                    conn.SetAccountRights();
+                    Logger.LogSuccess(
+                        preAction,
+                        TargetType.SeRight,
+                        value.Target,
+                        RollbackCapability.Automatic,
+                        before,
+                        new SeRightsValue() {
+                            Target = before.Target,
+                            AccountNames = accounts
+                        }
+                    );
+                } catch (Exception ex) {
+                    Logger.LogError(
+                        preAction,
+                        TargetType.SeRight,
+                        value.Target,
+                        ex.Message,
+                        whatIf: false);
+                    return;
+                }
             } catch (Exception ex) {
                 Logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     value.Target,
                     ex.Message,
-                    whatIf: false);
+                    whatIf);
+                return;
             }
-        } catch (Exception ex) {
-            Logger.LogError(
-                preAction,
-                TargetType.SeRight,
-                value.Target,
-                ex.Message,
-                whatIf);
         } finally {
             conn?.Dispose();
         }
