@@ -102,7 +102,7 @@ internal class RegistryKeyRemediator : IRemediator {
                 return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, "Could not find parent key", false);
             }
             if (!parent.FullName.Equals(newVal.Target, StringComparison.OrdinalIgnoreCase)) {
-                return Logger.LogNoAction(pre, TargetType.RegistryKey, newVal.Target, null);
+                return Logger.LogNoAction(pre, TargetType.RegistryKey, newVal.Target + '\\' + newVal.Name, null);
             }
             target = parent.OpenSubKey(newVal.Name);
             if (target is null) {
