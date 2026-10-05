@@ -2136,7 +2136,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeMachineAccountPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -2156,7 +2156,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyRemoteInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -2176,7 +2176,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -2253,7 +2253,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -2801,7 +2801,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeTrustedCredManAccessPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -2817,7 +2817,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeTcbPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -2833,7 +2833,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeBackupPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -2853,7 +2853,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePagefilePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -2873,7 +2873,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateTokenPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -2889,7 +2889,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateGlobalPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "LS"
               },
@@ -2918,7 +2918,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePermanentPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -2934,7 +2934,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDebugPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -2954,7 +2954,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteShutdownPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -2974,7 +2974,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeAuditPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "LS"
               },
@@ -2997,7 +2997,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeImpersonatePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "LS"
               },
@@ -3026,7 +3026,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeIncreaseBasePriorityPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3046,7 +3046,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeLoadDriverPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3066,7 +3066,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeLockMemoryPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -3082,7 +3082,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeSecurityPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3102,7 +3102,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeSystemEnvironmentPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3122,7 +3122,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeManageVolumePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3142,7 +3142,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeProfileSingleProcessPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3162,7 +3162,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeRestorePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -3182,7 +3182,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeTakeOwnershipPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4013,7 +4013,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeMachineAccountPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4033,7 +4033,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4053,7 +4053,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyNetworkLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -4073,7 +4073,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyBatchLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -4093,7 +4093,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyServiceLogonRight",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -4109,7 +4109,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -4129,7 +4129,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyRemoteInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -4149,7 +4149,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4834,7 +4834,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeTrustedCredManAccessPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -4850,7 +4850,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeTcbPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -4866,7 +4866,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4886,7 +4886,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeBackupPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4906,7 +4906,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePagefilePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -4926,7 +4926,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateTokenPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -4942,7 +4942,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateGlobalPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "LS"
               },
@@ -4971,7 +4971,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePermanentPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -4987,7 +4987,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDebugPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5007,7 +5007,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteShutdownPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5027,7 +5027,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeAuditPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "LS"
               },
@@ -5050,7 +5050,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeImpersonatePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "LS"
               },
@@ -5079,7 +5079,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeIncreaseBasePriorityPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5099,7 +5099,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeLoadDriverPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5119,7 +5119,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeLockMemoryPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -5135,7 +5135,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeSecurityPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5155,7 +5155,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeSystemEnvironmentPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5175,7 +5175,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeManageVolumePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5195,7 +5195,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeProfileSingleProcessPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5215,7 +5215,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeRestorePrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5235,7 +5235,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeTakeOwnershipPrivilege",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5723,7 +5723,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeNetworkLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "AU"
               },
@@ -5746,7 +5746,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -5870,7 +5870,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -5890,7 +5890,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyNetworkLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -5910,7 +5910,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyBatchLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -5930,7 +5930,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyServiceLogonRight",
-            "Target": []
+            "AccountNames": []
           }
         }
       ]
@@ -5946,7 +5946,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BG"
               }
@@ -5966,7 +5966,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeNetworkLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "AU"
               },
@@ -6046,7 +6046,7 @@
           "Data": {
             "Action": "SeRight",
             "Target": "SeInteractiveLogonRight",
-            "Target": [
+            "AccountNames": [
               {
                 "Sid": "BA"
               }
@@ -8557,13 +8557,44 @@
           "RequiredContext": "None",
           "Dangerous": true,
           "Data": {
-            "action": "FileSystemAcl",
-            "sddl": {
-              "sddlString": "O:S-1-5-21-3923692831-1208425469-611280938-9209425D:(A;CIOI;FA;;;S-1-5-18)(A;CIOI;FA;;;S-1-5-32-544)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9209425)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9822295)",
-              "type": "File"
-            },
-            "target": "C:\\Users\\n\\StigTest",
-            "targetString": "C:\\Users\\n\\StigTest"
+            "Action": "FileSystemAcl",
+            "Target": "C:\\Users\\n\\StigTest",
+            "Sddl": {
+              "SddlString": "O:S-1-5-21-3923692831-1208425469-611280938-9209425D:P(A;CIOI;FA;;;S-1-5-18)(A;CIOI;FA;;;S-1-5-32-544)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9209425)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9822295)",
+              "SddlType": "File"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "RuleId": "00042001",
+      "Description": "Test Rule Only",
+      "Settings": [
+        {
+          "Order": 0,
+          "RequiredContext": "None",
+          "Dangerous": true,
+          "Data": {
+            "Action": "FileSystemAcl",
+            "Target": "C:\\Users\\n\\StigTest\\InnerTest1",
+            "Sddl": {
+              "SddlString": "O:S-1-5-21-3923692831-1208425469-611280938-9209425D:P(A;CIOI;FA;;;S-1-5-18)(A;CIOI;FA;;;S-1-5-32-544)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9209425)",
+              "SddlType": "File"
+            }
+          }
+        },
+        {
+          "Order": 1,
+          "RequiredContext": "None",
+          "Dangerous": true,
+          "Data": {
+            "Action": "FileSystemAcl",
+            "Target": "C:\\Users\\n\\StigTest\\InnerTest2",
+            "Sddl": {
+              "SddlString": "O:S-1-5-21-3923692831-1208425469-611280938-9209425D:P(A;CIOI;FA;;;S-1-5-18)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9209425)",
+              "SddlType": "File"
+            }
           }
         }
       ]
