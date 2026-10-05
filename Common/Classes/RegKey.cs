@@ -30,7 +30,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
             string? parentPath = SplitPath(key.ToString(), true);
             if (parentPath is not null) {
                 parentOwned = true;
-                return new RegKey(parentPath);
+                return new (parentPath, computerName);
             }
             return null;
         });
@@ -40,7 +40,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
 
     public RegKey CreateSubKey(string name) {
         try {
-            RegKey child = new(_key.CreateSubKey(name)) {
+            RegKey child = new(_key.CreateSubKey(name), computerName) {
                 _parent = new(() => this),
                 parentOwned = false
             };
@@ -143,16 +143,16 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
             if (key is null) {
                 return null;
             }
-            return new(key);
+            return new(key, computerName);
         }
-        return new(path);
+        return new(path, computerName);
     }
     public RegKey? OpenSubKey(string name) {
         RegistryKey? sub = _key.OpenSubKey(name, true);
         if (sub is null) {
             return null;
         }
-        RegKey subKey = new(sub) {
+        RegKey subKey = new(sub, computerName) {
             parentOwned = true
         };
         return subKey;
@@ -263,7 +263,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
 
     private RegKey CreateKey(string name) {
         try {
-            return new(_key.CreateSubKey(name, true));
+            return new(_key.CreateSubKey(name, true), computerName);
         } catch (Exception ex) {
             throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
         }
@@ -299,10 +299,8 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         string branch = path[key.FullName.Length..]
             .TrimStart('\\')
             .Split('\\', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
-        RegKey? child;
         try {
-            child = key.CreateSubKey(branch);
-            return CreateKeyInternal(child, path);
+            return key.CreateSubKey(branch);
         } catch (RegKeyException) {
             throw;
         } catch (Exception ex) { 
