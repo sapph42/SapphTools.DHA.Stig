@@ -53,7 +53,8 @@ internal class RegistryKeyRemediator : IRemediator {
     public static RemediationActionResult SubRemediate(RegKey parentKey, string branchName, RemediationPreAction pre, out RegKey? key, bool whatIf) {
         key = parentKey;
         try {
-            return CreateRegistryPath(parentKey, branchName, pre, out key, whatIf);
+            string targetPath = parentKey.FullName + '\\' + branchName.TrimStart('\\');
+            return CreateRegistryPath(parentKey, targetPath, pre, out key, whatIf);
         } catch (RegKeyException rkEx) {
             return Logger.LogError(pre, TargetType.RegistryKey, parentKey.FullName + '\\' + branchName, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
