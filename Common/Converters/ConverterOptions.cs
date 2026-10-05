@@ -4,6 +4,8 @@ public static class ConverterOptions {
     private readonly static List<JsonConverter> converters = [
         new ArtifactCatalogConverter(),
         new CatalogConverter(),
+        new FileSystemAclValueConverter(),
+        new RegistryAclValueConverter(),
         new RegistryValuePatternValueConverter(),
         new RegistryValueValueConverter(),
         new SeRightsValueConverter(),
