@@ -49,21 +49,6 @@ internal partial class RegistryValueRemediator : IRemediator {
     }
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
         Debug.WriteLine($"Starting rollback of {logEntry.RuleId} on {logEntry.ComputerName}");
-        if (logEntry.After is null) {
-            return new ArgumentException("Cannot rollback a log entry with a null After property.");
-        }
-        IValue? original = logEntry.Before;
-        IValue current = logEntry.After;
-        if (original is not RegistryValueValue oldVal) {
-            return new ArgumentException(
-                $"Expected {nameof(logEntry)}.Before to be of type RegistryValueValue, was {original?.GetType().Name}"
-            );
-        }
-        if (current is not RegistryValueValue newVal) {
-            return new ArgumentException(
-                $"Expected {nameof(logEntry)}.After to be of type RegistryValueValue, was {current.GetType().Name}"
-            );
-        }
         Guid settingBatch = Guid.NewGuid();
         string targetHost = logEntry.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
@@ -76,34 +61,55 @@ internal partial class RegistryValueRemediator : IRemediator {
             SettingIndex = logEntry.SettingIndex,
             Source = ActionSource.Rollback,
         };
-        RegKey? key = new(newVal.Target, targetHost);
-        if (key is null) {
+        try {
+            if (logEntry.After is null) {
+                return new ArgumentException("Cannot rollback a log entry with a null After property.");
+            }
+            IValue? original = logEntry.Before;
+            IValue current = logEntry.After;
+            if (original is not RegistryValueValue oldVal) {
+                return new ArgumentException(
+                    $"Expected {nameof(logEntry)}.Before to be of type RegistryValueValue, was {original?.GetType().Name}"
+                );
+            }
+            if (current is not RegistryValueValue newVal) {
+                return new ArgumentException(
+                    $"Expected {nameof(logEntry)}.After to be of type RegistryValueValue, was {current.GetType().Name}"
+                );
+            }
             try {
-                if (oldVal.Data is null) {
-                    return Logger.LogNoAction(
-                        pre,
-                        TargetType.RegistryValue,
-                        newVal.Target,
-                        oldVal
-                    );
-                } else {
-                    return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, "Parent key no longer exists", false);
+                RegKey key = new(newVal.Target, targetHost);
+                try {
+                    RegistryValueValue before = new() {
+                        Target = newVal.Target,
+                        Name = newVal.Name,
+                        Data = key.GetValue(newVal.Name, newVal.Kind),
+                        Kind = newVal.Kind
+                    };
+                    return SubRemediate(pre, before, key, oldVal, false);
+                } catch (Exception ex) {
+                    return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, ex.Message, false);
                 }
-            } finally {
-                pre.ActionNumber++;
-            }
-        } else {
-            try {
-                RegistryValueValue before = new() {
-                    Target = newVal.Target,
-                    Name = newVal.Name,
-                    Data = key.GetValue(newVal.Name, newVal.Kind),
-                    Kind = newVal.Kind
-                };
-                return SubRemediate(pre, before, key, oldVal, false);
-            } catch (Exception ex) {
-                return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, ex.Message, false);
-            }
+            } catch {
+                try {
+                    if (oldVal.Data is null) {
+                        return Logger.LogNoAction(
+                            pre,
+                            TargetType.RegistryValue,
+                            newVal.Target,
+                            oldVal
+                        );
+                    } else {
+                        return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, "Parent key no longer exists", false);
+                    }
+                } finally {
+                    pre.ActionNumber++;
+                }
+            } 
+        } catch (RegKeyException rkEx) {
+            return Logger.LogError(pre, TargetType.RegistryValue, logEntry.Before?.TargetString ?? string.Empty, rkEx.ReasonToString(), false);
+        } catch (Exception ex) {
+            return ex;
         }
     }
     public static RemediationActionResult SubRemediate(RemediationPreAction preAction, IValue before, RegKey key, RegistryValueValue value, bool whatIf = true) {
