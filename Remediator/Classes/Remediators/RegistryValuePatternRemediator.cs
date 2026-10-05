@@ -33,11 +33,11 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
             return createRes;
         }
         IEnumerable<RegKey> keys = [targetKey];
-        keys = ExpandMatchingSubKeys(keys, val.TargetPattern);
-        keys = OpenSubkeys(pre, keys, val.SubPath, whatIf);
-        keys = ExpandMatchingSubKeys(keys, val.PathPattern);
+        IEnumerable<RegKey> firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
+        IEnumerable<RegKey> secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, whatIf);
+        IEnumerable<RegKey> thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
         RemediationActionResult? res = null;
-        foreach (RegKey key in keys) {
+        foreach (RegKey key in thirdRoundKeys) {
             object? currentVal = key.GetValue(val.Name, val.Kind);
             RegistryValueKind currKind = key.GetValueKind(val.Name);
             RegistryValueValue resolvedBefore = ResolveBefore(key, val);
@@ -57,10 +57,25 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
                 res = thisRes;
             }
         }
-        if (res is null) {
-            return Logger.LogNoAction(pre, TargetType.RegistryValuePattern, targetKey.ToString(), null);
+        try {
+            if (res is null) {
+                return Logger.LogNoAction(pre, TargetType.RegistryValuePattern, targetKey.ToString(), null);
+            }
+            return res;
+        } finally {
+            foreach (RegKey key in thirdRoundKeys) {
+                key.Dispose();
+            }
+            foreach (RegKey key in secondRoundKeys) {
+                key.Dispose();
+            }
+            foreach (RegKey key in firstRoundKeys) {
+                key.Dispose();
+            }
+            foreach (RegKey key in keys) {
+                key.Dispose();
+            }
         }
-        return res;
     }
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
         if (logEntry.After is null) {

@@ -26,26 +26,34 @@ internal class RegistryKeyRemediator : IRemediator {
             SettingIndex = settingIndex,
             Source = ActionSource.Catalog
         };
-        return SubRemediate(val.Target, targetHost, pre, out _, whatIf);
+        RegKey? key = null;
+        try {
+            return SubRemediate(val.Target, targetHost, pre, out key, whatIf);
+        } finally {
+            key?.Dispose();
+        }
     }
     public static RemediationActionResult SubRemediate(string targetPath, string targetHost, RemediationPreAction pre, out RegKey? key, bool whatIf) {
         key = null;
+        RegKey? ancestor = null;
         try {
-            key = RegKey.ClosestExtantAncestor(targetPath, targetHost);
-            if (key is null) {
+            ancestor = RegKey.ClosestExtantAncestor(targetPath, targetHost);
+            if (ancestor is null) {
                 return Logger.LogError(pre, TargetType.RegistryKey, targetPath, "Could not find any valid ancestor keys", whatIf);
             }
-            return CreateRegistryPath(key, targetPath, pre, out key, whatIf);
+            return CreateRegistryPath(ancestor, targetPath, pre, out key, whatIf);
         } catch (RegKeyException rkEx) {
             return Logger.LogError(pre, TargetType.RegistryKey, targetPath, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
             return Logger.LogError(pre, TargetType.RegistryKey, targetPath, ex.Message, whatIf);
-        } 
+        } finally {
+            ancestor?.Dispose();
+        }
     }
     public static RemediationActionResult SubRemediate(RegKey parentKey, string branchName, RemediationPreAction pre, out RegKey? key, bool whatIf) {
         key = parentKey;
         try {
-            return CreateRegistryPath(key, branchName, pre, out key, whatIf);
+            return CreateRegistryPath(parentKey, branchName, pre, out key, whatIf);
         } catch (RegKeyException rkEx) {
             return Logger.LogError(pre, TargetType.RegistryKey, parentKey.FullName + '\\' + branchName, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
@@ -85,8 +93,8 @@ internal class RegistryKeyRemediator : IRemediator {
                 $"Expected {nameof(logEntry)}.After to be of type RegistryKeyValue, was {current.GetType().Name}"
             );
         }
-        RegKey? parent;
-        RegKey? target;
+        RegKey? parent = null;
+        RegKey? target = null;
         try {
             parent = RegKey.ClosestExtantAncestor(newVal.Target, targetHost);
             if (parent is null) {
@@ -104,6 +112,9 @@ internal class RegistryKeyRemediator : IRemediator {
             return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, rkEx.ReasonToString(), false);
         } catch (Exception ex) {
             return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, ex.Message, false);
+        } finally {
+            parent?.Dispose();
+            target?.Dispose();
         }
     }
     public static RemediationActionResult CreateRegistryPath(RegKey existingParent, string targetPath, RemediationPreAction preAction, out RegKey? key, bool whatIf) {

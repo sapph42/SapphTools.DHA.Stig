@@ -43,6 +43,8 @@ internal partial class RegistryValueRemediator : IRemediator {
                 return SubRemediate(pre, before, key, val, whatIf);
             } catch (Exception ex) {
                 return Logger.LogError(pre, TargetType.RegistryValue, val.Target, ex.Message, false);
+            } finally {
+                key.Dispose();
             }
         }
         return createRes;
@@ -89,6 +91,8 @@ internal partial class RegistryValueRemediator : IRemediator {
                     return SubRemediate(pre, before, key, oldVal, false);
                 } catch (Exception ex) {
                     return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, ex.Message, false);
+                } finally {
+                    key.Dispose();
                 }
             } catch (RegKeyException rkEx) when (rkEx.Reason == RegKeyExceptionReason.NoSuchKey) {
                 try {
