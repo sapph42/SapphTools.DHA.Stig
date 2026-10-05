@@ -85,12 +85,18 @@ internal class RegistryKeyRemediator : IRemediator {
                 $"Expected {nameof(logEntry)}.After to be of type RegistryKeyValue, was {current.GetType().Name}"
             );
         }
+        RegKey? parent;
+        RegKey? target;
         try {
-            RegKey? key = RegKey.ClosestExtantAncestor(newVal.Target, targetHost);
-            if (key is null) {
-                return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, "Could not find any valid ancestor keys", false);
+            parent = RegKey.ClosestExtantAncestor(newVal.Target, targetHost);
+            target = parent?.OpenSubKey(newVal.Name);
+            if (parent is null || !parent.FullName.Equals(newVal.Target, StringComparison.OrdinalIgnoreCase)) {
+                return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, "Could not find parent key", false);
             }
-            return TryRemoveRegistryKey(key, newVal.Target, pre);
+            if (target is null) {
+                return Logger.LogNoAction(pre, TargetType.RegistryKey, parent.FullName + '\\' + newVal.Name, null);
+            }
+            return TryRemoveRegistryKey(target, pre);
         } catch (RegKeyException rkEx) {
             return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, rkEx.ReasonToString(), false);
         } catch (Exception ex) {
@@ -141,41 +147,35 @@ internal class RegistryKeyRemediator : IRemediator {
             return final!;
         }
     }
-    private static RemediationActionResult TryRemoveRegistryKey(RegKey key, string path, RemediationPreAction preAction) {
+    private static RemediationActionResult TryRemoveRegistryKey(RegKey key, RemediationPreAction preAction) {
         RegistryKeyValue before = new() {
             Target = RegKey.SplitPath(key.FullName, true) ?? string.Empty,
             Name = key.Name,
         };
-        if (key.FullName.Equals(path, StringComparison.OrdinalIgnoreCase)) {
-            using (key) {
-                if (key.SubKeyCount + key.ValueCount > 0) {
-                    return Logger.LogError(
-                        preAction,
-                        TargetType.RegistryKey,
-                        path,
-                        "Cannot rollback a non-empty key.",
-                        whatIf: false
-                    );
-                }
-                try {
-                    key.Delete(false);
-                    return Logger.LogSuccess(
-                        preAction,
-                        TargetType.RegistryKey,
-                        path,
-                        RollbackCapability.NotApplicable,
-                        before,
-                        null);
-                } catch (RegKeyException rkEx) {
-                    return Logger.LogError(preAction, TargetType.RegistryKey, path, rkEx.ReasonToString(), false);
-                } catch (Exception ex) {
-                    return Logger.LogError(preAction, TargetType.RegistryKey, path, ex.Message, false);
-                }
+        using (key) {
+            if (key.SubKeyCount + key.ValueCount > 0) {
+                return Logger.LogError(
+                    preAction,
+                    TargetType.RegistryKey,
+                    key.FullName,
+                    "Cannot rollback a non-empty key.",
+                    whatIf: false
+                );
             }
-        } else if (key.FullName.Contains(path, StringComparison.OrdinalIgnoreCase)) {
-            return Logger.LogNoAction(preAction, TargetType.RegistryKey, path, null);
-        } else {
-            return Logger.LogError(preAction, TargetType.RegistryKey, path, "Attempted a rollback of Registry Key creation with an indirect target", false);
+            try {
+                key.Delete(false);
+                return Logger.LogSuccess(
+                    preAction,
+                    TargetType.RegistryKey,
+                    key.FullName,
+                    RollbackCapability.NotApplicable,
+                    before,
+                    null);
+            } catch (RegKeyException rkEx) {
+                return Logger.LogError(preAction, TargetType.RegistryKey, key.FullName, rkEx.ReasonToString(), false);
+            } catch (Exception ex) {
+                return Logger.LogError(preAction, TargetType.RegistryKey, key.FullName, ex.Message, false);
+            }
         }
     }
 }
