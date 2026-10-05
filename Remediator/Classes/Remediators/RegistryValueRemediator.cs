@@ -40,7 +40,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                     Data = key.GetValue(val.Name, val.Kind),
                     Kind = val.Kind
                 };
-                return SubRemediate(pre, before, key, val, false);
+                return SubRemediate(pre, before, key, val, whatIf);
             } catch (Exception ex) {
                 return Logger.LogError(pre, TargetType.RegistryValue, val.Target, ex.Message, false);
             }
