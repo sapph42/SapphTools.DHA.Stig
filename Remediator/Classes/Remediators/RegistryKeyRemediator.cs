@@ -89,10 +89,13 @@ internal class RegistryKeyRemediator : IRemediator {
         RegKey? target;
         try {
             parent = RegKey.ClosestExtantAncestor(newVal.Target, targetHost);
-            target = parent?.OpenSubKey(newVal.Name);
-            if (parent is null || !parent.FullName.Equals(newVal.Target, StringComparison.OrdinalIgnoreCase)) {
+            if (parent is null) {
                 return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, "Could not find parent key", false);
             }
+            if (!parent.FullName.Equals(newVal.Target, StringComparison.OrdinalIgnoreCase)) {
+                return Logger.LogNoAction(pre, TargetType.RegistryKey, newVal.Target, null);
+            }
+            target = parent.OpenSubKey(newVal.Name);
             if (target is null) {
                 return Logger.LogNoAction(pre, TargetType.RegistryKey, parent.FullName + '\\' + newVal.Name, null);
             }
