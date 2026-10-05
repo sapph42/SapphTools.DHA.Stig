@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
@@ -32,10 +33,10 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         if (!createRes.IsSuccess || targetKey is null) {
             return createRes;
         }
-        IEnumerable<RegKey> keys = [targetKey];
-        IEnumerable<RegKey> firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
-        IEnumerable<RegKey> secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, whatIf);
-        IEnumerable<RegKey> thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
+        List<RegKey> keys = [targetKey];
+        List<RegKey> firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
+        List<RegKey> secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, whatIf);
+        List<RegKey> thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
         RemediationActionResult? res = null;
         foreach (RegKey key in thirdRoundKeys) {
             object? currentVal = key.GetValue(val.Name, val.Kind);
@@ -104,41 +105,45 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         };
         return RegistryValueRemediator.Rollback(remBatch, ruleBatch, ephemiral);
     }
-    private static IEnumerable<RegKey> ExpandMatchingSubKeys(IEnumerable<RegKey>? keys, Regex? pattern) {
+    private static List<RegKey> ExpandMatchingSubKeys(IEnumerable<RegKey>? keys, Regex? pattern) {
+        List<RegKey> returnList = [];
         if (keys is null) {
-            yield break;
+            return returnList;
         }
         if (pattern is null) {
             foreach (RegKey key in keys) {
-                yield return key;
+                returnList.Add(key);
             }
-            yield break;
+            return returnList;
         }
         foreach (RegKey key in keys) {
             foreach (RegKey subKey in key.GetSubKeys(pattern)) {
-                yield return subKey;
+                returnList.Add(subKey);
             }
         }
+        return returnList;
     }
-    private static IEnumerable<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, bool whatIf = true) {
+    private static List<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, bool whatIf = true) {
+        List<RegKey> returnList = [];
         if (keys is null) {
-            yield break;
+            return returnList;
         }
         if (string.IsNullOrWhiteSpace(subPath)) {
             foreach (RegKey key in keys) {
-                yield return key;
+                returnList.Add(key);
             }
-            yield break;
+            return returnList;
         }
         foreach (RegKey key in keys) {
             if (key.OpenSubKey(subPath) is RegKey subKey) {
-                yield return subKey;
+                returnList.Add(subKey);
             } else {
                 if (RegistryKeyRemediator.SubRemediate(key, subPath, preAction, out RegKey? newKey, whatIf).IsSuccess && newKey is not null) {
-                    yield return newKey;
+                    returnList.Add(newKey);
                 }
             }
         }
+        return returnList;
     }
     private static RegistryValueValue ResolveBefore(RegKey key, RegistryValuePatternValue val) {
         object? currentVal = key.GetValue(val.Name);
