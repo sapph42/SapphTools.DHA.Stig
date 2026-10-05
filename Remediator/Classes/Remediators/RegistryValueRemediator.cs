@@ -38,7 +38,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                     Target = val.Target,
                     Name = val.Name,
                     Data = key.GetValue(val.Name, val.Kind),
-                    Kind = val.Kind
+                    Kind = key.GetValueKind(val.Name)
                 };
                 return SubRemediate(pre, before, key, val, whatIf);
             } catch (Exception ex) {
