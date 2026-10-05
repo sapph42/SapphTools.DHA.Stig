@@ -304,6 +304,8 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
                 throw new RegKeyException(RegKeyExceptionReason.NoSuchKey);
             }
             return targetKey;
+        } catch (RegKeyException) {
+            throw;
         } catch (Exception ex) {
             throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
         }
