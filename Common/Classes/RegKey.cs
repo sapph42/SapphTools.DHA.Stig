@@ -299,8 +299,10 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         string branch = path[key.FullName.Length..]
             .TrimStart('\\')
             .Split('\\', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)[0];
+        RegKey child;
         try {
-            return key.CreateSubKey(branch);
+            child = key.CreateSubKey(branch);
+            return CreateKeyInternal(child, path);
         } catch (RegKeyException) {
             throw;
         } catch (Exception ex) { 
