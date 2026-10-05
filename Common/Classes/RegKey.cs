@@ -102,6 +102,9 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
             }
         }
     }
+    public object? GetValue(string? name) {
+        return _key.GetValue(name);
+    }
     public object? GetValue(string? name, RegistryValueKind kind) {
         static int? SafeCastToInt(object? val) {
             if (val is null) return null;
