@@ -103,13 +103,30 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         }
     }
     public object? GetValue(string? name, RegistryValueKind kind) {
+        static int? SafeCastToInt(object? val) {
+            if (val is null) return null;
+            try {
+                return (int)val;
+            } catch {
+                return null;
+            }
+        }
+        static long? SafeCastToInt64(object? val) {
+            if (val is null)
+                return null;
+            try {
+                return (long)val;
+            } catch {
+                return null;
+            }
+        }
         return kind switch {
             RegistryValueKind.String => _key.GetValue(name) as string,
             RegistryValueKind.ExpandString => _key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames) as string,
             RegistryValueKind.Binary => _key.GetValue(name) as byte[],
-            RegistryValueKind.DWord => (int)(_key.GetValue(name) ?? 0),
+            RegistryValueKind.DWord => SafeCastToInt(_key.GetValue(name)),
             RegistryValueKind.MultiString => _key.GetValue(name) as string[],
-            RegistryValueKind.QWord => (long)(_key.GetValue(name) ?? 0),
+            RegistryValueKind.QWord => SafeCastToInt64(_key.GetValue(name)),
             _ => _key.GetValue(name),
         };
     }
