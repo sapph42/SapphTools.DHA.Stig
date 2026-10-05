@@ -116,7 +116,7 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
             yield break;
         }
         foreach (RegKey key in keys) {
-            if (key.OpenKey(subPath) is RegKey subKey) {
+            if (key.OpenSubKey(subPath) is RegKey subKey) {
                 yield return subKey;
             } else {
                 if (RegistryKeyRemediator.SubRemediate(key, subPath, preAction, out RegKey? newKey, whatIf).IsSuccess && newKey is not null) {
