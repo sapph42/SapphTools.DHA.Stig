@@ -152,7 +152,7 @@ public partial class Logs : Form {
         DataView rollbackOrder = new(
             RollbackTargets,
             RowFilter: null,
-            Sort: "RemediationBatch ASC, RuleBatch ASC, SettingBatch ASC",
+            Sort: "RemediationBatch ASC, RuleBatch ASC, SettingBatch ASC, ActionNo DESC",
             RowState: DataViewRowState.CurrentRows
         );
         foreach (DataRowView row in rollbackOrder) {
