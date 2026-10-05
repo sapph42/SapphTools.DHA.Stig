@@ -90,7 +90,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                 } catch (Exception ex) {
                     return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, ex.Message, false);
                 }
-            } catch {
+            } catch (RegKeyException rkEx) when (rkEx.Reason == RegKeyExceptionReason.NoSuchKey) {
                 try {
                     if (oldVal.Data is null) {
                         return Logger.LogNoAction(
