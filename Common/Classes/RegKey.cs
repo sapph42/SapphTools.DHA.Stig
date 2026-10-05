@@ -36,7 +36,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         });
 
     }
-    public RegKey(string path, string? computerName = null) : this(ResolvePath(path, computerName)) { }
+    public RegKey(string path, string? computerName = null) : this(ResolvePath(path, computerName), computerName) { }
 
     public RegKey CreateSubKey(string name) {
         try {
