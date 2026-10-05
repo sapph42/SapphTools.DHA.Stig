@@ -132,7 +132,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                     );
                 }
                 if (whatIf) {
-                    return Logger.LogWhatIf(preAction, TargetType.RegistryKey, key.FullName, RollbackCapability.NotApplicable, before, null);
+                    return Logger.LogWhatIf(preAction, TargetType.RegistryValue, key.FullName, RollbackCapability.NotApplicable, before, null);
                 }
                 try {
                     key.DeleteValue(value.Name, false);
@@ -159,7 +159,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                 }
                 try {
                     if (whatIf) {
-                        return Logger.LogWhatIf(preAction, TargetType.RegistryKey, key.FullName, RollbackCapability.NotApplicable, before, null);
+                        return Logger.LogWhatIf(preAction, TargetType.RegistryValue, key.FullName, RollbackCapability.NotApplicable, before, null);
                     }
                     if (currentState.Data is not null && !value.Overwrite) {
                         return Logger.LogNoAction(
