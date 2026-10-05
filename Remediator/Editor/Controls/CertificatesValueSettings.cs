@@ -2,11 +2,11 @@
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Controls;
 public partial class CertificatesValueSettings : ValueSettings, IValueSettings<CertificatesValue> {
-    private IArtifact _artifact;
+    private IArtifact? _artifact;
     public required string RuleId { get; set; }
     public override bool IsValid =>
         !string.IsNullOrWhiteSpace(Target.Text) &&
-        ArtifactsList.Items.Count > 0;
+        _artifact is not null;
     public override CertificatesValue? Value {
         get {
             if (!IsValid) {
@@ -14,7 +14,7 @@ public partial class CertificatesValueSettings : ValueSettings, IValueSettings<C
             }
             return new() {
                 Target = Target.Text,
-                Artifact = _artifact
+                Artifact = _artifact!
             };
         }
     }
@@ -41,9 +41,6 @@ public partial class CertificatesValueSettings : ValueSettings, IValueSettings<C
     }
 
     private void Browse_Click(object sender, EventArgs e) {
-        if (ArtifactsList.SelectedItem is null) {
-            return;
-        }
         OpenFileDialog ofd = new() {
             InitialDirectory = ArtifactFirstBuild.BasePath,
             Filter = "Serialized Certificate Store (*.sst)|*.sst",

@@ -439,12 +439,13 @@
           "Data": {
             "Action": "RegistryValuePattern",
             "Target": "HKEY_USERS",
-            "TargetPattern": "^S-1-5-21-(?:\\d+-){3}\\d+$",
-            "Path": "Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cEUTLDownload",
+            "TargetPattern": "^S-1-5-21-(?:\\d\u002B-){3}\\d\u002B$",
+            "SubPath": null,
             "PathPattern": null,
             "Name": "bLoadSettingsFromURL",
             "Data": 0,
             "Kind": "DWord",
+            "ResolvedTarget": null,
             "Overwrite": true
           }
         }
@@ -461,12 +462,13 @@
           "Data": {
             "Action": "RegistryValuePattern",
             "Target": "HKEY_USERS",
-            "TargetPattern": "^S-1-5-21-(?:\\d+-){3}\\d+$",
-            "Path": "Software\\Adobe\\Acrobat Reader\\DC\\Security\\cDigSig\\cAdobeDownload",
+            "TargetPattern": "^S-1-5-21-(?:\\d\u002B-){3}\\d\u002B$",
+            "SubPath": null,
             "PathPattern": null,
             "Name": "bLoadSettingsFromURL",
             "Data": 0,
             "Kind": "DWord",
+            "ResolvedTarget": null,
             "Overwrite": true
           }
         }
@@ -483,12 +485,13 @@
           "Data": {
             "Action": "RegistryValuePattern",
             "Target": "HKEY_USERS",
-            "TargetPattern": "^S-1-5-21-(?:\\d+-){3}\\d+$",
-            "Path": "Software\\Adobe\\Acrobat Reader\\DC\\AVGeneral",
+            "TargetPattern": "^S-1-5-21-(?:\\d\u002B-){3}\\d\u002B$",
+            "SubPath": null,
             "PathPattern": null,
             "Name": "bFIPSMode",
             "Data": 1,
             "Kind": "DWord",
+            "ResolvedTarget": null,
             "Overwrite": true
           }
         }
@@ -1009,7 +1012,7 @@
     },
     {
       "RuleId": "1063970",
-      "Description": "Site tracking of a user's location must be disabled.",
+      "Description": "Site tracking of a user\u0027s location must be disabled.",
       "Settings": [
         {
           "Order": 0,
@@ -1161,7 +1164,7 @@
     },
     {
       "RuleId": "1063986",
-      "Description": "A website's ability to query for payment methods must be disabled.",
+      "Description": "A website\u0027s ability to query for payment methods must be disabled.",
       "Settings": [
         {
           "Order": 0,
@@ -1356,7 +1359,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
@@ -1375,7 +1378,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10",
@@ -2129,13 +2132,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeMachineAccountPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -2149,13 +2152,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyRemoteInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -2169,13 +2172,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -2246,11 +2249,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -2794,11 +2797,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeTrustedCredManAccessPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -2810,11 +2813,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeTcbPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -2826,13 +2829,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeBackupPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -2846,13 +2849,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePagefilePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -2866,11 +2869,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateTokenPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -2882,22 +2885,22 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateGlobalPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\LOCAL SERVICE"
+                "Sid": "LS"
               },
               {
-                "Sid": "NT AUTHORITY\\NETWORK SERVICE"
+                "Sid": "NS"
               },
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               },
               {
-                "Sid": "NT AUTHORITY\\SERVICE"
+                "Sid": "SU"
               }
             ]
           }
@@ -2911,11 +2914,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePermanentPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -2927,13 +2930,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDebugPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -2947,13 +2950,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteShutdownPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -2967,16 +2970,16 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeAuditPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\LOCAL SERVICE"
+                "Sid": "LS"
               },
               {
-                "Sid": "NT AUTHORITY\\NETWORK SERVICE"
+                "Sid": "NS"
               }
             ]
           }
@@ -2990,22 +2993,22 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeImpersonatePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\LOCAL SERVICE"
+                "Sid": "LS"
               },
               {
-                "Sid": "NT AUTHORITY\\NETWORK SERVICE"
+                "Sid": "NS"
               },
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               },
               {
-                "Sid": "NT AUTHORITY\\SERVICE"
+                "Sid": "SU"
               }
             ]
           }
@@ -3019,13 +3022,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeIncreaseBasePriorityPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3039,13 +3042,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeLoadDriverPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3059,11 +3062,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeLockMemoryPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -3075,13 +3078,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeSecurityPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3095,13 +3098,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeSystemEnvironmentPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3115,13 +3118,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeManageVolumePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3135,13 +3138,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeProfileSingleProcessPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3155,13 +3158,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeRestorePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -3175,13 +3178,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeTakeOwnershipPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4006,13 +4009,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeMachineAccountPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4026,13 +4029,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4046,13 +4049,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyNetworkLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -4066,13 +4069,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyBatchLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -4086,11 +4089,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyServiceLogonRight",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -4102,13 +4105,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -4122,13 +4125,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyRemoteInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -4142,13 +4145,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4713,7 +4716,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa",
@@ -4827,11 +4830,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeTrustedCredManAccessPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -4843,11 +4846,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeTcbPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -4859,13 +4862,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4879,13 +4882,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeBackupPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4899,13 +4902,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePagefilePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -4919,11 +4922,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateTokenPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -4935,22 +4938,22 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreateGlobalPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\LOCAL SERVICE"
+                "Sid": "LS"
               },
               {
-                "Sid": "NT AUTHORITY\\NETWORK SERVICE"
+                "Sid": "NS"
               },
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               },
               {
-                "Sid": "NT AUTHORITY\\SERVICE"
+                "Sid": "SU"
               }
             ]
           }
@@ -4964,11 +4967,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeCreatePermanentPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -4980,13 +4983,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDebugPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5000,13 +5003,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteShutdownPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5020,16 +5023,16 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeAuditPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\LOCAL SERVICE"
+                "Sid": "LS"
               },
               {
-                "Sid": "NT AUTHORITY\\NETWORK SERVICE"
+                "Sid": "NS"
               }
             ]
           }
@@ -5043,22 +5046,22 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeImpersonatePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\LOCAL SERVICE"
+                "Sid": "LS"
               },
               {
-                "Sid": "NT AUTHORITY\\NETWORK SERVICE"
+                "Sid": "NS"
               },
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               },
               {
-                "Sid": "NT AUTHORITY\\SERVICE"
+                "Sid": "SU"
               }
             ]
           }
@@ -5072,13 +5075,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeIncreaseBasePriorityPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5092,13 +5095,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeLoadDriverPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5112,11 +5115,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeLockMemoryPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -5128,13 +5131,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeSecurityPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5148,13 +5151,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeSystemEnvironmentPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5168,13 +5171,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeManageVolumePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5188,13 +5191,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeProfileSingleProcessPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5208,13 +5211,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeRestorePrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5228,13 +5231,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeTakeOwnershipPrivilege",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5248,7 +5251,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters",
@@ -5267,7 +5270,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10",
@@ -5550,12 +5553,13 @@
           "Data": {
             "Action": "RegistryValuePattern",
             "Target": "HKEY_USERS",
-            "TargetPattern": "^S-1-5-21-(?:\\d+-){3}\\d+$",
-            "Path": "Software\\Microsoft\\Windows\\CurrentVersion\\WinTrust\\Trust Providers\\Software Publishing",
+            "TargetPattern": "^S-1-5-21-(?:\\d\u002B-){3}\\d\u002B$",
+            "SubPath": null,
             "PathPattern": null,
             "Name": "State",
             "Data": 146432,
             "Kind": "DWord",
+            "ResolvedTarget": null,
             "Overwrite": true
           }
         }
@@ -5568,7 +5572,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\.NETFramework",
@@ -5581,7 +5585,7 @@
         {
           "Order": 1,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework",
@@ -5600,7 +5604,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319",
@@ -5613,7 +5617,7 @@
         {
           "Order": 1,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework\\v4.0.30319",
@@ -5626,7 +5630,7 @@
         {
           "Order": 2,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319",
@@ -5639,7 +5643,7 @@
         {
           "Order": 3,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework\\v4.0.30319",
@@ -5710,21 +5714,21 @@
     },
     {
       "RuleId": "1071335",
-      "Description": "The \\'Access this computer from the network\\' user right must only be assigned to the Administrators and Authenticated Users groups on member servers.",
+      "Description": "The \\\u0027Access this computer from the network\\\u0027 user right must only be assigned to the Administrators and Authenticated Users groups on member servers.",
       "Settings": [
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeNetworkLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\Authenticated Users"
+                "Sid": "AU"
               },
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5733,16 +5737,16 @@
     },
     {
       "RuleId": "1071341",
-      "Description": "The \\'Enable computer and user accounts to be trusted for delegation\\' user right must not be assigned to any groups or accounts on member servers.",
+      "Description": "The \\\u0027Enable computer and user accounts to be trusted for delegation\\\u0027 user right must not be assigned to any groups or accounts on member servers.",
       "Settings": [
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeEnableDelegationPrivilege",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -5862,13 +5866,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeRemoteInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -5882,13 +5886,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyNetworkLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -5902,13 +5906,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyBatchLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -5922,11 +5926,11 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyServiceLogonRight",
-            "AccountNames": []
+            "Target": []
           }
         }
       ]
@@ -5938,13 +5942,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeDenyInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Guests"
+                "Sid": "BG"
               }
             ]
           }
@@ -5958,16 +5962,16 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeNetworkLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "NT AUTHORITY\\Authenticated Users"
+                "Sid": "AU"
               },
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -6019,7 +6023,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa",
@@ -6038,13 +6042,13 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "SeRight",
             "Target": "SeInteractiveLogonRight",
-            "AccountNames": [
+            "Target": [
               {
-                "Sid": "BUILTIN\\Administrators"
+                "Sid": "BA"
               }
             ]
           }
@@ -6058,7 +6062,7 @@
         {
           "Order": 0,
           "RequiredContext": "Administrator",
-          "Dangerous": true,
+          "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings",
@@ -6100,12 +6104,13 @@
           "Data": {
             "Action": "RegistryValuePattern",
             "Target": "HKEY_USERS",
-            "TargetPattern": "^S-1-5-21-(?:\\d+-){3}\\d+$",
-            "Path": "Software\\Microsoft\\Windows\\CurrentVersion\\WinTrust\\Trust Providers\\Software Publishing",
+            "TargetPattern": "^S-1-5-21-(?:\\d\u002B-){3}\\d\u002B$",
+            "SubPath": null,
             "PathPattern": null,
             "Name": "State",
             "Data": 146432,
             "Kind": "DWord",
+            "ResolvedTarget": null,
             "Overwrite": true
           }
         }
@@ -8526,7 +8531,7 @@
     },
     {
       "RuleId": "1073514",
-      "Description": "The Windows Server 2022 security event log size must be configured to a value that holds at least one week's worth of audit records.",
+      "Description": "The Windows Server 2022 security event log size must be configured to a value that holds at least one week\u0027s worth of audit records.",
       "Settings": [
         {
           "Order": 0,
@@ -8539,6 +8544,26 @@
             "Data": 5120000,
             "Kind": "DWord",
             "Overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "RuleId": "00042000",
+      "Description": "Test Rule Only",
+      "Settings": [
+        {
+          "Order": 0,
+          "RequiredContext": "None",
+          "Dangerous": true,
+          "Data": {
+            "action": "FileSystemAcl",
+            "sddl": {
+              "sddlString": "O:S-1-5-21-3923692831-1208425469-611280938-9209425D:(A;CIOI;FA;;;S-1-5-18)(A;CIOI;FA;;;S-1-5-32-544)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9209425)(A;CIOI;FA;;;S-1-5-21-3923692831-1208425469-611280938-9822295)",
+              "type": "File"
+            },
+            "target": "C:\\Users\\n\\StigTest",
+            "targetString": "C:\\Users\\n\\StigTest"
           }
         }
       ]

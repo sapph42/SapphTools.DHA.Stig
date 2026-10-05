@@ -100,9 +100,7 @@
         private Label label2;
         private ErrorProvider ErrorProvider;
         private TextBox Target;
-        private Button Remove;
         private Button Browse;
         private TextBox ArtifactPath;
-        private ListBox ArtifactsList;
     }
 }

@@ -1,213 +1,186 @@
 ﻿using Microsoft.Win32;
 using SapphTools.DHA.Stig.Common.Interfaces;
 using System.Diagnostics;
-using System.IO;
-using System.Security;
-using static SapphTools.DHA.Stig.Remediator.Classes.RegistryCommon;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal partial class RegistryValueRemediator : IRemediator {
     private RegistryValueRemediator() { }
-    public static void Remediate(Rule rule, int settingIndex, Guid batch, string? computerName, bool whatIf = true) {
+    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
         Debug.WriteLine($"Starting remediation of {rule.RuleId} on {computerName}");
         if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            throw new ArgumentException($"No such setting exists at order index {settingIndex}");
+            return new ArgumentException($"No such setting exists at order index {settingIndex}");
         }
         Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
         IValue data = setting.Data;
         if (data is not RegistryValueValue val) {
-            throw new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryValueValue, was {data.GetType().Name}");
+            return new ArgumentException(
+                $"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryValueValue, was {data.GetType().Name}"
+            );
         }
+        Guid settingBatch = Guid.NewGuid();
         string targetHost = computerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
-            RemediationBatch = batch,
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
             RuleId = rule.RuleId,
             Description = rule.Description,
             ComputerName = targetHost,
-            SettingIndex = settingIndex
+            SettingIndex = settingIndex,
+            Source = ActionSource.Catalog
         };
-        if (GetHive(val.Target) is not RegistryHive hive) {
-            Logger.LogError(pre, TargetType.RegistryKey, val.Target, "Key path was not well-formed.", whatIf);
-            return;
-        }
-        if (TryGetHiveKey(pre, hive, out RegistryKey? hiveKey, whatIf) && CreateRegistryKey(hiveKey, val.Target, pre, false, whatIf)) {
-            SetValue(pre, val, whatIf);
-        }
-    }
-    internal static bool CreateRegistryKey(RegistryKey hive, string path, RemediationPreAction preAction, bool parsed = false, bool whatIf = true) {
-        if (!parsed) {
-            string? p = GetPath(path);
-            if (p is null) {
-                Logger.LogError(preAction, TargetType.RegistryKey, path, "Key path was not well-formed.", whatIf);
-                return false;
-            }
-            path = p;
-        }
-        string? parent = SplitPath(path, parent:true);
-        string? leaf = SplitPath(path, parent:false);
-        if (string.IsNullOrEmpty(parent) || string.IsNullOrEmpty(leaf)) {
-            Logger.LogError(preAction, TargetType.RegistryKey, path, "Attempted to create null key", whatIf);
-            return false;
-        }
-        try {
-            using RegistryKey? key = hive.OpenSubKey(path);
-            if (key is not null) {
-                using RegistryKey? parentKey = hive.OpenSubKey(parent!, true);
-                Logger.LogNoAction(
-                    preAction,
-                    TargetType.RegistryKey,
-                    path,
-                    new RegistryKeyValue() {
-                        Target = parentKey!.ToString(),
-                        Name = leaf
-                    }
-                );
-                return true;
-            }
-        } catch (Exception ex) {
-            Logger.LogError(preAction, TargetType.RegistryKey, path, $"Exception thrown opening key.: {ex.Message}", whatIf);
-            return false;
-        }
-        try {
-            RegistryKey? parentKey = hive.OpenSubKey(parent, true);
-            if (parentKey is null) {
-                if (!CreateRegistryKey(hive, parent, preAction, true, whatIf)) {
-                    return false;
-                }
-                parentKey = hive.OpenSubKey(parent, true);
-                if (parentKey is null) {
-                    Logger.LogError(preAction, TargetType.RegistryKey, parent, "Key did not exist after apparently successful creation.", whatIf);
-                    return false;
-                }
-            }
-            RegistryKey? leafKey = null;
-            if (whatIf) {
-                Logger.LogWhatIf(
-                    preAction,
-                    TargetType.RegistryKey,
-                    parent,
-                    RollbackCapability.NotApplicable,
-                    null,
-                    new RegistryKeyValue() {
-                        Target = parentKey!.ToString(),
-                        Name = leaf
-                    }
-                );
-                return true;
-            }
+        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? key, whatIf);
+        if (createRes.IsSuccess && key is not null) {
             try {
-                leafKey = parentKey.CreateSubKey(leaf);
-                if (leafKey is null) {
-                    Logger.LogError(preAction, TargetType.RegistryKey, leaf, "Failed to create key", whatIf);
-                    return false;
-                }
-                Logger.LogSuccess(
-                    preAction,
-                    TargetType.RegistryKey,
-                    parent,
-                    RollbackCapability.Automatic,
-                    null,
-                    new RegistryKeyValue() { 
-                        Target = parentKey.ToString(),
-                        Name = leaf
-                    }
-                );
-                return true;
-            } catch {
-                Logger.LogError(preAction, TargetType.RegistryKey, leaf, "Failed to create key", whatIf);
-                return false;
-            } finally {
-                parentKey?.Dispose();
-                leafKey?.Dispose();
+                RegistryValueValue before = new() {
+                    Target = val.Target,
+                    Name = val.Name,
+                    Data = key.GetValue(val.Name, val.Kind),
+                    Kind = val.Kind
+                };
+                return SubRemediate(pre, before, key, val, false);
+            } catch (Exception ex) {
+                return Logger.LogError(pre, TargetType.RegistryValue, val.Target, ex.Message, false);
             }
-        } catch (SecurityException) {
-            Logger.LogError(preAction, TargetType.RegistryKey, parent, "Access denied attempting to open parent key", whatIf);
-            return false;
+        }
+        return createRes;
+    }
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+        Debug.WriteLine($"Starting rollback of {logEntry.RuleId} on {logEntry.ComputerName}");
+        if (logEntry.After is null) {
+            return new ArgumentException("Cannot rollback a log entry with a null After property.");
+        }
+        IValue? original = logEntry.Before;
+        IValue current = logEntry.After;
+        if (original is not RegistryValueValue oldVal) {
+            return new ArgumentException(
+                $"Expected {nameof(logEntry)}.Before to be of type RegistryValueValue, was {original?.GetType().Name}"
+            );
+        }
+        if (current is not RegistryValueValue newVal) {
+            return new ArgumentException(
+                $"Expected {nameof(logEntry)}.After to be of type RegistryValueValue, was {current.GetType().Name}"
+            );
+        }
+        Guid settingBatch = Guid.NewGuid();
+        string targetHost = logEntry.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new() {
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
+            RuleId = logEntry.RuleId,
+            Description = logEntry.Description,
+            ComputerName = targetHost,
+            SettingIndex = logEntry.SettingIndex,
+            Source = ActionSource.Rollback,
+        };
+        RegKey? key = new(newVal.Target, targetHost);
+        if (key is null) {
+            if (oldVal.Data is null) {
+                return Logger.LogNoAction(
+                    pre,
+                    TargetType.RegistryValue,
+                    newVal.Target,
+                    oldVal
+                );
+            } else {
+                return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, "Parent key no longer exists", false);
+            }
+        } else {
+            try {
+                RegistryValueValue before = new() {
+                    Target = newVal.Target,
+                    Name = newVal.Name,
+                    Data = key.GetValue(newVal.Name, newVal.Kind),
+                    Kind = newVal.Kind
+                };
+                return SubRemediate(pre, before, key, newVal, false);
+            } catch (Exception ex) {
+                return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, ex.Message, false);
+            }
         }
     }
-    private static bool CreateRegistryValue(RegistryKey parent, RegistryValueValue value, RemediationPreAction preAction, bool whatIf = true) {
-        object? currentVal = parent.GetValue(value.Name);
-        RegistryValueValue? before = null;
-        if (currentVal is not null) {
-            RegistryValueKind currKind = parent.GetValueKind(value.Name);
-            before = new() {
-                Target = value.Target,
-                Name = value.Name,
-                Data = currentVal,
-                Kind = currKind,
-                Overwrite = value.Overwrite
-            };
-        } 
-        if (before is not null && !value.Overwrite) {
-            Logger.LogNoAction(
-                preAction,
-                TargetType.RegistryValue,
-                parent.ToString(),
-                before
-            );
-            return true;
-        }
-        if (before is not null && before.Data!.Equals(value.Data) && before.Kind.Equals(value.Kind)) {
-            Logger.LogNoAction(
-                preAction,
-                TargetType.RegistryValue,
-                parent.ToString(),
-                before
-            );
-            return true;
-        }
-        if (whatIf) {
-            Logger.LogWhatIf(
-                preAction,
-                TargetType.RegistryValue,
-                parent.ToString(),
-                RollbackCapability.NotApplicable,
-                before,
-                new RegistryValueValue() {
-                    Target = parent.ToString(),
-                    Name = value.Name,
-                    Data = value.Data,
-                    Kind = value.Kind
-                }
-            );
-            return true;
-        }
+    public static RemediationActionResult SubRemediate(RemediationPreAction preAction, IValue before, RegKey key, RegistryValueValue value, bool whatIf = true) {
         try {
-            parent.SetValue(value.Name, value.Data!, value.Kind);
-            Logger.LogSuccess(
-                preAction,
-                TargetType.RegistryValue,
-                parent.ToString(),
-                RollbackCapability.Automatic,
-                before,
-                new RegistryValueValue() {
-                    Target = parent.ToString(),
-                    Name = value.Name,
-                    Data = value.Data,
-                    Kind = value.Kind
+            RegistryValueValue? currentState;
+            if (before is RegistryValueValue standard) {
+                currentState = standard;
+            } else if (before is RegistryValuePatternValue patterned && patterned.ResolvedTarget is RegistryValueValue val) {
+                currentState = val;
+            } else {
+                return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, "Invalid before value provided", whatIf);
+            }
+            if (value.Data is null) {
+                if (currentState.Data is null) {
+                    return Logger.LogNoAction(
+                        preAction,
+                        TargetType.RegistryValue,
+                        key.FullName,
+                        before
+                    );
                 }
-            );
-            return true;
+                if (whatIf) {
+                    return Logger.LogWhatIf(preAction, TargetType.RegistryKey, key.FullName, RollbackCapability.NotApplicable, before, null);
+                }
+                try {
+                    key.DeleteValue(value.Name, false);
+                    RegistryValueValue after = new() {
+                        Target = value.Target,
+                        Name = value.Name,
+                        Data = key.GetValue(value.Name, RegistryValueKind.None),
+                        Kind = value.Kind
+                    };
+                    return Logger.LogSuccess(preAction, TargetType.RegistryValue, value.Target, RollbackCapability.Automatic, before, after);
+                } catch (RegKeyException rkEx) {
+                    return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, rkEx.ReasonToString(), whatIf);
+                } catch (Exception ex) {
+                    return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
+                } finally {
+                    preAction.ActionNumber++;
+                }
+            } else {
+                if (value.Data.Equals(currentState.Data)) {
+                    return Logger.LogNoAction(
+                        preAction,
+                        TargetType.RegistryValue,
+                        key.FullName,
+                        before
+                    );
+                }
+                try {
+                    if (whatIf) {
+                        return Logger.LogWhatIf(preAction, TargetType.RegistryKey, key.FullName, RollbackCapability.NotApplicable, before, null);
+                    }
+                    if (currentState.Data is not null && !value.Overwrite) {
+                        return Logger.LogNoAction(
+                            preAction,
+                            TargetType.RegistryValue,
+                            key.FullName,
+                            before
+                        );
+                    }
+                    key.SetValue(value.Name, value.Data, value.Kind);
+                    RegistryValueValue after = new() {
+                        Target = value.Target,
+                        Name = value.Name,
+                        Data = key.GetValue(value.Name, value.Kind),
+                        Kind = value.Kind
+                    };
+                    return Logger.LogSuccess(preAction, TargetType.RegistryValue, value.Target, RollbackCapability.Automatic, before, after);
+                } catch (RegKeyException rkEx) {
+                    return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, rkEx.ReasonToString(), whatIf);
+                } catch (Exception ex) {
+                    return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
+                } finally {
+                    preAction.ActionNumber++;
+                }
+            }
+        } catch (RegKeyException rkEx) {
+            return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
-            Logger.LogError(
-                preAction,
-                TargetType.RegistryValue,
-                parent.ToString(),
-                $"Exception thrown setting value {value.Name} to kind {value.Kind} and data {value.Data}: {ex.Message}",
-                whatIf: false
-            );
-            return false;
-        }
-    }
-    private static void SetValue(
-            RemediationPreAction preAction,
-            RegistryValueValue value,
-            bool whatIf = true) {
-        if (!BasicChecks(preAction, value.Target, out RegistryKey? targetKey, whatIf)) {
-            return;
-        }
-        using (targetKey) {
-            CreateRegistryValue(targetKey, value, preAction, whatIf);
+            return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
         }
     }
 }

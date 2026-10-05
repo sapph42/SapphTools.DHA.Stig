@@ -145,22 +145,24 @@ public partial class FileAceEditor : Form {
         };
         switch (AceAppliesTo.SelectedItem) {
             case "This folder, subfolders and files":
-                flags |= SddlAceFlags.SDDL_CONTAINER_INHERIT | SddlAceFlags.SDDL_OBJECT_INHERIT;
+                flags = flags.CoalesceOr(SddlAceFlags.SDDL_CONTAINER_INHERIT | SddlAceFlags.SDDL_OBJECT_INHERIT);
                 break;
             case "This folder and subfolders":
-                flags |= SddlAceFlags.SDDL_CONTAINER_INHERIT;
+                flags = flags.CoalesceOr(SddlAceFlags.SDDL_CONTAINER_INHERIT);
                 break;
             case "This folder and files":
-                flags |= SddlAceFlags.SDDL_OBJECT_INHERIT;
+                flags = flags.CoalesceOr(SddlAceFlags.SDDL_OBJECT_INHERIT);
                 break;
             case "Subfolders and files only":
-                flags |= SddlAceFlags.SDDL_CONTAINER_INHERIT | SddlAceFlags.SDDL_OBJECT_INHERIT | SddlAceFlags.SDDL_INHERIT_ONLY;
+                flags = flags.CoalesceOr(SddlAceFlags.SDDL_CONTAINER_INHERIT | 
+                    SddlAceFlags.SDDL_OBJECT_INHERIT | 
+                    SddlAceFlags.SDDL_INHERIT_ONLY);
                 break;
             case "Subfolders only":
-                flags |= SddlAceFlags.SDDL_CONTAINER_INHERIT | SddlAceFlags.SDDL_INHERIT_ONLY;
+                flags = flags.CoalesceOr(SddlAceFlags.SDDL_CONTAINER_INHERIT | SddlAceFlags.SDDL_INHERIT_ONLY);
                 break;
             case "Files only":
-                flags |= SddlAceFlags.SDDL_OBJECT_INHERIT | SddlAceFlags.SDDL_INHERIT_ONLY;
+                flags = flags.CoalesceOr(SddlAceFlags.SDDL_OBJECT_INHERIT | SddlAceFlags.SDDL_INHERIT_ONLY);
                 break;
             default:
                 break;

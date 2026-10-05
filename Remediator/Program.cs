@@ -1,5 +1,6 @@
 using SapphTools.DHA.Stig.Remediator.Forms;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace SapphTools.DHA.Stig.Remediator {
@@ -19,16 +20,8 @@ namespace SapphTools.DHA.Stig.Remediator {
                 Shutdown();
             }
         }
-        public static void AddExcelProcess(Process excel) {
-            lock (_excelProcesses) {
-                _excelProcesses.Add(excel);
-            }
-            excel.EnableRaisingEvents = true;
-            excel.Exited += (_, _) => {
-                lock (_excelProcesses) {
-                    _excelProcesses.Remove(excel);
-                }
-            };
+        public static string CalledBy([CallerMemberName] string methodName = "") {
+            return methodName;
         }
         public static void Shutdown() {
             if (Interlocked.Exchange(ref _shuttingDown, 1) != 0) {

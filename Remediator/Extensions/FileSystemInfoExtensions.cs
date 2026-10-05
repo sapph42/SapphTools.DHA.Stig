@@ -40,14 +40,16 @@ public static class FileSystemInfoExtensions {
         sec.SetSecurityDescriptorSddlForm(sddlForm);
     }
     public static void SetSecurityDescriptorSddlForm(this FileSystemInfo info, Sddl sddl) {
-        ObjectSecurity sec;
         if (info is DirectoryInfo di) {
-            sec = di.GetAccessControl();
+            //sec = di.GetAccessControl();
+            //sec.SetSecurityDescriptorSddlForm(sddl.ToString(), sddl.ActiveSections);
+            di.SetAccessControl(sddl.ToDirectorySecurity());
         } else if (info is FileInfo fi) {
-            sec = fi.GetAccessControl();
+            //sec = fi.GetAccessControl();
+            //sec.SetSecurityDescriptorSddlForm(sddl.ToString(), sddl.ActiveSections);
+            fi.SetAccessControl(sddl.ToFileSecurity());
         } else {
             throw new UnreachableException();
         }
-        sec.SetSecurityDescriptorSddlForm(sddl.ToString());
     }
 }

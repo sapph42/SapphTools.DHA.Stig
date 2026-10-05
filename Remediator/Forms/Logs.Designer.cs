@@ -23,42 +23,57 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            Actions = new DataGridView();
-            ((System.ComponentModel.ISupportInitialize)Actions).BeginInit();
+            LogsView = new DataGridView();
+            Rollback = new Button();
+            ((System.ComponentModel.ISupportInitialize)LogsView).BeginInit();
             SuspendLayout();
             // 
             // Actions
             // 
-            Actions.AllowUserToAddRows = false;
-            Actions.AllowUserToDeleteRows = false;
-            Actions.AllowUserToResizeRows = false;
-            Actions.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Actions.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            Actions.Location = new Point(12, 12);
-            Actions.Name = "Actions";
-            Actions.RowHeadersVisible = false;
-            Actions.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            Actions.Size = new Size(1211, 611);
-            Actions.TabIndex = 0;
-            Actions.ColumnHeaderMouseClick += Actions_ColumnHeaderMouseClick;
-            Actions.SelectionChanged += Actions_SelectionChanged;
+            LogsView.AllowUserToAddRows = false;
+            LogsView.AllowUserToDeleteRows = false;
+            LogsView.AllowUserToResizeRows = false;
+            LogsView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            LogsView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            LogsView.Location = new Point(12, 12);
+            LogsView.Name = "Actions";
+            LogsView.RowHeadersVisible = false;
+            LogsView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            LogsView.Size = new Size(1211, 611);
+            LogsView.TabIndex = 0;
+            LogsView.ColumnHeaderMouseClick += Actions_ColumnHeaderMouseClick;
+            LogsView.SelectionChanged += Actions_SelectionChanged;
+            // 
+            // Rollback
+            // 
+            Rollback.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            Rollback.BackColor = Color.Red;
+            Rollback.Location = new Point(542, 629);
+            Rollback.Name = "Rollback";
+            Rollback.Size = new Size(158, 34);
+            Rollback.TabIndex = 1;
+            Rollback.Text = "Rollback Selected Setting";
+            Rollback.UseVisualStyleBackColor = false;
+            Rollback.Click += Rollback_Click;
             // 
             // Logs
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1235, 675);
-            Controls.Add(Actions);
+            Controls.Add(Rollback);
+            Controls.Add(LogsView);
             Name = "Logs";
             Text = "Logs";
             WindowState = FormWindowState.Maximized;
             Load += Logs_Load;
-            ((System.ComponentModel.ISupportInitialize)Actions).EndInit();
+            ((System.ComponentModel.ISupportInitialize)LogsView).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private DataGridView Actions;
+        private DataGridView LogsView;
+        private Button Rollback;
     }
 }

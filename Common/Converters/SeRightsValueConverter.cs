@@ -61,7 +61,7 @@ public class SeRightsValueConverter : JsonConverter<SeRightsValue> {
         JsonSerializer.Serialize(writer, value.Action, options);
         writer.WritePropertyName(nameof(SeRightsValue.Target));
         writer.WriteStringValue(value.Target.Value);
-        writer.WritePropertyName(nameof(SeRightsValue.Target));
+        writer.WritePropertyName(nameof(SeRightsValue.AccountNames));
         JsonSerializer.Serialize(writer, value.AccountNames, options);
         writer.WriteEndObject();
     }

@@ -32,73 +32,69 @@ internal static class Logger {
         (byte)'\n'
     ];
     public static void Log(RemediationAction action) {
+        if (action.Result == ActionResult.WhatIf) {
+            LogWhatIf(action);
+            return;
+        }
         LogToEventLog(action);
         LogToFile(action);
     }
-    public static void LogError(RemediationPreAction preAction, TargetType type, string target, string message, bool whatIf) {
+    public static RemediationActionResult LogError(RemediationPreAction preAction, TargetType type, string target, string message, bool whatIf) {
         RemediationAction action = GenerateError(preAction, type, target, message);
         if (whatIf) {
             LogWhatIf(action);
         } else {
             Log(action);
         }
+        return action;
     }
-    public static void LogNoAction(RemediationPreAction preAction, TargetType type, string target, IValue current) {
+    public static RemediationActionResult LogNoAction(RemediationPreAction preAction, TargetType type, string target, IValue? current) {
         RemediationAction action = GenerateNoAction(preAction, type, target, current);
         Log(action);
+        return action;
     }
-    public static void LogSuccess(
+    public static RemediationActionResult LogSuccess(
             RemediationPreAction preAction,
             TargetType type,
             string target,
             RollbackCapability rollback,
             IValue? before,
-            IValue after) {
+            IValue? after) {
         RemediationAction action = GenerateSuccess(preAction, type, target, rollback, before, after);
         Log(action);
+        return action;
     }
-    public static void LogWhatIf(
+    public static RemediationActionResult LogWhatIf(
             RemediationPreAction preAction,
             TargetType type,
             string target,
             RollbackCapability rollback,
             IValue? before,
-            IValue after) {
+            IValue? after) {
         RemediationAction action = GenerateSimulation(preAction, type, target, rollback, before, after);
         LogWhatIf(action);
+        return action;
     }
     private static void LogWhatIf(RemediationAction action) {
         LogToFile(action, globalOnly: true);
     }
     private static RemediationAction GenerateError(RemediationPreAction preAction, TargetType type, string target, string message) {
-        return new() {
-            ComputerName = preAction.ComputerName,
-            RemediationBatch = preAction.RemediationBatch,
-            RuleId = preAction.RuleId,
-            Description = preAction.Description,
-            SettingIndex = preAction.SettingIndex,
+        return new(preAction, target) {
             RollbackCapability = RollbackCapability.NotApplicable,
             After = null,
             Before = null,
             TargetType = type,
-            Target = target,
             Result = ActionResult.ActionFailure,
             FailureMessage = message,
             RemediationTimestamp = DateTime.Now,
         };
     }
-    private static RemediationAction GenerateNoAction(RemediationPreAction preAction, TargetType type, string target, IValue current) {
-        return new() {
-            ComputerName = preAction.ComputerName,
-            RemediationBatch = preAction.RemediationBatch,
-            RuleId = preAction.RuleId,
-            Description = preAction.Description,
-            SettingIndex = preAction.SettingIndex,
+    private static RemediationAction GenerateNoAction(RemediationPreAction preAction, TargetType type, string target, IValue? current) {
+        return new(preAction, target) {
             RollbackCapability = RollbackCapability.NotApplicable,
             After = current,
             Before = current,
             TargetType = type,
-            Target = target,
             Result = ActionResult.NoActionTaken,
             FailureMessage = null,
             RemediationTimestamp = DateTime.Now,
@@ -110,18 +106,12 @@ internal static class Logger {
             string target,
             RollbackCapability rollback,
             IValue? before,
-            IValue after) {
-        return new() {
-            ComputerName = preAction.ComputerName,
-            RemediationBatch = preAction.RemediationBatch,
-            RuleId = preAction.RuleId,
-            Description = preAction.Description,
-            SettingIndex = preAction.SettingIndex,
+            IValue? after) {
+        return new(preAction, target) {
             RollbackCapability = rollback,
             After = after,
             Before = before,
             TargetType = type,
-            Target = target,
             Result = ActionResult.ActionSuccess,
             FailureMessage = null,
             RemediationTimestamp = DateTime.Now,
@@ -133,18 +123,12 @@ internal static class Logger {
         string target,
         RollbackCapability rollback,
         IValue? before,
-        IValue after) {
-        return new() {
-            ComputerName = preAction.ComputerName,
-            RemediationBatch = preAction.RemediationBatch,
-            RuleId = preAction.RuleId,
-            Description = preAction.Description,
-            SettingIndex = preAction.SettingIndex,
+        IValue? after) {
+        return new(preAction, target) {
             RollbackCapability = rollback,
             After = after,
             Before = before,
             TargetType = type,
-            Target = target,
             Result = ActionResult.WhatIf,
             FailureMessage = null,
             RemediationTimestamp = DateTime.Now,
@@ -190,32 +174,37 @@ internal static class Logger {
             string host when host.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase) => ".",
             _ => computerName
         };
-        if (EventLog.SourceExists("EAMC STIG Remediation", target)) {
-            try {
-                using EventLog appLog = new("Application", target) {
-                    Source = "EAMC STIG Remediation"
-                };
-                appLog.WriteEntry("Remediator Init", EventLogEntryType.SuccessAudit, 1000);
-                canEventLog[computerName] = true;
-            } catch {
-                canEventLog[computerName] = false;
+        try {
+            if (EventLog.SourceExists("EAMC STIG Remediation", target)) {
+                try {
+                    using EventLog appLog = new("Application", target) {
+                        Source = "EAMC STIG Remediation"
+                    };
+                    appLog.WriteEntry("Remediator Init", EventLogEntryType.SuccessAudit, 1000);
+                    canEventLog[computerName] = true;
+                } catch {
+                    canEventLog[computerName] = false;
+                }
+            } else {
+                try {
+                    EventSourceCreationData source = new("EAMC STIG Remediation", "Application") {
+                        MachineName = target
+                    };
+                    EventLog.CreateEventSource(source);
+                    using EventLog appLog = new("Application", target) {
+                        Source = "EAMC STIG Remediation"
+                    };
+                    appLog.WriteEntry("Remediator Init", EventLogEntryType.SuccessAudit, 1000);
+                    canEventLog[computerName] = true;
+                } catch {
+                    canEventLog[computerName] = false;
+                }
             }
-        } else {
-            try {
-                EventSourceCreationData source = new("EAMC STIG Remediation", "Application") {
-                    MachineName = target
-                };
-                EventLog.CreateEventSource(source);
-                using EventLog appLog = new("Application", target) {
-                    Source = "EAMC STIG Remediation"
-                };
-                appLog.WriteEntry("Remediator Init", EventLogEntryType.SuccessAudit, 1000);
-                canEventLog[computerName] = true;
-            } catch {
-                canEventLog[computerName] = false;
-            }
+            return canEventLog[computerName];
+        } catch {
+            canEventLog[computerName] = false;
+            return false;
         }
-        return canEventLog[computerName];
     }
     private static EventLog GetEventLog(RemediationAction action) {
         string target = action.ComputerName switch {

@@ -25,12 +25,14 @@ public partial class FileSystemAclSettings : ValueSettings, IValueSettings<FileS
     public FileSystemAclSettings(FileSystemAclValue? value) : this() {
         if (value is not null) {
             Target.Text = value.Target;
+            value.Sddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             Permissions.Text = value.Sddl.SddlString;
         }
     }
     public FileSystemAclSettings(Setting? setting) : this() {
         if (setting is not null && setting.Data is FileSystemAclValue value) {
             Target.Text = value.Target;
+            value.Sddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             Permissions.Text = value.Sddl.SddlString;
         }
     }
@@ -66,6 +68,7 @@ public partial class FileSystemAclSettings : ValueSettings, IValueSettings<FileS
             editor = new();
         }
         if (editor.ShowDialog() == DialogResult.OK) {
+            editor.CommittedSddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             Permissions.Text = editor.CommittedSddl.SddlString;
         }
     }
@@ -100,6 +103,7 @@ public partial class FileSystemAclSettings : ValueSettings, IValueSettings<FileS
         sddl = null;
         try {
             sddl = new(Permissions.Text, SecurityDescriptor.Enums.ObjectType.File);
+            sddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             return true;
         } catch {
             return false;

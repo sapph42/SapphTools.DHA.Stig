@@ -1,24 +1,41 @@
 ﻿namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal class CertificateRemediator : IRemediator {
-    public static void Remediate(Rule rule, int settingIndex, Guid batch, string? computerName, bool whatIf = true) {
+    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
         if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            throw new ArgumentException($"No such setting exists at order index {settingIndex}");
+            return new ArgumentException($"No such setting exists at order index {settingIndex}");
         }
         Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
         IValue data = setting.Data;
         if (data is not CertificatesValue val) {
-            throw new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type CertificatesValue, was {data.GetType().Name}");
+            return new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type CertificatesValue, was {data.GetType().Name}");
         }
+        Guid settingBatch = Guid.NewGuid();
         string targetHost = computerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
-            RemediationBatch = batch,
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
             RuleId = rule.RuleId,
             Description = rule.Description,
             ComputerName = targetHost,
-            SettingIndex = settingIndex
+            SettingIndex = settingIndex,
+            Source = ActionSource.Catalog
         };
+        return ExecuteRule(pre, val, targetHost, whatIf);
+    }
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) =>
+        RemediationActionResult.GenerateWithoutLog(
+            logEntry.ToPreAction(),
+            logEntry.TargetType,
+            logEntry.Target,
+            RollbackCapability.NotApplicable,
+            logEntry.Before,
+            null,
+            ActionResult.ActionFailure
+        );
+    private static RemediationActionResult ExecuteRule(RemediationPreAction pre, CertificatesValue val, string hostName, bool whatIf) {
         if (!val.CatalogArtifact.Verify()) {
-            Logger.LogError(
+            return Logger.LogError(
                 pre,
                 TargetType.CertStore,
                 val.Target,
@@ -27,7 +44,7 @@ internal class CertificateRemediator : IRemediator {
             );
         } else {
             if (whatIf) {
-                Logger.LogWhatIf(
+                return Logger.LogWhatIf(
                     pre,
                     TargetType.CertStore,
                     val.Target,
@@ -35,20 +52,18 @@ internal class CertificateRemediator : IRemediator {
                     null,
                     val
                 );
-                return;
             }
-            CryptoWinApi.AddCerts(targetHost, val.Target, val.CatalogArtifact.FullPath, out int success, out int noAction, out int failed);
+            CryptoWinApi.AddCerts(hostName, val.Target, val.CatalogArtifact.FullPath, out int success, out int noAction, out int failed);
             if (success == 0 && failed == 0) {
-                Logger.LogNoAction(
+                return Logger.LogNoAction(
                     pre,
                     TargetType.CertStore,
                     val.Target,
                     val
                 );
-                return;
             }
             if (failed == 0) {
-                Logger.LogSuccess(
+                return Logger.LogSuccess(
                     pre,
                     TargetType.CertStore,
                     val.Target,
@@ -56,9 +71,8 @@ internal class CertificateRemediator : IRemediator {
                     null,
                     val
                 );
-                return;
-            } 
-            Logger.LogError(
+            }
+            return Logger.LogError(
                 pre,
                 TargetType.CertStore,
                 val.Target,

@@ -1,14 +1,19 @@
-﻿namespace SapphTools.DHA.Stig.Common.Converters;
+﻿using System.Diagnostics;
+
+namespace SapphTools.DHA.Stig.Common.Converters;
 public class SettingConverter : JsonConverter<Setting> {
+    private readonly bool verboseDebug = false;
     public override Setting? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         if (reader.TokenType != JsonTokenType.StartObject) {
             throw new JsonException("Expected StartObject token.");
         }
+        if (verboseDebug) { Debug.WriteLine("Deserializing Setting"); }
         int order = -1;
         IValue? data = null;
         SettingContext context = SettingContext.Administrator;
         bool dangerous = false;
         while (reader.Read()) {
+            if (verboseDebug) { Debug.WriteLine($"  TokenType: {reader.TokenType}"); }
             if (reader.TokenType == JsonTokenType.EndObject) {
                 if (order == -1) {
                     throw new JsonException("Invalid or missing Order property");
@@ -17,6 +22,8 @@ public class SettingConverter : JsonConverter<Setting> {
                     throw new JsonException("Invalid or missing Data property");
                 }
                 return new() {
+                    RequiredContext = context,
+                    Dangerous = dangerous,
                     Order = order,
                     Data = data
                 };
@@ -24,17 +31,26 @@ public class SettingConverter : JsonConverter<Setting> {
             if (reader.TokenType != JsonTokenType.PropertyName) {
                 throw new JsonException("Expected property name");
             }
+            if (verboseDebug) { Debug.WriteLine($"    ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
             if (reader.ValueTextEquals(nameof(Setting.Order))) {
                 reader.Read();
+                if (verboseDebug) { Debug.WriteLine($"      TokenType: {reader.TokenType}"); }
+                if (verboseDebug) { Debug.WriteLine($"      ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
                 order = reader.GetInt32();
             } else if (reader.ValueTextEquals(nameof(Setting.RequiredContext))) {
                 reader.Read();
+                if (verboseDebug) { Debug.WriteLine($"      TokenType: {reader.TokenType}"); }
+                if (verboseDebug) { Debug.WriteLine($"      ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
                 context = JsonSerializer.Deserialize<SettingContext>(ref reader, options);
             } else if (reader.ValueTextEquals(nameof(Setting.Dangerous))) {
                 reader.Read();
+                if (verboseDebug) { Debug.WriteLine($"      TokenType: {reader.TokenType}"); }
+                if (verboseDebug) { Debug.WriteLine($"      ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
                 dangerous = reader.GetBoolean();
             } else if (reader.ValueTextEquals(nameof(Setting.Data))) {
                 reader.Read();
+                if (verboseDebug) { Debug.WriteLine($"      TokenType: {reader.TokenType}"); }
+                if (verboseDebug) { Debug.WriteLine($"      ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
                 ValueConverter conv = new();
                 data = conv.Read(ref reader, typeof(IValue), options);
             } else {

@@ -1,46 +1,63 @@
-﻿using Microsoft.Win32;
-using System.Security.AccessControl;
-using static SapphTools.DHA.Stig.Remediator.Classes.RegistryCommon;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-
-namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
+﻿namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
 internal class RegistryAclRemediator : IRemediator {
     private RegistryAclRemediator() { }
 
-    public static void Remediate(Rule rule, int settingIndex, Guid batch, string? computerName, bool whatIf = true) {
+    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
         if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            throw new ArgumentException($"No such setting exists at order index {settingIndex}");
+            return new ArgumentException($"No such setting exists at order index {settingIndex}");
         }
         Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
         IValue data = setting.Data;
         if (data is not RegistryAclValue val) {
-            throw new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryAclValue, was {data.GetType().Name}");
+            return new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryAclValue, was {data.GetType().Name}");
         }
+        Guid settingBatch = Guid.NewGuid();
         string targetHost = computerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
-            RemediationBatch = batch,
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
             RuleId = rule.RuleId,
             Description = rule.Description,
             ComputerName = targetHost,
-            SettingIndex = settingIndex
+            SettingIndex = settingIndex,
+            Source = ActionSource.Catalog
         };
-        SetAcl(pre, val, whatIf);
+        return SetAcl(pre, val, whatIf);
     }
-    private static void SetAcl(RemediationPreAction preAction, RegistryAclValue value, bool whatIf = true) {
-        if (!BasicChecks(preAction, value.Target, out RegistryKey? targetKey, whatIf)) {
-            return;
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+        IValue? original = logEntry.Before;
+        if (original is null) {
+            return new ArgumentException("Cannot rollback an entry with null Before property");
+        }
+        if (original is not RegistryAclValue val) {
+            return new ArgumentException($"Expected {nameof(logEntry)}.Before to be of type RegistryAclValue, was {original.GetType().Name}");
+        }
+        Guid settingBatch = Guid.NewGuid();
+        string targetHost = logEntry.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new() {
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
+            RuleId = logEntry.RuleId,
+            Description = logEntry.Description,
+            ComputerName = targetHost,
+            SettingIndex = logEntry.SettingIndex,
+            Source = ActionSource.Rollback
+        };
+        return SetAcl(pre, val, whatIf: false);
+    }
+    private static RemediationActionResult SetAcl(RemediationPreAction preAction, RegistryAclValue value, bool whatIf = true) {
+        RegKey target;
+        try {
+            target = new(value.Target, preAction.ComputerName);
+        } catch (RegKeyException rkEx) {
+            return Logger.LogError(preAction, TargetType.RegistryKey, value.Target, rkEx.ReasonToString(), whatIf);
         }
         try {
-            RegistryAclValue before = new() {
-                Target = value.Target,
-                Sddl = new(
-                    targetKey
-                        .GetAccessControl()
-                        .GetSecurityDescriptorSddlForm(AccessControlSections.All), 
-                    SecurityDescriptor.Enums.ObjectType.RegistryKey)
-            };
+            RegistryAclValue before = target.GetAclValue();
             if (whatIf) {
-                Logger.LogWhatIf(
+                return Logger.LogWhatIf(
                     preAction,
                     TargetType.RegistryAcl,
                     value.Target,
@@ -48,21 +65,22 @@ internal class RegistryAclRemediator : IRemediator {
                     before,
                     value
                 );
-                return;
             }
-            using (targetKey) {
-                targetKey.SetAccessControl(value.Sddl.ToRegistrySecurity());
+            RegistryAclValue after;
+            using (target) {
+                target.SetSddl(value.Sddl);
+                after = target.GetAclValue();
             }
-            Logger.LogSuccess(
+            return Logger.LogSuccess(
                 preAction,
                 TargetType.RegistryAcl,
                 value.Target,
                 RollbackCapability.Automatic,
                 before,
-                value
+                after
             );
         } catch (Exception ex) {
-            Logger.LogError(preAction, TargetType.RegistryAcl, value.Target, $"Exception thrown during ACL operation: {ex.Message}", whatIf);
+            return Logger.LogError(preAction, TargetType.RegistryAcl, value.Target, $"Exception thrown during ACL operation: {ex.Message}", whatIf);
         }
     }
 }

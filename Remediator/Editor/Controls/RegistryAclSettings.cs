@@ -28,12 +28,14 @@ public partial class RegistryAclSettings : ValueSettings, IValueSettings<Registr
     public RegistryAclSettings(RegistryAclValue? value) : this() {
         if (value is not null) {
             Target.Text = value.Target;
+            value.Sddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             Permissions.Text = value.Sddl.SddlString;
         }
     }
     public RegistryAclSettings(Setting? setting) : this() {
         if (setting is not null && setting.Data is RegistryAclValue value) {
             Target.Text = value.Target;
+            value.Sddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             Permissions.Text = value.Sddl.SddlString;
         }
     }
@@ -59,6 +61,7 @@ public partial class RegistryAclSettings : ValueSettings, IValueSettings<Registr
             editor = new();
         }
         if (editor.ShowDialog() == DialogResult.OK) {
+            editor.CommittedSddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             Permissions.Text = editor.CommittedSddl.SddlString;
         }
     }
@@ -109,6 +112,7 @@ public partial class RegistryAclSettings : ValueSettings, IValueSettings<Registr
         sddl = null;
         try {
             sddl = new(Permissions.Text, SecurityDescriptor.Enums.ObjectType.RegistryKey);
+            sddl.DaclFlags |= SecurityDescriptor.Enums.SddlAclFlags.SDDL_PROTECTED;
             return true;
         } catch {
             return false;

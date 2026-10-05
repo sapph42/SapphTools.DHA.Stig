@@ -184,10 +184,13 @@ internal class LogSetting : IEnumerable {
 internal class LogAction(RemediationAction action) {
     private readonly RemediationAction _source = action;
     internal Guid RemediationBatch => _source.RemediationBatch;
+    internal Guid RuleBatch => _source.RuleBatch;
+    internal Guid SettingBatch => _source.SettingBatch;
     internal string RuleId => _source.RuleId;
     internal string? Description => _source.Description;
     internal string ComputerName => _source.ComputerName;
     internal int SettingIndex => _source.SettingIndex;
+    public int ActionNumber => _source.ActionNumber;
     public ActionSource Source => _source.Source;
     public TargetType TargetType => _source.TargetType;
     public string Target => _source.Target;
@@ -199,4 +202,5 @@ internal class LogAction(RemediationAction action) {
     public DateTimeOffset RemediationTimestamp => _source.RemediationTimestamp;
 
     public static implicit operator LogAction(RemediationAction action) => new(action);
+    public RemediationAction ToRemediationAction() => _source;
 }

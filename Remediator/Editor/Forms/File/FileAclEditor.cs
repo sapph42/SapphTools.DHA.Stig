@@ -24,7 +24,7 @@ public partial class FileAclEditor : Form {
         CommittedSddl = new(sddl.SddlString, sddl.Type);
         OriginalSddl = sddl;
         _owner = sddl.Owner;
-        PrincipalName.Text = _owner!.DisplayString;
+        PrincipalName.Text = _owner?.DisplayString ?? "Select Owner";
         SelectPrincipal.Text = "Change";
         foreach (Ace ace in sddl.DaclAces ?? []) {
             CreateRow(Permissions, ace);

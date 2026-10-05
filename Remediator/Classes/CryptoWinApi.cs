@@ -8,7 +8,7 @@ internal static partial class CryptoWinApi {
     private const uint DEFAULT_ENCODING = 0;
     private const int CERT_SYSTEM_STORE_LOCATION_SHIFT = 16;
     private const int CERT_SYSTEM_STORE_LOCAL_MACHINE_ID = 2;
-    private static readonly uint CERT_SYSTEM_STORE_LOCAL_MACHINE = (CERT_SYSTEM_STORE_LOCAL_MACHINE_ID << CERT_SYSTEM_STORE_LOCATION_SHIFT);
+    //private static readonly uint CERT_SYSTEM_STORE_LOCAL_MACHINE = (CERT_SYSTEM_STORE_LOCAL_MACHINE_ID << CERT_SYSTEM_STORE_LOCATION_SHIFT);
     private const uint CERT_STORE_OPEN_EXISTING = 0x00004000;
     private const uint CERT_STORE_READONLY = 0x00008000;
     private const uint CERT_STORE_ADD_NEW = 1;

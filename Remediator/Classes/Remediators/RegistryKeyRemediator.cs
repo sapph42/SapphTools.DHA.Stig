@@ -1,32 +1,181 @@
 ﻿using Microsoft.Win32;
+using System.IO;
 using static SapphTools.DHA.Stig.Remediator.Classes.RegistryCommon;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
 internal class RegistryKeyRemediator : IRemediator {
     private RegistryKeyRemediator() { }
-    public static void Remediate(Rule rule, int settingIndex, Guid batch, string? computerName, bool whatIf = true) {
+    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
         if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            throw new ArgumentException($"No such setting exists at order index {settingIndex}");
+            return new ArgumentException($"No such setting exists at order index {settingIndex}");
         }
         Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
         IValue data = setting.Data;
         if (data is not RegistryKeyValue val) {
-            throw new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryKeyValue, was {data.GetType().Name}");
+            return new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryKeyValue, was {data.GetType().Name}");
         }
+        Guid settingBatch = Guid.NewGuid();
         string targetHost = computerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
-            RemediationBatch = batch,
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
             RuleId = rule.RuleId,
             Description = rule.Description,
             ComputerName = targetHost,
-            SettingIndex = settingIndex
+            SettingIndex = settingIndex,
+            Source = ActionSource.Catalog
         };
-        if (GetHive(val.Target) is not RegistryHive hive) {
-            Logger.LogError(pre, TargetType.RegistryKey, val.Target, "Key path was not well-formed.", whatIf);
-            return;
+        return SubRemediate(val.Target, targetHost, pre, out _, whatIf);
+    }
+    public static RemediationActionResult SubRemediate(string targetPath, string targetHost, RemediationPreAction pre, out RegKey? key, bool whatIf) {
+        key = null;
+        try {
+            key = RegKey.ClosestExtantAncestor(targetPath, targetHost);
+            if (key is null) {
+                return Logger.LogError(pre, TargetType.RegistryKey, targetPath, "Could not find any valid ancestor keys", whatIf);
+            }
+            return CreateRegistryPath(key, targetPath, pre, out key, whatIf);
+        } catch (RegKeyException rkEx) {
+            return Logger.LogError(pre, TargetType.RegistryKey, targetPath, rkEx.ReasonToString(), whatIf);
+        } catch (Exception ex) {
+            return Logger.LogError(pre, TargetType.RegistryKey, targetPath, ex.Message, whatIf);
         }
-        if (TryGetHiveKey(pre, hive, out RegistryKey? hiveKey, whatIf)) {
-            _ = RegistryValueRemediator.CreateRegistryKey(hiveKey, val.Target, pre, false, whatIf);
+    }
+    public static RemediationActionResult SubRemediate(RegKey parentKey, string branchName, RemediationPreAction pre, out RegKey? key, bool whatIf) {
+        key = parentKey;
+        try {
+            return CreateRegistryPath(key, branchName, pre, out key, whatIf);
+        } catch (RegKeyException rkEx) {
+            return Logger.LogError(pre, TargetType.RegistryKey, parentKey.FullName + '\\' + branchName, rkEx.ReasonToString(), whatIf);
+        } catch (Exception ex) {
+            return Logger.LogError(pre, TargetType.RegistryKey, parentKey.FullName + '\\' + branchName, ex.Message, whatIf);
+        }
+    }
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+        if (logEntry.After is null) {
+            return new ArgumentException("Cannot rollback a log entry with a null After property.");
+        }
+        Guid settingBatch = Guid.NewGuid();
+        string targetHost = logEntry.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new() {
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
+            RuleId = logEntry.RuleId,
+            Description = logEntry.Description,
+            ComputerName = targetHost,
+            SettingIndex = logEntry.SettingIndex,
+            Source = ActionSource.Rollback
+        };
+        if (logEntry.Before is not null) {
+            return RemediationActionResult.GenerateWithoutLog(
+                pre,
+                TargetType.RegistryKey,
+                logEntry.Before.TargetString,
+                RollbackCapability.NotApplicable,
+                null,
+                null,
+                ActionResult.NoActionTaken
+            );
+        }
+        IValue current = logEntry.After;
+        if (current is not RegistryKeyValue newVal) {
+            return new ArgumentException(
+                $"Expected {nameof(logEntry)}.After to be of type RegistryKeyValue, was {current.GetType().Name}"
+            );
+        }
+        try {
+            RegKey? key = RegKey.ClosestExtantAncestor(newVal.Target, targetHost);
+            if (key is null) {
+                return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, "Could not find any valid ancestor keys", false);
+            }
+            return TryRemoveRegistryKey(key, newVal.Target, pre);
+        } catch (RegKeyException rkEx) {
+            return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, rkEx.ReasonToString(), false);
+        } catch (Exception ex) {
+            return Logger.LogError(pre, TargetType.RegistryKey, newVal.Target, ex.Message, false);
+        }
+    }
+    public static RemediationActionResult CreateRegistryPath(RegKey existingParent, string targetPath, RemediationPreAction preAction, out RegKey? key, bool whatIf) {
+        RegistryKeyValue before = new() {
+            Target = RegKey.SplitPath(existingParent.FullName, true) ?? string.Empty,
+            Name = existingParent.Name,
+        };
+        RegistryKeyValue after;
+        key = null;
+        if (existingParent.FullName.Equals(targetPath, StringComparison.OrdinalIgnoreCase)) {
+            key = existingParent;
+            return Logger.LogNoAction(preAction, TargetType.RegistryKey, targetPath, before);
+        }
+        RemediationActionResult? final = null;
+        using (existingParent) {
+            RegKey nextChild = existingParent.Clone();
+            while (!nextChild.FullName.Equals(targetPath, StringComparison.OrdinalIgnoreCase)) {
+                try {
+                    if (whatIf) {
+                        key = nextChild;
+                        return Logger.LogWhatIf(preAction, TargetType.RegistryKey, targetPath, RollbackCapability.NotApplicable, before, null);
+                    }
+                    nextChild = RegKey.CreateKey(nextChild, targetPath, recurse: false, transferOwnership: true);
+                    after = new() {
+                        Target = RegKey.SplitPath(nextChild.FullName, true) ?? string.Empty,
+                        Name = nextChild.Name,
+                    };
+                    final = Logger.LogSuccess(
+                        preAction,
+                        TargetType.RegistryKey,
+                        targetPath,
+                        RollbackCapability.Automatic,
+                        null,
+                        after);
+                } catch (RegKeyException rkEx) {
+                    return Logger.LogError(preAction, TargetType.RegistryKey, targetPath, rkEx.ReasonToString(), whatIf);
+                } catch (Exception ex) {
+                    return Logger.LogError(preAction, TargetType.RegistryKey, targetPath, ex.Message, whatIf);
+                } finally {
+                    preAction.ActionNumber++;
+                }
+            }
+            key = nextChild;
+            return final!;
+        }
+    }
+    private static RemediationActionResult TryRemoveRegistryKey(RegKey key, string path, RemediationPreAction preAction) {
+        RegistryKeyValue before = new() {
+            Target = RegKey.SplitPath(key.FullName, true) ?? string.Empty,
+            Name = key.Name,
+        };
+        if (key.FullName.Equals(path, StringComparison.OrdinalIgnoreCase)) {
+            using (key) {
+                if (key.SubKeyCount + key.ValueCount > 0) {
+                    return Logger.LogError(
+                        preAction,
+                        TargetType.RegistryKey,
+                        path,
+                        "Cannot rollback a non-empty key.",
+                        whatIf: false
+                    );
+                }
+                try {
+                    key.Delete(false);
+                    return Logger.LogSuccess(
+                        preAction,
+                        TargetType.RegistryKey,
+                        path,
+                        RollbackCapability.NotApplicable,
+                        before,
+                        null);
+                } catch (RegKeyException rkEx) {
+                    return Logger.LogError(preAction, TargetType.RegistryKey, path, rkEx.ReasonToString(), false);
+                } catch (Exception ex) {
+                    return Logger.LogError(preAction, TargetType.RegistryKey, path, ex.Message, false);
+                }
+            }
+        } else if (key.FullName.Contains(path, StringComparison.OrdinalIgnoreCase)) {
+            return Logger.LogNoAction(preAction, TargetType.RegistryKey, path, null);
+        } else {
+            return Logger.LogError(preAction, TargetType.RegistryKey, path, "Attempted a rollback of Registry Key creation with an indirect target", false);
         }
     }
 }

@@ -45,9 +45,13 @@
             RemediateMenu = new ToolStripMenuItem();
             LogsMenu = new ToolStripMenuItem();
             CatalogPath = new Label();
+            CurrentContext = new Label();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            label4 = new Label();
             ((System.ComponentModel.ISupportInitialize)Catalog).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Findings).BeginInit();
             Menu.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -246,11 +250,48 @@
             CatalogPath.Size = new Size(0, 15);
             CatalogPath.TabIndex = 15;
             // 
+            // CurrentContext
+            // 
+            CurrentContext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            CurrentContext.AutoSize = true;
+            CurrentContext.Location = new Point(103, 0);
+            CurrentContext.Name = "CurrentContext";
+            CurrentContext.Size = new Size(38, 15);
+            CurrentContext.TabIndex = 16;
+            CurrentContext.Text = "label4";
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            tableLayoutPanel1.AutoSize = true;
+            tableLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.Controls.Add(label4, 0, 0);
+            tableLayoutPanel1.Controls.Add(CurrentContext, 1, 0);
+            tableLayoutPanel1.Location = new Point(1053, 40);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(144, 15);
+            tableLayoutPanel1.TabIndex = 17;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(3, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(94, 15);
+            label4.TabIndex = 18;
+            label4.Text = "Current Context:";
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1209, 680);
+            Controls.Add(tableLayoutPanel1);
             Controls.Add(CatalogPath);
             Controls.Add(WhatIf);
             Controls.Add(FindingsCount);
@@ -273,6 +314,8 @@
             ((System.ComponentModel.ISupportInitialize)Findings).EndInit();
             Menu.ResumeLayout(false);
             Menu.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -301,5 +344,8 @@
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem RemediateMenu;
         private ToolStripMenuItem LogsMenu;
+        private Label CurrentContext;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Label label4;
     }
 }

@@ -10,9 +10,14 @@ public sealed class ValueConverter : JsonConverter<IValue> {
             JsonDocument.ParseValue(ref reader);
 
         JsonElement root = document.RootElement;
-
-        if (!root.TryGetProperty(nameof(IValue.Action), out JsonElement actionElement))
+        string actionName = nameof(IValue.Action);
+        if (options.PropertyNamingPolicy is JsonNamingPolicy pol) {
+            actionName = pol.ConvertName(actionName);
+        }
+        if (!root.TryGetProperty(nameof(IValue.Action), out JsonElement actionElement) &&
+                !root.TryGetProperty(actionName, out actionElement)) {
             throw new JsonException("IValue is missing Action.");
+        }
 
         if (!Enum.TryParse(
                 actionElement.GetString(),
