@@ -1,8 +1,5 @@
 ﻿using Microsoft.Win32;
-using SapphTools.DHA.Stig.Common.Interfaces;
 using System.Diagnostics;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal partial class RegistryValueRemediator : IRemediator {
