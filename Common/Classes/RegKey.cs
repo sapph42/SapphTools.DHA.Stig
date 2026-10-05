@@ -95,7 +95,11 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
                 RegKey? subKey = null;
                 try {
                     subKey = OpenSubKey(subKeyName);
-                } catch { }
+                } catch (RegKeyException) {
+                    throw;
+                } catch (Exception ex) {
+                    throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
+                }
                 if (subKey is not null) {
                     yield return subKey;
                 }
