@@ -277,7 +277,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
                 throw new RegKeyException(RegKeyExceptionReason.KeyPathNotWellFormed);
         RegKey parent;
         try {
-            parent = new(ResolvePath(parentPath, computerName));
+            parent = new(ResolvePath(parentPath, computerName), computerName);
         } catch {
             parent = CreateKeyInternal(parentPath, computerName);
         }
