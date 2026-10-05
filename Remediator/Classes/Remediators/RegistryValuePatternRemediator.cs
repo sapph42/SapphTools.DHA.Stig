@@ -126,7 +126,7 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         }
     }
     private static RegistryValueValue ResolveBefore(RegKey key, RegistryValuePatternValue val) {
-        object? currentVal = key.GetValue(val.Name, val.Kind);
+        object? currentVal = key.GetValue(val.Name);
         RegistryValueKind currKind = key.GetValueKind(val.Name);
         return new() {
             Target = key.FullName,
