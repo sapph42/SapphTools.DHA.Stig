@@ -149,7 +149,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                     return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
                 }
             } else {
-                if (value.Data.Equals(currentState.Data)) {
+                if (value.Data.Equals(currentState.Data) && value.Kind == currentState.Kind) {
                     return Logger.LogNoAction(
                         preAction,
                         TargetType.RegistryValue,
