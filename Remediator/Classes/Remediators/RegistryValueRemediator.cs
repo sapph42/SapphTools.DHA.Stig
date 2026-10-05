@@ -32,6 +32,9 @@ internal partial class RegistryValueRemediator : IRemediator {
             Source = ActionSource.Catalog
         };
         RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? key, whatIf);
+        if (createRes.Value?.Result == ActionResult.WhatIf) {
+            return Logger.LogWhatIf(pre, TargetType.RegistryValue, val.TargetString, RollbackCapability.NotApplicable, null, null);
+        }
         if (createRes.IsSuccess && key is not null) {
             try {
                 RegistryValueValue before = new() {
