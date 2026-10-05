@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\Remediator\catalog.json" Link="Fixtures\catalog.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 

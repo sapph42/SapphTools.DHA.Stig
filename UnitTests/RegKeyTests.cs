@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 namespace UnitTests {
-    [TestClass]
+    [TestClass, TestCategory("Pure")]
     public sealed class RegKeyTests {
         readonly Dictionary<(string path, bool parent), string?> splitPathExpected = new() {
             // Standard local registry paths.

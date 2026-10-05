@@ -1,0 +1,9 @@
+global using Microsoft.Win32;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using SapphTools.DHA.Stig.Common.Classes;
+global using SapphTools.DHA.Stig.Common.Converters;
+global using SapphTools.DHA.Stig.Common.Enums;
+global using SapphTools.DHA.Stig.Common.Interfaces;
+global using SapphTools.DHA.Stig.Common.WinApi;
+global using SapphTools.DHA.Stig.Remediator.Classes;
+global using System.Text.Json;
