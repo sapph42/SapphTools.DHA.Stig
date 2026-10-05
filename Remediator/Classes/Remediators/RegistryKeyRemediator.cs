@@ -47,7 +47,9 @@ internal class RegistryKeyRemediator : IRemediator {
         } catch (Exception ex) {
             return Logger.LogError(pre, TargetType.RegistryKey, targetPath, ex.Message, whatIf);
         } finally {
-            ancestor?.Dispose();
+            if (!ReferenceEquals(ancestor, key)) {
+                ancestor?.Dispose();
+            }
         }
     }
     public static RemediationActionResult SubRemediate(RegKey parentKey, string branchName, RemediationPreAction pre, out RegKey? key, bool whatIf) {
