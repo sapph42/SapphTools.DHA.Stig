@@ -103,6 +103,9 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         }
     }
     public object? GetValue(string? name) {
+        if (GetValueKind(name) == RegistryValueKind.ExpandString) {
+            return _key.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames);
+        }
         return _key.GetValue(name);
     }
     public object? GetValue(string? name, RegistryValueKind kind) {
