@@ -291,24 +291,6 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     private string GetSecurityDescriptorSddlForm(AccessControlSections includeSections) {
         return _key.GetAccessControl().GetSecurityDescriptorSddlForm(includeSections);
     }
-
-    private static RegKey CreateKeyInternal(string path, string? computerName) {
-        string parentPath = SplitPath(path, true) ??
-                throw new RegKeyException(RegKeyExceptionReason.KeyPathNotWellFormed);
-        RegKey parent;
-        try {
-            parent = new(ResolvePath(parentPath, computerName), computerName);
-        } catch {
-            parent = CreateKeyInternal(parentPath, computerName);
-        }
-        string leafName = SplitPath(path, false) ??
-                throw new RegKeyException(RegKeyExceptionReason.KeyPathNotWellFormed);
-        try {
-            return parent.CreateKey(leafName);
-        } catch (Exception ex) {
-            throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
-        }
-    }
     private static RegKey CreateKeyInternal(RegKey key, string path) {
         if (key.Parent is null) {
             throw new RegKeyException(RegKeyExceptionReason.KeyPathNotWellFormed);
