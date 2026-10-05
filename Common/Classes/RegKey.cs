@@ -204,14 +204,24 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     public static RegKey? ClosestExtantAncestor(string path, string? computerName) {
         try {
             return new(path, computerName);
-        } catch { }
+        } catch (RegKeyException rkEx) when (rkEx.Reason == RegKeyExceptionReason.NoSuchKey) {
+        } catch (RegKeyException) {
+            throw;
+        } catch (Exception ex) {
+            throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
+        }
+
         string parentPath = SplitPath(path, true) ??
                 throw new RegKeyException(RegKeyExceptionReason.KeyPathNotWellFormed);
         RegKey? parent;
         try {
             parent = new(ResolvePath(parentPath, computerName), computerName);
-        } catch {
+        } catch (RegKeyException rkEx) when (rkEx.Reason == RegKeyExceptionReason.NoSuchKey) {
             parent = ClosestExtantAncestor(parentPath, computerName);
+        } catch (RegKeyException) {
+            throw;
+        } catch (Exception ex) {
+            throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
         }
         return parent;
     }
