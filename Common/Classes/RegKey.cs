@@ -90,7 +90,13 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         );
     }
     public IEnumerable<RegKey> GetSubKeys(Regex? pattern = null) {
-        foreach (string subKeyName in _key.GetSubKeyNames()) {
+        string[] subKeyNames;
+        try {
+            subKeyNames = _key.GetSubKeyNames();
+        } catch (Exception ex) {
+            throw new RegKeyException(RegKeyExceptionReason.NativeException, ex);
+        }
+        foreach (string subKeyName in subKeyNames) {
             if (pattern is null || pattern.Match(subKeyName).Success) {
                 RegKey? subKey = null;
                 try {
