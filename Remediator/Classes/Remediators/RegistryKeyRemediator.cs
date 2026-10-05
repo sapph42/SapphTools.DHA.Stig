@@ -40,7 +40,7 @@ internal class RegistryKeyRemediator : IRemediator {
             return Logger.LogError(pre, TargetType.RegistryKey, targetPath, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
             return Logger.LogError(pre, TargetType.RegistryKey, targetPath, ex.Message, whatIf);
-        }
+        } 
     }
     public static RemediationActionResult SubRemediate(RegKey parentKey, string branchName, RemediationPreAction pre, out RegKey? key, bool whatIf) {
         key = parentKey;
@@ -112,7 +112,11 @@ internal class RegistryKeyRemediator : IRemediator {
         key = null;
         if (existingParent.FullName.Equals(targetPath, StringComparison.OrdinalIgnoreCase)) {
             key = existingParent;
-            return Logger.LogNoAction(preAction, TargetType.RegistryKey, targetPath, before);
+            try {
+                return Logger.LogNoAction(preAction, TargetType.RegistryKey, targetPath, before);
+            } finally {
+                preAction.ActionNumber++;
+            }
         }
         RemediationActionResult? final = null;
         using (existingParent) {
@@ -153,16 +157,16 @@ internal class RegistryKeyRemediator : IRemediator {
             Name = key.Name,
         };
         using (key) {
-            if (key.SubKeyCount + key.ValueCount > 0) {
-                return Logger.LogError(
-                    preAction,
-                    TargetType.RegistryKey,
-                    key.FullName,
-                    "Cannot rollback a non-empty key.",
-                    whatIf: false
-                );
-            }
             try {
+                if (key.SubKeyCount + key.ValueCount > 0) {
+                    return Logger.LogError(
+                        preAction,
+                        TargetType.RegistryKey,
+                        key.FullName,
+                        "Cannot rollback a non-empty key.",
+                        whatIf: false
+                    );
+                }
                 key.Delete(false);
                 return Logger.LogSuccess(
                     preAction,
@@ -175,6 +179,8 @@ internal class RegistryKeyRemediator : IRemediator {
                 return Logger.LogError(preAction, TargetType.RegistryKey, key.FullName, rkEx.ReasonToString(), false);
             } catch (Exception ex) {
                 return Logger.LogError(preAction, TargetType.RegistryKey, key.FullName, ex.Message, false);
+            } finally {
+                preAction.ActionNumber++;
             }
         }
     }

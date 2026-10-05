@@ -78,15 +78,19 @@ internal partial class RegistryValueRemediator : IRemediator {
         };
         RegKey? key = new(newVal.Target, targetHost);
         if (key is null) {
-            if (oldVal.Data is null) {
-                return Logger.LogNoAction(
-                    pre,
-                    TargetType.RegistryValue,
-                    newVal.Target,
-                    oldVal
-                );
-            } else {
-                return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, "Parent key no longer exists", false);
+            try {
+                if (oldVal.Data is null) {
+                    return Logger.LogNoAction(
+                        pre,
+                        TargetType.RegistryValue,
+                        newVal.Target,
+                        oldVal
+                    );
+                } else {
+                    return Logger.LogError(pre, TargetType.RegistryValue, oldVal.Target, "Parent key no longer exists", false);
+                }
+            } finally {
+                pre.ActionNumber++;
             }
         } else {
             try {
@@ -137,8 +141,6 @@ internal partial class RegistryValueRemediator : IRemediator {
                     return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, rkEx.ReasonToString(), whatIf);
                 } catch (Exception ex) {
                     return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
-                } finally {
-                    preAction.ActionNumber++;
                 }
             } else {
                 if (value.Data.Equals(currentState.Data)) {
@@ -173,14 +175,14 @@ internal partial class RegistryValueRemediator : IRemediator {
                     return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, rkEx.ReasonToString(), whatIf);
                 } catch (Exception ex) {
                     return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
-                } finally {
-                    preAction.ActionNumber++;
                 }
             }
         } catch (RegKeyException rkEx) {
             return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
             return Logger.LogError(preAction, TargetType.RegistryValue, value.Target, ex.Message, whatIf);
+        } finally {
+            preAction.ActionNumber++;
         }
     }
 }
