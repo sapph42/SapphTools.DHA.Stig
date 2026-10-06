@@ -128,7 +128,7 @@ public partial class RuleEditor : Form {
         ActiveRule = new() {
             RuleId = RuleId.Text,
             Description = Description.Text,
-            Settings = [.. SettingsTable.Rows.OfType<DataRow>().Select(r => r["Setting"]).Cast<Setting>().OrderBy(s => s.Order)]
+            Settings = [.. SettingsTable.Rows.OfType<DataRow>().Select(r => r["Setting"]).Cast<Setting>()]
         };
         Close();
     }
