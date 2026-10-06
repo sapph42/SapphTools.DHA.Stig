@@ -47,4 +47,23 @@ public class SettingsSet : SortedSet<Setting> {
     public static readonly SettingComparer SettingComparer = new();
     public SettingsSet() : base(SettingComparer) { }
     public SettingsSet(IEnumerable<Setting> settings) : base(settings, SettingComparer) { }
+    public new bool SetEquals(IEnumerable<Setting> other) {
+        SettingsSet otherSorted = [.. other];
+        if (otherSorted.Count != other.Count()) {
+            return false;
+        }
+        if (otherSorted.Count != Count) {
+            return false;
+        }
+        foreach (Setting setting in this) {
+            if (otherSorted.TryGetValue(setting, out Setting? potentialMatch)) {
+                if (!setting.DeepEquals(potentialMatch)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
 }
