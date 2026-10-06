@@ -103,43 +103,53 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
     }
     private static DisposableList<RegKey> ExpandMatchingSubKeys(IEnumerable<RegKey>? keys, Regex? pattern) {
         DisposableList<RegKey> returnList = [];
-        if (keys is null) {
-            return returnList;
-        }
-        if (pattern is null) {
+        try {
+            if (keys is null) {
+                return returnList;
+            }
+            if (pattern is null) {
+                foreach (RegKey key in keys) {
+                    returnList.Add(key);
+                }
+                return returnList;
+            }
             foreach (RegKey key in keys) {
-                returnList.Add(key);
+                foreach (RegKey subKey in key.GetSubKeys(pattern)) {
+                    returnList.Add(subKey);
+                }
             }
             return returnList;
+        } catch {
+            returnList.Dispose();
+            throw;
         }
-        foreach (RegKey key in keys) {
-            foreach (RegKey subKey in key.GetSubKeys(pattern)) {
-                returnList.Add(subKey);
-            }
-        }
-        return returnList;
     }
     private static DisposableList<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, bool whatIf = true) {
         DisposableList<RegKey> returnList = [];
-        if (keys is null) {
-            return returnList;
-        }
-        if (string.IsNullOrWhiteSpace(subPath)) {
-            foreach (RegKey key in keys) {
-                returnList.Add(key);
+        try { 
+            if (keys is null) {
+                return returnList;
             }
-            return returnList;
-        }
-        foreach (RegKey key in keys) {
-            if (key.OpenSubKey(subPath) is RegKey subKey) {
-                returnList.Add(subKey);
-            } else {
-                if (RegistryKeyRemediator.SubRemediate(key, subPath, preAction, out RegKey? newKey, whatIf).IsSuccess && newKey is not null) {
-                    returnList.Add(newKey);
+            if (string.IsNullOrWhiteSpace(subPath)) {
+                foreach (RegKey key in keys) {
+                    returnList.Add(key);
+                }
+                return returnList;
+            }
+            foreach (RegKey key in keys) {
+                if (key.OpenSubKey(subPath) is RegKey subKey) {
+                    returnList.Add(subKey);
+                } else {
+                    if (RegistryKeyRemediator.SubRemediate(key, subPath, preAction, out RegKey? newKey, whatIf).IsSuccess && newKey is not null) {
+                        returnList.Add(newKey);
+                    }
                 }
             }
+            return returnList;
+        } catch {
+            returnList.Dispose();
+            throw;
         }
-        return returnList;
     }
     private static RegistryValueValue ResolveBefore(RegKey key, RegistryValuePatternValue val) {
         object? currentVal = key.GetValue(val.Name);
