@@ -14,11 +14,10 @@ public abstract class AclValue<T> : IValue<T> {
         if (other is null) {
             return false;
         }
-        if (other as FileSystemAclValue is FileSystemAclValue fs) {
-            return Sddl.Equals(fs.Sddl) && Target.Equals(fs.Target, StringComparison.OrdinalIgnoreCase);
-        }
-        if (other as RegistryAclValue is RegistryAclValue reg) {
-            return Sddl.Equals(reg.Sddl) && Target.Equals(reg.Target, StringComparison.OrdinalIgnoreCase);
+        if (other is AclValue<T> aclV) {
+            return Action == aclV.Action &&
+                Sddl.Equals(aclV.Sddl) && 
+                Target.Equals(aclV.Target, StringComparison.OrdinalIgnoreCase);
         }
         return false;
     }
