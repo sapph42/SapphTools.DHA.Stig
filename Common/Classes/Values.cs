@@ -94,14 +94,15 @@ public class RegistryKeyValue : IValue<RegistryKeyValue> {
 [JsonConverter(typeof(RegistryValueValueConverter))]
 public class RegistryValueValue : IValue<RegistryValueValue> {
     [JsonInclude]
-    public TargetType Action => TargetType.RegistryValue;
+    public virtual TargetType Action => TargetType.RegistryValue;
     public required string Target { get; set; }
     public required string Name { get; set; }
     public required object? Data { get; set; }
     public RegistryValueKind Kind { get; set; }
     public bool Overwrite { get; set; }
-    public string TargetString => Target + "\\" + Name;
+    public virtual string TargetString => Target + "\\" + Name;
     public RegistryValueValue Clone() {
+    public virtual RegistryValueValue Clone() {
         object? dataClone;
         if (Data is null) {
             dataClone = null;
@@ -130,19 +131,14 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
     IValue IValue.Clone() => Clone();
 }
 [JsonConverter(typeof(RegistryValuePatternValueConverter))]
-public class RegistryValuePatternValue : IValue<RegistryValuePatternValue> {
+public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValuePatternValue> {
     [JsonInclude]
-    public TargetType Action => TargetType.RegistryValuePattern;
-    public required string Target { get; set; }
+    public override TargetType Action => TargetType.RegistryValuePattern;
     public Regex? TargetPattern { get; set; }
     public string? SubPath { get; set; }
     public Regex? PathPattern { get; set; }
-    public required string Name { get; set; }
-    public required object? Data { get; set; }
-    public RegistryValueKind Kind { get; set; }
     public RegistryValueValue? ResolvedTarget { get; set; }
-    public bool Overwrite { get; set; }
-    public string TargetString => Target + 
+    public override string TargetString => Target + 
         (TargetPattern is not null ?
             "\\" + TargetPattern.ToString() :
             string.Empty
@@ -157,6 +153,7 @@ public class RegistryValuePatternValue : IValue<RegistryValuePatternValue> {
         ) +
         "\\" + Name;
     public RegistryValuePatternValue Clone() {
+    public override RegistryValuePatternValue Clone() {
         object? dataClone;
         if (Data is null) {
             dataClone = null;
