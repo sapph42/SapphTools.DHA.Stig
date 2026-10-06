@@ -19,3 +19,22 @@ public class Setting : IComparable<Setting> {
         return Order.GetHashCode();
     }
 }
+public class SettingComparer : IComparer<Setting> {
+    public int Compare(Setting? x, Setting? y) {
+        if (x is null && y is null) {
+            return 0;
+        }
+        if (x is null) {
+            return -1;
+        }
+        if (y is null) {
+            return 1;
+        }
+        return x.Order.CompareTo(y.Order);
+    }
+}
+public class SettingsSet : SortedSet<Setting> {
+    public static readonly SettingComparer SettingComparer = new();
+    public SettingsSet() : base(SettingComparer) { }
+    public SettingsSet(IEnumerable<Setting> settings) : base(settings, SettingComparer) { }
+}
