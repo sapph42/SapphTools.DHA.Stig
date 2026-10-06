@@ -192,8 +192,8 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
         if (other is RegistryValueValue val) {
             return Target.Equals(val.Target, StringComparison.OrdinalIgnoreCase) &&
                 Name.Equals(val.Name, StringComparison.OrdinalIgnoreCase) &&
+                Overwrite == val.Overwrite &&
                 DataEquals(val);
-
         }
         return false;
     }
