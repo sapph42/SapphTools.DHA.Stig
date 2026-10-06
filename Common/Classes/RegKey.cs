@@ -155,7 +155,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     }
     public RegKey? OpenKey(string path) {
         if (path.StartsWith(FullName, StringComparison.OrdinalIgnoreCase)) {
-            RegistryKey? key = _key.OpenSubKey(path[FullName.Length..]);
+            RegistryKey? key = _key.OpenSubKey(path[FullName.Length..].TrimStart('\\'));
             if (key is null) {
                 return null;
             }
