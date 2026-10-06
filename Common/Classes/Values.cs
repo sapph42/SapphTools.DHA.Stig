@@ -80,13 +80,13 @@ public abstract class SamValue : IValue {
     public abstract SamActionType Target { get; }
     public string TargetString => Target.ToString();
     IValue IValue.Clone() => throw new NotImplementedException();
+    public abstract bool Equals(IValue? other);
     string IValue.ToString() => throw new NotImplementedException();
 }
 public abstract class SamValue<T> : SamValue, IValue<T> {
     public abstract T Clone();
     public override string ToString() => TargetString;
     IValue IValue.Clone() => (IValue)Clone()!;
-    public abstract bool Equals(IValue? other);
 }
 public abstract class SamValue<T, TSub> : SamValue<TSub> where T : struct  {
     public abstract T SamStruct { get; set; }
