@@ -256,8 +256,10 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
             return false;
         }
         if (other is RegistryValuePatternValue val) {
-            if (ResolvedTarget is not null && !ResolvedTarget.Equals(val.ResolvedTarget)) {
-                return false;
+            if (ResolvedTarget is not null) {
+                if (ResolvedTarget.Equals(val.ResolvedTarget)) {
+                    return false;
+                }
             } else if (val.ResolvedTarget is not null) {
                 return false;
             }
