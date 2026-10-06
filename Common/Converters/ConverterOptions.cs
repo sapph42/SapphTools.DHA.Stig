@@ -19,7 +19,9 @@ public static class ConverterOptions {
             if (opts is not null) {
                 return opts;
             }
-            opts = new();
+            opts = new() {
+                PropertyNameCaseInsensitive = true,
+            };
             foreach (JsonConverter converter in converters) {
                 opts.Converters.Add(converter);
             }
