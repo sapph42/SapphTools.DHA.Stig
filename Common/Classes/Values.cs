@@ -257,7 +257,7 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
         }
         if (other is RegistryValuePatternValue val) {
             if (ResolvedTarget is not null) {
-                if (ResolvedTarget.Equals(val.ResolvedTarget)) {
+                if (!ResolvedTarget.Equals(val.ResolvedTarget)) {
                     return false;
                 }
             } else if (val.ResolvedTarget is not null) {
