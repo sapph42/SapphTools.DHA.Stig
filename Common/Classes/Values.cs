@@ -155,7 +155,7 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
                         JsonSerializer.Serialize(otherVal.Data, Constants.JsonSerializerOptions),
                         Constants.JsonSerializerOptions
                     );
-                return firstEl.Equals(secondEl) && Kind == otherVal.Kind;
+                return JsonElement.DeepEquals(firstEl, secondEl) && Kind == otherVal.Kind;
             }
         } catch { }
         return false;
