@@ -7,7 +7,7 @@ dotnet build UnitTests/UnitTests.csproj
 dotnet run --project UnitTests/UnitTests.csproj --no-build -- --report-trx
 ```
 
-The project already enables the MSTest executable runner. Test Explorer also supports these tests and their categories. The default run includes active regression tests; it is deliberately not green at the reviewed HEAD.
+The project already enables the MSTest executable runner. Test Explorer also supports these tests and their categories. The default run includes active regression tests. The October 5 validation below records the original failures; the October 6 validation records the subsequent fixes.
 
 To run supported behavior separately while working through the recorded defects:
 
@@ -35,6 +35,12 @@ Artifact verification writes only into a GUID-named directory under the user's t
 Parallel execution uses independent fixtures and private JsonSerializerOptions copies. Recursive-create tests close generated borrowed wrappers explicitly. The only production-project change is `InternalsVisibleTo("UnitTests")`, which permits direct tests of the in-memory rollback hierarchy without reflection or Logger side effects.
 
 This is broad regression coverage, not a replacement for the staged WhatIf/remediation/rollback plan. Remote-host propagation, access-denied recovery, SYSTEM-only keys, SACL/security privileges, native policy mutation, certificate-store remediation, operational logging, UI workflows, and the previously identified remediation disposal/Pattern WhatIf paths still require suitable integration fixtures or manual tests.
+
+## Validation on October 6, 2026
+
+Base STIG commit: `ae64b0b`. Added 16 Pure test cases covering value-interface equality dispatch, registry data content and kind, Overwrite and action identity, pattern-stage boundaries and delimiter collisions, resolved-target equality and absence in both directions, setting/rule content equality and clone equality, rule hash consistency across insertion order, and DisposableList cleanup after an item throws.
+
+The same temporary Linux harness compiled the committed test files: **967 cases: 856 passed, 0 failed, 111 skipped**. All new cases passed without registry access or elevated privileges. Windows-dependent cases remain unexecuted in this environment.
 
 ## Validation on October 5, 2026
 
