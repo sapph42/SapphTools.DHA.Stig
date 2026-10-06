@@ -361,7 +361,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         return Equals(obj as RegKey) || Equals(obj as RegistryKey);
     }
     public override int GetHashCode() {
-        return ToString().GetHashCode();
+        return ToString().ToLowerInvariant().GetHashCode();
     }
     public override string ToString() {
         return _key.ToString().TrimEnd('\\');
