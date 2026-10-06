@@ -222,19 +222,19 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
             string.Empty
         ) +
         "\\" + Name;
-    private string EquitableString => Target.ToLowerInvariant() +
+    private string EquitableString => Target.ToLowerInvariant() + '|' +
         (TargetPattern is not null ?
             "\\" + TargetPattern.ToString() :
             string.Empty
-        ) +
+        ) + '|' +
         (SubPath is not null ?
             "\\" + SubPath.ToString().ToLowerInvariant() :
             string.Empty
-        ) +
+        ) + '|' +
          (PathPattern is not null ?
             "\\" + PathPattern.ToString() :
             string.Empty
-        ) +
+        ) + '|' +
         "\\" + Name.ToLowerInvariant();
     public override RegistryValuePatternValue Clone() {
         object? dataClone;
