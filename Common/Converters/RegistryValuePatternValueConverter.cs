@@ -60,23 +60,27 @@ public class RegistryValuePatternValueConverter : JsonConverter<RegistryValuePat
                 target = reader.GetString() ?? string.Empty;
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.TargetPattern))) {
                 reader.Read();
+                string? pattern = reader.GetString();
                 try {
-                    string? pattern = reader.GetString();
                     if (!string.IsNullOrWhiteSpace(pattern)) {
                         targetPattern = new(pattern);
                     }
-                } catch { }
+                } catch (Exception ex) {
+                    throw new JsonException("Failed to instantiate regex object from JSON", ex);
+                }
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.SubPath))) {
                 reader.Read();
                 subpath = reader.GetString();
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.PathPattern))) {
                 reader.Read();
+                string? pattern = reader.GetString();
                 try {
-                    string? pattern = reader.GetString();
                     if (!string.IsNullOrWhiteSpace(pattern)) {
                         pathPattern = new(pattern);
                     }
-                } catch { }
+                } catch (Exception ex) {
+                    throw new JsonException("Failed to instantiate regex object from JSON", ex);
+                }
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.Name))) {
                 reader.Read();
                 name = reader.GetString() ?? string.Empty;
