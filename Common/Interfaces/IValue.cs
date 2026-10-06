@@ -1,6 +1,6 @@
 ﻿namespace SapphTools.DHA.Stig.Common.Interfaces;
 
-public interface IValue {
+public interface IValue : IEquatable<IValue> {
     [JsonIgnore]
     public TargetType Action { get; }
     public string TargetString { get; }
@@ -9,6 +9,6 @@ public interface IValue {
 }
 
 [JsonConverter(typeof(ValueConverter))]
-public interface IValue<T> : IValue, IEquatable<IValue> {
+public interface IValue<T> : IValue {
     public new T Clone();
 }
