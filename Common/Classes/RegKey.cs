@@ -355,16 +355,16 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     }
     public bool Equals(RegKey? other) => Equals(other?._key);
     public bool Equals(RegistryKey? other) {
-        return _key.ToString().Equals(other?.ToString(), StringComparison.OrdinalIgnoreCase);
+        return ToString().Equals(other?.ToString().TrimEnd('\\'), StringComparison.OrdinalIgnoreCase);
     }
     public override bool Equals(object? obj) {
         return Equals(obj as RegKey) || Equals(obj as RegistryKey);
     }
     public override int GetHashCode() {
-        return _key.GetHashCode();
+        return ToString().GetHashCode();
     }
     public override string ToString() {
-        return _key.ToString();
+        return _key.ToString().TrimEnd('\\');
     }
 
     protected virtual void Dispose(bool disposing) {
