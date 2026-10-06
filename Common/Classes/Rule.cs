@@ -7,9 +7,9 @@ public class Rule : IEquatable<Rule> {
     public string? Description { get; set; }
 
     [JsonPropertyName("Settings")]
-    public required HashSet<Setting> Settings { get; set; }
+    public required SettingsSet Settings { get; set; }
     public Rule Clone() {
-        HashSet<Setting> clonedSettings = [];
+        SettingsSet clonedSettings = [];
         foreach (Setting setting in Settings) {
             clonedSettings.Add(setting.Clone());
         }
