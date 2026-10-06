@@ -37,28 +37,32 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         DisposableList<RegKey>? firstRoundKeys = null;
         DisposableList<RegKey>? secondRoundKeys = null;
         DisposableList<RegKey>? thirdRoundKeys = null;
-        RemediationActionResult? res = null;
-        foreach (RegKey key in thirdRoundKeys) {
-            object? currentVal = key.GetValue(val.Name, val.Kind);
-            RegistryValueKind currKind = key.GetValueKind(val.Name);
-            RegistryValueValue resolvedBefore = ResolveBefore(key, val);
-            RegistryValueValue resolvedTarget = ResolveTarget(key, val);
-            RegistryValuePatternValue before = new() {
-                Target = val.Target,
-                TargetPattern = val.TargetPattern,
-                SubPath = val.SubPath,
-                PathPattern = val.PathPattern,
-                Name = val.Name,
-                Data = resolvedBefore.Data,
-                Kind = resolvedBefore.Kind,
-                ResolvedTarget = resolvedBefore
-            };
-            RemediationActionResult thisRes = RegistryValueRemediator.SubRemediate(pre, before, key, resolvedTarget, whatIf);
-            if (res is null || !thisRes.IsSuccess) {
-                res = thisRes;
-            }
-        }
         try {
+            keys = [targetKey];
+            firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
+            secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, whatIf);
+            thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
+            RemediationActionResult? res = null;
+            foreach (RegKey key in thirdRoundKeys) {
+                object? currentVal = key.GetValue(val.Name, val.Kind);
+                RegistryValueKind currKind = key.GetValueKind(val.Name);
+                RegistryValueValue resolvedBefore = ResolveBefore(key, val);
+                RegistryValueValue resolvedTarget = ResolveTarget(key, val);
+                RegistryValuePatternValue before = new() {
+                    Target = val.Target,
+                    TargetPattern = val.TargetPattern,
+                    SubPath = val.SubPath,
+                    PathPattern = val.PathPattern,
+                    Name = val.Name,
+                    Data = resolvedBefore.Data,
+                    Kind = resolvedBefore.Kind,
+                    ResolvedTarget = resolvedBefore
+                };
+                RemediationActionResult thisRes = RegistryValueRemediator.SubRemediate(pre, before, key, resolvedTarget, whatIf);
+                if (res is null || !thisRes.IsSuccess) {
+                    res = thisRes;
+                }
+            }
             if (res is null) {
                 return Logger.LogNoAction(pre, TargetType.RegistryValuePattern, targetKey.ToString(), null);
             }
