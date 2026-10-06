@@ -181,7 +181,8 @@ public class RegistryValuePatternValue : IValue<RegistryValuePatternValue> {
             Name = Name,
             Data = dataClone,
             Kind = Kind,
-            Overwrite = Overwrite
+            Overwrite = Overwrite,
+            ResolvedTarget = ResolvedTarget?.Clone()
         };
     }
     public override string ToString() => TargetString;
