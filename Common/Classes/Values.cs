@@ -154,7 +154,8 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
                         JsonSerializer.Serialize(otherVal.Data, Constants.JsonSerializerOptions),
                         Constants.JsonSerializerOptions
                     );
-                return JsonElement.DeepEquals(firstEl, secondEl) && Kind == otherVal.Kind;
+                return JsonElement.DeepEquals(firstEl, secondEl) && 
+                    Kind == otherVal.Kind;
             }
         } catch { }
         return false;
@@ -185,7 +186,7 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
         };
     }
     public virtual bool Equals(IValue? other) {
-        if (other is null) {
+        if (other is null || Action != other.Action) {
             return false;
         }
         if (other is RegistryValueValue val) {
