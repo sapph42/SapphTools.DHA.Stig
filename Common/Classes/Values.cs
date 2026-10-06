@@ -10,6 +10,18 @@ public abstract class AclValue<T> : IValue<T> {
     public required string Target { get; set; }
     public string TargetString => Target;
     public abstract T Clone();
+    public virtual bool Equals(IValue? other) {
+        if (other is null) {
+            return false;
+        }
+        if (other as FileSystemAclValue is FileSystemAclValue fs) {
+            return Sddl.Equals(fs.Sddl) && Target.Equals(fs.Target, StringComparison.OrdinalIgnoreCase);
+        }
+        if (other as RegistryAclValue is RegistryAclValue reg) {
+            return Sddl.Equals(reg.Sddl) && Target.Equals(reg.Target, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
+    }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => (IValue)Clone()!;
 }
@@ -48,6 +60,17 @@ public class SeRightsValue : IValue<SeRightsValue> {
             Target = Target
         };
     }
+    public virtual bool Equals(IValue? other) {
+        if (other is null) {
+            return false;
+        }
+        if (other is SeRightsValue val) {
+            return !AccountNames.Except(val.AccountNames).Any() &&
+                !val.AccountNames.Except(AccountNames).Any() &&
+                Target.Value.Equals(val.Target.Value, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
+    }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
 }
@@ -63,9 +86,17 @@ public abstract class SamValue<T> : SamValue, IValue<T> {
     public abstract T Clone();
     public override string ToString() => TargetString;
     IValue IValue.Clone() => (IValue)Clone()!;
+    public abstract bool Equals(IValue? other);
 }
 public abstract class SamValue<T, TSub> : SamValue<TSub> where T : struct  {
     public abstract T SamStruct { get; set; }
+    public override bool Equals(IValue? other) {
+        if (other is SamValue<T, TSub> sam) {
+            return Target.Equals(sam.Target) && 
+                SamStruct.Equals(sam.SamStruct);
+        }
+        return false;
+    }
 }
 public class LockoutValue : SamValue<SamUserModalInfo3, LockoutValue> {
     public override SamActionType Target => SamActionType.AccountLockoutPolicy;
@@ -88,6 +119,16 @@ public class RegistryKeyValue : IValue<RegistryKeyValue> {
             Target = Target
         };
     }
+    public virtual bool Equals(IValue? other) {
+        if (other is null) {
+            return false;
+        }
+        if (other is RegistryKeyValue val) {
+            return Target.Equals(val.Target, StringComparison.OrdinalIgnoreCase) &&
+                Name.Equals(val.Name, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
+    }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
 }
@@ -101,7 +142,24 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
     public RegistryValueKind Kind { get; set; }
     public bool Overwrite { get; set; }
     public virtual string TargetString => Target + "\\" + Name;
-    public RegistryValueValue Clone() {
+    public bool DataEquals(IValue other) {
+        try {
+            if (other is RegistryValueValue otherVal) {
+                JsonElement firstEl = JsonSerializer
+                    .Deserialize<JsonElement>(
+                        JsonSerializer.Serialize(Data, Constants.JsonSerializerOptions),
+                        Constants.JsonSerializerOptions
+                    );
+                JsonElement secondEl = JsonSerializer
+                    .Deserialize<JsonElement>(
+                        JsonSerializer.Serialize(otherVal.Data, Constants.JsonSerializerOptions),
+                        Constants.JsonSerializerOptions
+                    );
+                return firstEl.Equals(secondEl) && Kind == otherVal.Kind;
+            }
+        } catch { }
+        return false;
+    }
     public virtual RegistryValueValue Clone() {
         object? dataClone;
         if (Data is null) {
@@ -126,6 +184,18 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
             Kind = Kind,
             Overwrite = Overwrite
         };
+    }
+    public virtual bool Equals(IValue? other) {
+        if (other is null) {
+            return false;
+        }
+        if (other is RegistryValueValue val) {
+            return Target.Equals(val.Target, StringComparison.OrdinalIgnoreCase) &&
+                Name.Equals(val.Name, StringComparison.OrdinalIgnoreCase) &&
+                DataEquals(val);
+
+        }
+        return false;
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
@@ -195,6 +265,21 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
             ResolvedTarget = ResolvedTarget?.Clone()
         };
     }
+    public override bool Equals(IValue? other) {
+        if (!base.Equals(other)) {
+            return false;
+        }
+        if (other is RegistryValuePatternValue val) {
+            if (ResolvedTarget is not null) {
+                return EquitableString.Equals(val.EquitableString) && ResolvedTarget.Equals(val.ResolvedTarget);
+            } else if (val.ResolvedTarget is not null) {
+                return false;
+            } else {
+                return EquitableString.Equals(val.EquitableString);
+            }
+        }
+        return false;
+    }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
 }
@@ -211,6 +296,13 @@ public class CertificatesValue : IValue<CertificatesValue> {
             Target = Target,
             Artifact = Artifact.Clone()
         };
+    }
+    public bool Equals(IValue? other) {
+        if (other is CertificatesValue val) {
+            return Target.Equals(val.Target, StringComparison.OrdinalIgnoreCase) &&
+                Artifact.Equals(val.Artifact);
+        }
+        return false;
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
