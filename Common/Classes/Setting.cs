@@ -19,6 +19,12 @@ public class Setting : IComparable<Setting>, IEquatable<Setting> {
     public bool Equals(Setting? other) {
         return Order == other?.Order;
     }
+    public bool DeepEquals(Setting? other) {
+        return Order == other?.Order &&
+            RequiredContext == other?.RequiredContext &&
+            Dangerous == other?.Dangerous &&
+            Data.Equals(other?.Data);
+    }
     public override int GetHashCode() {
         return Order.GetHashCode();
     }
