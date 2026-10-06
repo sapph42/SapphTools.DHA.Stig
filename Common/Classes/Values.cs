@@ -222,20 +222,6 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
             string.Empty
         ) +
         "\\" + Name;
-    private string EquitableString => Target.ToLowerInvariant() + '|' +
-        (TargetPattern is not null ?
-            "\\" + TargetPattern.ToString() :
-            string.Empty
-        ) + '|' +
-        (SubPath is not null ?
-            "\\" + SubPath.ToString().ToLowerInvariant() :
-            string.Empty
-        ) + '|' +
-         (PathPattern is not null ?
-            "\\" + PathPattern.ToString() :
-            string.Empty
-        ) + '|' +
-        "\\" + Name.ToLowerInvariant();
     public override RegistryValuePatternValue Clone() {
         object? dataClone;
         if (Data is null) {
@@ -270,13 +256,14 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
             return false;
         }
         if (other is RegistryValuePatternValue val) {
-            if (ResolvedTarget is not null) {
-                return EquitableString.Equals(val.EquitableString) && ResolvedTarget.Equals(val.ResolvedTarget);
+            if (ResolvedTarget is not null && !ResolvedTarget.Equals(val.ResolvedTarget)) {
+                return false;
             } else if (val.ResolvedTarget is not null) {
                 return false;
-            } else {
-                return EquitableString.Equals(val.EquitableString);
             }
+            return string.Equals(TargetPattern?.ToString(), val.TargetPattern?.ToString()) &&
+                string.Equals(SubPath?.ToString(), val.SubPath?.ToString(), StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(PathPattern?.ToString(), val.PathPattern?.ToString());
         }
         return false;
     }
