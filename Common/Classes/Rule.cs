@@ -40,6 +40,12 @@ public class Rule : IEquatable<Rule> {
     }
     public override bool Equals(object? obj) => Equals(obj as Rule);
     public override int GetHashCode() {
-        return RuleId.GetHashCode();
+        HashCode hc = new();
+        hc.Add(RuleId.ToLowerInvariant());
+        hc.Add(Description?.ToLowerInvariant());
+        foreach (Setting setting in Settings) {
+            hc.Add(setting.GetHashCode());
+        }
+        return hc.ToHashCode();
     }
 }

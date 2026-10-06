@@ -60,23 +60,27 @@ public class RegistryValuePatternValueConverter : JsonConverter<RegistryValuePat
                 target = reader.GetString() ?? string.Empty;
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.TargetPattern))) {
                 reader.Read();
+                string? pattern = reader.GetString();
                 try {
-                    string? pattern = reader.GetString();
                     if (!string.IsNullOrWhiteSpace(pattern)) {
                         targetPattern = new(pattern);
                     }
-                } catch { }
+                } catch (Exception ex) {
+                    throw new JsonException("Failed to instantiate regex object from JSON", ex);
+                }
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.SubPath))) {
                 reader.Read();
                 subpath = reader.GetString();
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.PathPattern))) {
                 reader.Read();
+                string? pattern = reader.GetString();
                 try {
-                    string? pattern = reader.GetString();
                     if (!string.IsNullOrWhiteSpace(pattern)) {
                         pathPattern = new(pattern);
                     }
-                } catch { }
+                } catch (Exception ex) {
+                    throw new JsonException("Failed to instantiate regex object from JSON", ex);
+                }
             } else if (reader.ValueTextEquals(nameof(RegistryValuePatternValue.Name))) {
                 reader.Read();
                 name = reader.GetString() ?? string.Empty;
@@ -114,34 +118,29 @@ public class RegistryValuePatternValueConverter : JsonConverter<RegistryValuePat
         writer.WritePropertyName(nameof(RegistryValuePatternValue.Name));
         writer.WriteStringValue(value.Name);
         writer.WritePropertyName(nameof(RegistryValuePatternValue.Data));
-        switch (value.Kind) {
-            case RegistryValueKind.String:
-            case RegistryValueKind.ExpandString:
-                writer.WriteStringValue(value.Data?.ToString());
-                break;
-            case RegistryValueKind.DWord:
-                writer.WriteNumberValue(Convert.ToInt32(value.Data));
-                break;
-            case RegistryValueKind.QWord:
-                writer.WriteNumberValue(Convert.ToInt64(value.Data));
-                break;
-            case RegistryValueKind.Binary:
-                if (value.Data is null) {
-                    writer.WriteBase64StringValue((byte[])[]);
-                } else {
+        if (value.Data is null) {
+            writer.WriteNullValue();
+        } else {
+            switch (value.Kind) {
+                case RegistryValueKind.String:
+                case RegistryValueKind.ExpandString:
+                    writer.WriteStringValue(value.Data.ToString());
+                    break;
+                case RegistryValueKind.DWord:
+                    writer.WriteNumberValue(Convert.ToInt32(value.Data));
+                    break;
+                case RegistryValueKind.QWord:
+                    writer.WriteNumberValue(Convert.ToInt64(value.Data));
+                    break;
+                case RegistryValueKind.Binary:
                     writer.WriteBase64StringValue((byte[])value.Data);
-                }
-                break;
-            case RegistryValueKind.MultiString:
-                if (value.Data is null) {
-                    JsonSerializer.Serialize(writer, (string[])[], options);
-                    writer.WriteBase64StringValue((byte[])[]);
-                } else {
+                    break;
+                case RegistryValueKind.MultiString:
                     JsonSerializer.Serialize(writer, (string[])value.Data, options);
-                }
-                break;
-            default:
-                throw new NotSupportedException($"Unsupported registry value kind: {value.Kind}");
+                    break;
+                default:
+                    throw new NotSupportedException($"Unsupported registry value kind: {value.Kind}");
+            }
         }
         writer.WritePropertyName(nameof(RegistryValuePatternValue.Kind));
         JsonSerializer.Serialize(writer, value.Kind, options);

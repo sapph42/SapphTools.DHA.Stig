@@ -12,14 +12,17 @@ public static class ByteMagic {
     }
 
     public static string ToHexString(this byte[] bytes) {
+        if (bytes.Length == 0) {
+            return string.Empty;
+        }
         var lookup32 = _lookup32;
         var result = new char[bytes.Length * 5];
         for (int i = 0; i < bytes.Length; i++) {
             var val = lookup32[bytes[i]];
             result[5 * i]     = '0';
             result[5 * i + 1] = 'x';
-            result[2 * i + 2] = (char)(val & 0xFFFF);
-            result[2 * i + 3] = (char)(val >> 16);
+            result[5 * i + 2] = (char)(val & 0xFFFF);
+            result[5 * i + 3] = (char)(val >> 16);
             result[5 * i + 4] = ',';
         }
         return new string(result[..^1]);

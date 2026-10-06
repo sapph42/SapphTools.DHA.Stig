@@ -102,10 +102,26 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
     public bool Overwrite { get; set; }
     public string TargetString => Target + "\\" + Name;
     public RegistryValueValue Clone() {
+        object? dataClone;
+        if (Data is null) {
+            dataClone = null;
+        } else {
+            dataClone = Kind switch {
+                RegistryValueKind.String => new string((string)Data),
+                RegistryValueKind.ExpandString => new string((string)Data),
+                RegistryValueKind.Binary => ((byte[])Data).Clone(),
+                RegistryValueKind.DWord => Data,
+                RegistryValueKind.MultiString => ((string[])Data).Clone(),
+                RegistryValueKind.QWord => Data,
+                _ => Data.GetType().GetInterface("ICloneable") is not null ?
+                    Data.GetType().GetMethod("Clone")?.Invoke(Data, null) :
+                    Data
+            };
+        }
         return new() {
             Target = Target,
             Name = Name,
-            Data = Data,
+            Data = dataClone,
             Kind = Kind,
             Overwrite = Overwrite
         };
@@ -141,15 +157,32 @@ public class RegistryValuePatternValue : IValue<RegistryValuePatternValue> {
         ) +
         "\\" + Name;
     public RegistryValuePatternValue Clone() {
+        object? dataClone;
+        if (Data is null) {
+            dataClone = null;
+        } else {
+            dataClone = Kind switch {
+                RegistryValueKind.String => new string((string)Data),
+                RegistryValueKind.ExpandString => new string((string)Data),
+                RegistryValueKind.Binary => ((byte[])Data).Clone(),
+                RegistryValueKind.DWord => Data,
+                RegistryValueKind.MultiString => ((string[])Data).Clone(),
+                RegistryValueKind.QWord => Data,
+                _ => Data.GetType().GetInterface("ICloneable") is not null ?
+                    Data.GetType().GetMethod("Clone")?.Invoke(Data, null) :
+                    Data
+            };
+        }
         return new() {
             Target = Target,
             TargetPattern = TargetPattern,
             SubPath = SubPath,
             PathPattern = PathPattern,
             Name = Name,
-            Data = Data,
+            Data = dataClone,
             Kind = Kind,
-            Overwrite = Overwrite
+            Overwrite = Overwrite,
+            ResolvedTarget = ResolvedTarget?.Clone()
         };
     }
     public override string ToString() => TargetString;

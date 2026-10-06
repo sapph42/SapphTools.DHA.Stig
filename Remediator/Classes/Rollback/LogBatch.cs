@@ -120,8 +120,8 @@ internal class LogRule(RemediationAction action) : IEnumerable {
     public string RuleId => Source.RuleId;
 
     public void Add(RemediationAction action) {
-        if (action.RuleId != Source.RuleId ||
-                action.ComputerName != Source.ComputerName ||
+        if (!StringComparer.OrdinalIgnoreCase.Equals(action.RuleId, Source.RuleId) ||
+                !StringComparer.OrdinalIgnoreCase.Equals(action.ComputerName, Source.ComputerName) ||
                 action.RemediationBatch != Source.RemediationBatch) {
             throw new ArgumentException("Provided value is not a proper child of this Rule instance");
         }

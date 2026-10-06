@@ -79,7 +79,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     }
     public RegistryKeyValue GetKeyValue() {
         return new() {
-            Target = Parent?.Name ?? Name,
+            Target = Parent?.FullName ?? FullName,
             Name = Parent?.Name is not null ? Name : string.Empty,
         };
     }
@@ -154,8 +154,8 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
         }
     }
     public RegKey? OpenKey(string path) {
-        if (path.StartsWith(FullName)) {
-            RegistryKey? key = _key.OpenSubKey(path[FullName.Length..]);
+        if (path.StartsWith(FullName, StringComparison.OrdinalIgnoreCase)) {
+            RegistryKey? key = _key.OpenSubKey(path[FullName.Length..].TrimStart('\\'));
             if (key is null) {
                 return null;
             }
@@ -355,16 +355,16 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     }
     public bool Equals(RegKey? other) => Equals(other?._key);
     public bool Equals(RegistryKey? other) {
-        return _key.ToString().Equals(other?.ToString(), StringComparison.OrdinalIgnoreCase);
+        return ToString().Equals(other?.ToString().TrimEnd('\\'), StringComparison.OrdinalIgnoreCase);
     }
     public override bool Equals(object? obj) {
         return Equals(obj as RegKey) || Equals(obj as RegistryKey);
     }
     public override int GetHashCode() {
-        return _key.GetHashCode();
+        return ToString().GetHashCode();
     }
     public override string ToString() {
-        return _key.ToString();
+        return _key.ToString().TrimEnd('\\');
     }
 
     protected virtual void Dispose(bool disposing) {

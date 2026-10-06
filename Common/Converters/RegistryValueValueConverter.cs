@@ -73,34 +73,29 @@ public class RegistryValueValueConverter : JsonConverter<RegistryValueValue> {
         writer.WritePropertyName(nameof(RegistryValueValue.Name));
         writer.WriteStringValue(value.Name);
         writer.WritePropertyName(nameof(RegistryValueValue.Data));
-        switch (value.Kind) {
-            case RegistryValueKind.String:
-            case RegistryValueKind.ExpandString:
-                writer.WriteStringValue(value.Data?.ToString());
-                break;
-            case RegistryValueKind.DWord:
-                writer.WriteNumberValue(Convert.ToInt32(value.Data));
-                break;
-            case RegistryValueKind.QWord:
-                writer.WriteNumberValue(Convert.ToInt64(value.Data));
-                break;
-            case RegistryValueKind.Binary:
-                if (value.Data is null) {
-                    writer.WriteBase64StringValue((byte[])[]);
-                } else {
+        if (value.Data is null) {
+            writer.WriteNullValue();
+        } else {
+            switch (value.Kind) {
+                case RegistryValueKind.String:
+                case RegistryValueKind.ExpandString:
+                    writer.WriteStringValue(value.Data.ToString());
+                    break;
+                case RegistryValueKind.DWord:
+                    writer.WriteNumberValue(Convert.ToInt32(value.Data));
+                    break;
+                case RegistryValueKind.QWord:
+                    writer.WriteNumberValue(Convert.ToInt64(value.Data));
+                    break;
+                case RegistryValueKind.Binary:
                     writer.WriteBase64StringValue((byte[])value.Data);
-                }
-                break;
-            case RegistryValueKind.MultiString:
-                if (value.Data is null) {
-                    JsonSerializer.Serialize(writer, (string[])[], options);
-                    writer.WriteBase64StringValue((byte[])[]);
-                } else {
+                    break;
+                case RegistryValueKind.MultiString:
                     JsonSerializer.Serialize(writer, (string[])value.Data, options);
-                }
-                break;
-            default:
-                throw new NotSupportedException($"Unsupported registry value kind: {value.Kind}");
+                    break;
+                default:
+                    throw new NotSupportedException($"Unsupported registry value kind: {value.Kind}");
+            }
         }
         writer.WritePropertyName(nameof(RegistryValueValue.Kind));
         JsonSerializer.Serialize(writer, value.Kind, options);

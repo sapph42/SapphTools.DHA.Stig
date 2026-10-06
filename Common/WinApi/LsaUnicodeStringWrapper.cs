@@ -7,7 +7,8 @@ public class LsaUnicodeStringWrapper : IDisposable, IEquatable<LsaUnicodeStringW
     private readonly Guid theseus = Guid.NewGuid();
 
     public LsaUnicodeStringWrapper(string val) {
-        ushort len = (ushort)val.Length;
+        byte[] bytes = System.Text.Encoding.Unicode.GetBytes(val);
+        ushort len = (ushort)bytes.Length;
         ushort maxLen = (ushort)(len + 2);
         _unicodeString = new() {
             Length = len,
@@ -16,7 +17,7 @@ public class LsaUnicodeStringWrapper : IDisposable, IEquatable<LsaUnicodeStringW
         _buffer = SafeHBuffer.AllocFactory(maxLen);
         _buffer.WriteArray(
             0,
-            System.Text.Encoding.Unicode.GetBytes(val),
+            bytes,
             0,
             len
         );
