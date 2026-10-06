@@ -9,4 +9,14 @@ public static class Constants {
         Properties.Resources.RootCert_D37ECF61C0B4ED88681EF3630C4E2FC787B37AEF,
         Properties.Resources.RootCert_D73CA91102A2204A36459ED32213B467D7CE97FB
     ];
+    public readonly static JsonSerializerOptions JsonSerializerOptions = new(ConverterOptions.JsonSerializerOptions) {
+        AllowTrailingCommas = true,
+        IgnoreReadOnlyFields = false,
+        IncludeFields = true,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        RespectNullableAnnotations = true,
+        //RespectRequiredConstructorParameters = true,
+        WriteIndented = true,
+    };
 }
