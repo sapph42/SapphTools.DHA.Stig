@@ -48,8 +48,9 @@ public class SettingsSet : SortedSet<Setting> {
     public SettingsSet() : base(SettingComparer) { }
     public SettingsSet(IEnumerable<Setting> settings) : base(settings, SettingComparer) { }
     public new bool SetEquals(IEnumerable<Setting> other) {
-        SettingsSet otherSorted = [.. other];
-        if (otherSorted.Count != other.Count()) {
+        List<Setting> otherUnsorted = [.. other];
+        SettingsSet otherSorted = [.. otherUnsorted];
+        if (otherSorted.Count != otherUnsorted.Count) {
             return false;
         }
         if (otherSorted.Count != Count) {
