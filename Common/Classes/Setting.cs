@@ -1,5 +1,5 @@
 ﻿namespace SapphTools.DHA.Stig.Common.Classes;
-public class Setting : IComparable<Setting> {
+public class Setting : IComparable<Setting>, IEquatable<Setting> {
     public int Order { get; set; }
     public SettingContext RequiredContext { get; set; } = SettingContext.Administrator;
     public bool Dangerous { get; set; } = false;
@@ -14,6 +14,10 @@ public class Setting : IComparable<Setting> {
     }
     public int CompareTo(Setting? other) {
         return Order.CompareTo(other?.Order);
+    }
+    public override bool Equals(object? obj) => Equals(obj as Setting);
+    public bool Equals(Setting? other) {
+        return Order == other?.Order;
     }
     public override int GetHashCode() {
         return Order.GetHashCode();
