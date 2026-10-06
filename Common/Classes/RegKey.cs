@@ -79,7 +79,7 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
     }
     public RegistryKeyValue GetKeyValue() {
         return new() {
-            Target = Parent?.Name ?? Name,
+            Target = Parent?.FullName ?? FullName,
             Name = Parent?.Name is not null ? Name : string.Empty,
         };
     }
