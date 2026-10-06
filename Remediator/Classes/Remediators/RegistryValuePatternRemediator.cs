@@ -33,10 +33,10 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         if (!createRes.IsSuccess || targetKey is null) {
             return createRes;
         }
-        List<RegKey> keys = [targetKey];
-        List<RegKey> firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
-        List<RegKey> secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, whatIf);
-        List<RegKey> thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
+        DisposableList<RegKey>? keys = null;
+        DisposableList<RegKey>? firstRoundKeys = null;
+        DisposableList<RegKey>? secondRoundKeys = null;
+        DisposableList<RegKey>? thirdRoundKeys = null;
         RemediationActionResult? res = null;
         foreach (RegKey key in thirdRoundKeys) {
             object? currentVal = key.GetValue(val.Name, val.Kind);
@@ -64,18 +64,10 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
             }
             return res;
         } finally {
-            foreach (RegKey key in thirdRoundKeys) {
-                key.Dispose();
-            }
-            foreach (RegKey key in secondRoundKeys) {
-                key.Dispose();
-            }
-            foreach (RegKey key in firstRoundKeys) {
-                key.Dispose();
-            }
-            foreach (RegKey key in keys) {
-                key.Dispose();
-            }
+            thirdRoundKeys?.Dispose();
+            secondRoundKeys?.Dispose();
+            firstRoundKeys?.Dispose();
+            keys?.Dispose();
         }
     }
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
@@ -105,8 +97,8 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         };
         return RegistryValueRemediator.Rollback(remBatch, ruleBatch, ephemiral);
     }
-    private static List<RegKey> ExpandMatchingSubKeys(IEnumerable<RegKey>? keys, Regex? pattern) {
-        List<RegKey> returnList = [];
+    private static DisposableList<RegKey> ExpandMatchingSubKeys(IEnumerable<RegKey>? keys, Regex? pattern) {
+        DisposableList<RegKey> returnList = [];
         if (keys is null) {
             return returnList;
         }
@@ -123,8 +115,8 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         }
         return returnList;
     }
-    private static List<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, bool whatIf = true) {
-        List<RegKey> returnList = [];
+    private static DisposableList<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, bool whatIf = true) {
+        DisposableList<RegKey> returnList = [];
         if (keys is null) {
             return returnList;
         }
