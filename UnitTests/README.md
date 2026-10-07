@@ -36,7 +36,31 @@ Parallel execution uses independent fixtures and private JsonSerializerOptions c
 
 This is broad regression coverage, not a replacement for the staged WhatIf/remediation/rollback plan. Remote-host propagation, access-denied recovery, SYSTEM-only keys, SACL/security privileges, native policy mutation, certificate-store remediation, operational logging, UI workflows, and the previously identified remediation disposal/Pattern WhatIf paths still require suitable integration fixtures or manual tests.
 
-## Validation on October 6, 2026
+## Coverage-driven expansion on October 6, 2026
+
+Base STIG commit: `d6cc983`. The supplied Windows coverage XML identified the targets for 142 additional cases:
+
+- Value/interface/artifact equality, safety metadata, duplicate-order collection identity, one-shot enumeration, and pattern clones across registry data kinds.
+- ACL/SeRights/Setting converter rejection of non-object and truncated input, invalid actions, incomplete objects, and unknown nested fields.
+- Symbolic/numeric/combined access masks, rights metadata by object type, and well-known-principal metadata round trips.
+- Windows-only trustee and ACE equality/hash contracts; DACL addition/removal/replacement; descriptor cloning; and in-memory file/registry security-object conversion, including owner/group/DACL/SACL preservation. No descriptor is persisted.
+- LsaException reason/cause/message contracts without opening LSA policy.
+
+Complete Linux harness result against published SecurityDescriptor `ccaea5a`: **1,109 cases: 963 passed, 12 failed, 134 skipped**. Of the new cases, **107 passed, 12 failed, 23 require Windows**. All failures are active KnownRegression cases:
+
+| New reproduced regression | Cases | Behavior |
+| --- | ---: | --- |
+| Numeric rights | 5 | Numeric construction omits the `0x` prefix; nonzero masks subsequently read as zero and emitted text is not parseable SDDL. |
+| Combined symbolic rights | 2 | Combining named flags reaches enum attribute lookup for an unnamed composite and throws. |
+| Partial rights parsing | 2 | Valid rights embedded in invalid surrounding text are accepted instead of rejecting the entire input. |
+| Mandatory-right metadata | 1 | Equal numeric enum values lose the mandatory-right aliases during metadata enumeration/lookup. |
+| Explicit LsaException messages | 2 | Supplied messages are discarded by the reason/parameter constructor chain. |
+
+The descriptor clone test is also tagged KnownRegression because the published source shares the ACL list and entries. It could not execute on Linux; the user's newer local dependency may already fix it. All 23 new WindowsModel cases need a Windows run. The existing full solution/dependency mismatch described below still prevents a full solution build here.
+
+Local coverage collection was attempted but the coverage host cannot create its named-pipe socket in this environment. No coverage percentage improvement is claimed; rerun coverage on Windows to measure it against the supplied report.
+
+## Earlier validation on October 6, 2026
 
 Base STIG commit: `ae64b0b`. Added 16 Pure test cases covering value-interface equality dispatch, registry data content and kind, Overwrite and action identity, pattern-stage boundaries and delimiter collisions, resolved-target equality and absence in both directions, setting/rule content equality and clone equality, rule hash consistency across insertion order, and DisposableList cleanup after an item throws.
 
