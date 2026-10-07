@@ -21,6 +21,7 @@ public partial class FileAceEditor : Form {
     private const uint FILE_WRITE_OWNER      = 0x00080000;
     private const uint FILE_ALL_ACCESS       = 0x001F01FF;
     private NTAccount? _account;
+    private Trustee? _trustee;
     public Ace? Ace { get; private set; }
     public FileAceEditor() {
         InitializeComponent();
@@ -48,7 +49,8 @@ public partial class FileAceEditor : Form {
         InitializeComponent();
         Ace = ace;
         if (ace is not null) {
-            _account = new(ace.Trustee.GetDisplay());
+            _trustee = ace.Trustee;
+            _account = new(_trustee.GetDisplay());
             PrincipalName.Text = _account.Value;
             uint rights = ace.Right.GetHexValue();
             if ((rights & FILE_ALL_ACCESS) == FILE_ALL_ACCESS) {
@@ -177,7 +179,7 @@ public partial class FileAceEditor : Form {
             right,
             null,
             null,
-            Trustee.Construct((SecurityIdentifier)_account!.Translate(typeof(SecurityIdentifier)))
+            _trustee!
         );
     }
 
@@ -185,6 +187,7 @@ public partial class FileAceEditor : Form {
         PrincipalPicker picker = new();
         if (picker.ShowDialog() == DialogResult.OK && picker.Principal is Trustee principal) {
             _account = new(principal.GetDisplay());
+            _trustee = principal;
             PrincipalName.Text = _account.Value;
         }
     }
