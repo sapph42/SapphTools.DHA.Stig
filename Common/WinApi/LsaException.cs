@@ -21,32 +21,28 @@ public class LsaException : Exception {
     public LsaExceptionReason Reason;
     public override string Message {
         get {
-            SetMessageField();
-            string s = _message;
-            if (!string.IsNullOrEmpty(_paramName)) {
-                s += " " + Environment.NewLine + "Parameter name: " + _paramName;
-            }
-            return s;
+            return ReasonText +
+                (_message is not null ?
+                    $"({Environment.NewLine}{_message})" :
+                    string.Empty) +
+                (_paramName is not null ?
+                    $"({Environment.NewLine}Parameter name: {_paramName})" :
+                    string.Empty);
         }
     }
-    [MemberNotNull(nameof(_message))]
-    protected void SetMessageField() {
-        if (!string.IsNullOrWhiteSpace(_message)) {
-            return;
-        }
-        _message = Reason switch {
-            LsaExceptionReason.InvalidArgument => "An invalid argument was provided.",
-            LsaExceptionReason.OpenPolicy => "An exception occured while attempting to open the LSA Policy object.",
-            LsaExceptionReason.SidBufferCreation => "An exception occured while attempting to create unmanaged buffers for account SIDs",
-            LsaExceptionReason.QueryRight => "An exception occured while attempting to query a right from LSA policy.",
-            LsaExceptionReason.ObjectNameNotFound => "An object in the LSA policy database was not found.",
-            LsaExceptionReason.AddAccountToRight => "An exception occured while attempting to add a SID to an LSA right.",
-            LsaExceptionReason.RemoveAccountFromRight => "An exception occured while attempting to remove a SID from an LSA right.",
-            _ => "An unknown exception in the LSA API stack occured.",
-        };
-    }
-    public LsaException(string message) : this(message, LsaExceptionReason.Unknown) { }
-    public LsaException(string message, Exception ex) : this(message, LsaExceptionReason.Unknown, ex) { }
+    protected string? ReasonText => Reason switch {
+        LsaExceptionReason.InvalidArgument => "An invalid argument was provided.",
+        LsaExceptionReason.OpenPolicy => "An exception occured while attempting to open the LSA Policy object.",
+        LsaExceptionReason.SidBufferCreation => "An exception occured while attempting to create unmanaged buffers for account SIDs",
+        LsaExceptionReason.QueryRight => "An exception occured while attempting to query a right from LSA policy.",
+        LsaExceptionReason.ObjectNameNotFound => "An object in the LSA policy database was not found.",
+        LsaExceptionReason.AddAccountToRight => "An exception occured while attempting to add a SID to an LSA right.",
+        LsaExceptionReason.RemoveAccountFromRight => "An exception occured while attempting to remove a SID from an LSA right.",
+        _ => "An unknown exception in the LSA API stack occured.",
+    };
+
+    public LsaException(string message) : this(null, message, LsaExceptionReason.Unknown) { }
+    public LsaException(string message, Exception ex) : this(null, message, LsaExceptionReason.Unknown, ex) { }
     public LsaException(LsaExceptionReason reason, Exception ex) : base(null, ex) {
         Reason = reason;
     }
@@ -68,9 +64,9 @@ public class LsaException : Exception {
         _paramName = paramName;
     }
     public LsaException(string? paramName, string message, LsaExceptionReason reason) : this(paramName, reason) {
-        _paramName = paramName;
+        _message = message;
     }
     public LsaException(string? paramName, string message, LsaExceptionReason reason, Exception ex) : this(paramName, reason, ex) {
-        _paramName = paramName;
+        _message = message;
     }
 }
