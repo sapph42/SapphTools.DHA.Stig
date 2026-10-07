@@ -7,10 +7,10 @@ namespace SapphTools.DHA.Stig.Remediator.Editor.Forms.Common {
             InitializeComponent();
             Label.Text = string.Format(Label.Text, search);
             foreach (string name in names) {
-                DataGridViewRow row = (DataGridViewRow)Results.RowTemplate.Clone();
+                int index = Results.Rows.Add();
+                DataGridViewRow row = Results.Rows[index];
                 row.Cells["PrincipalDgv"].Value = row.Tag = Trustee.Construct(name);
                 row.Cells["AuthorityDgv"].Value = name.Split('\\')[0];
-                Results.Rows.Add(row);
             }
         }
         private void Results_SelectionChanged(object sender, EventArgs e) {
