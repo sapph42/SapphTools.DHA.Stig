@@ -35,7 +35,7 @@ public class AssertionObjectConverter : JsonConverter<IAssertionObject> {
     public override void Write(Utf8JsonWriter writer, IAssertionObject value, JsonSerializerOptions options) {
         JsonSerializerOptions opts = new(options);
         opts.Converters.Add(new IAOTypeConverter());
-        JsonSerializer.Serialize(writer, value, value.GetType(), options);
+        JsonSerializer.Serialize(writer, value, value.GetType(), opts);
     }
 }
 public class IAOTypeConverter : JsonConverter<Type> {
