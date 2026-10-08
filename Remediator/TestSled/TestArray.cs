@@ -6,6 +6,6 @@ public class TestArray {
     public List<string> RemoteProdTarget { get; set; } = [];
     public List<Test> Tests { get; set; } = [];
     public DateTime SledRunDate {  get; set; } = DateTime.Now;
-    public bool Success => Tests.All(t => t.TestRun && t.TestPass.HasValue && t.TestPass.Value);
-    public Test LastRunTest => Tests.OrderBy(l => l).Last(l => l.TestRun);
+    public bool Success => Tests.All(t => t.TestRun && t.TestPass.HasValue && t.TestPass.Value) && Tests.Count != 0;
+    public Test? LastRunTest => Tests.OrderBy(l => l).LastOrDefault(l => l.TestRun);
 }

@@ -46,7 +46,7 @@ public static class TestAssert {
             return;
         }
         ComparisonAssertionObject obj = new(valName, valPattern, left, right);
-        throw new TestAssertException(obj, Assertion.IsEqual);
+        throw new TestAssertException(obj, Assertion.IsNotEqual);
     }
     public static void IsNotEqual<T>(
             object? left,
@@ -54,11 +54,16 @@ public static class TestAssert {
             IComparer<T> comparer,
             [CallerArgumentExpression(nameof(left))] string valName = "left",
             [CallerArgumentExpression(nameof(right))] string valPattern = "right") {
+        ComparisonAssertionObject obj;
+        if (ReferenceEquals(left, right)) {
+            obj = new(valName, valPattern, left, right);
+            throw new TestAssertException(obj, Assertion.IsNotEqual);
+        }
         if (left is not T lt || right is not T rt || comparer.Compare(lt, rt) != 0) {
             return;
         }
-        ComparisonAssertionObject obj = new(valName, valPattern, left, right);
-        throw new TestAssertException(obj, Assertion.IsEqual);
+        obj = new(valName, valPattern, left, right);
+        throw new TestAssertException(obj, Assertion.IsNotEqual);
     }
     public static void IsNotNull(object? value, [CallerArgumentExpression(nameof(value))] string name = "value") {
         if (value is not null) {
@@ -85,7 +90,7 @@ public static class TestAssert {
             string? value, 
             Regex? pattern, 
             [CallerArgumentExpression(nameof(value))] string valName = "value",
-            [CallerArgumentExpression(nameof(pattern))] string valPattern = "value") {
+            [CallerArgumentExpression(nameof(pattern))] string valPattern = "pattern") {
         if (value is not null && pattern is not null && pattern.Match(value).Success) {
             return;
         }
@@ -132,7 +137,7 @@ public struct ComparisonAssertionObject
 
     public static explicit operator ComparisonAssertionObject(
             (string leftName, string rightName, object? leftValue, object? rightValue) data) =>
-        new(data.leftName, data.rightName, data.leftValue, data.rightName);
+        new(data.leftName, data.rightName, data.leftValue, data.rightValue);
 }
 public struct DualAssertionObject
         (string valueName, string otherName, object? valueValue = null, object? otherValue = null) : IAssertionObject {
@@ -149,10 +154,12 @@ public class TestAssertException : Exception {
     public required IAssertionObject AssertionObject { get; init; }
     public required Assertion Type { get; init; }
     public string? InnerMessage { get; init; }
+    [SetsRequiredMembers]
     internal TestAssertException(IAssertionObject assertionObject, Assertion type) : base(BuildMessage(assertionObject, type)) {
         AssertionObject = assertionObject;
         Type = type;
     }
+    [SetsRequiredMembers]
     internal TestAssertException(IAssertionObject assertionObject, Assertion type, Exception ex) : 
             base(BuildMessage(assertionObject, type), ex) {
         AssertionObject = assertionObject;
@@ -177,7 +184,7 @@ public class TestAssertException : Exception {
     private static string BuildMessage(ComparisonAssertionObject obj, Assertion type, bool dispatched) {
         return $"TestAssert {type} failed." +
             $"{obj.LeftName}: <{obj.LeftValue?.ToString() ?? "null"}>." +
-            $"{obj.LeftName}: <{obj.RightValue?.ToString() ?? "null"}>.";
+            $"{obj.RightName}: <{obj.RightValue?.ToString() ?? "null"}>.";
     }
     private static string BuildMessage(DualAssertionObject obj, Assertion type, bool dispatched) {
         return $"TestAssert {type} for {obj.ValueName} failed." +

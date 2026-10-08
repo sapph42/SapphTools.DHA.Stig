@@ -8,7 +8,6 @@ public class AssertionObjectConverter : JsonConverter<IAssertionObject> {
         Assembly.GetExecutingAssembly()
             .GetTypes()
             .Where(t =>
-                t.IsClass &&
                 !t.IsAbstract &&
                 typeof(IAssertionObject).IsAssignableFrom(t))
             .ToDictionary(t => t.Name, StringComparer.Ordinal);
@@ -34,6 +33,18 @@ public class AssertionObjectConverter : JsonConverter<IAssertionObject> {
     }
 
     public override void Write(Utf8JsonWriter writer, IAssertionObject value, JsonSerializerOptions options) {
+        JsonSerializerOptions opts = new(options);
+        opts.Converters.Add(new IAOTypeConverter());
         JsonSerializer.Serialize(writer, value, value.GetType(), options);
+    }
+}
+public class IAOTypeConverter : JsonConverter<Type> {
+    public override Type? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+        throw new NotImplementedException();
+    }
+
+    public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) {
+        writer.WritePropertyName(nameof(IAssertionObject.AssertionObjectType));
+        writer.WriteStringValue(value.Name);
     }
 }
