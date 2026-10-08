@@ -2,6 +2,7 @@ using System.Security.AccessControl;
 using System.Text.Json.Nodes;
 using SapphTools.SecurityDescriptor;
 using SapphTools.SecurityDescriptor.Classes;
+using SapphTools.SecurityDescriptor.Classes.Rights;
 using SapphTools.SecurityDescriptor.Enums;
 using SapphTools.SecurityDescriptor.Extensions;
 
@@ -110,14 +111,21 @@ public sealed class SecurityDescriptorModelTests {
         var flags = value.DaclFlags;
         string audit = value.SaclAces!.Single().ToString();
         Ace replacement = Allow("BA", "GW");
-        value.AddDacl(Allow()); Assert.AreEqual(2, value.DaclAces!.Count);
-        value.RemoveDacl(Allow("WD")); Assert.AreEqual(2, value.DaclAces.Count);
+        value.AddDacl(Allow()); 
+        Assert.AreEqual(2, value.DaclAces!.Count);
+        value.RemoveDacl(Allow("WD")); 
+        Assert.AreEqual(2, value.DaclAces.Count);
         value.ReplaceDacl(Allow("BA", "GR"), replacement);
-        Assert.IsTrue(value.DaclAces[0].Equals(Allow())); Assert.AreSame(replacement, value.DaclAces[1]);
-        value.ReplaceDacl(Allow("WD"), Allow("AU")); Assert.AreEqual(3, value.DaclAces.Count);
+        Assert.IsTrue(value.DaclAces[0].Equals(Allow())); 
+        Assert.AreSame(replacement, value.DaclAces[1]);
+        value.ReplaceDacl(Allow("WD"), Allow("AU")); 
+        Assert.AreEqual(3, value.DaclAces.Count);
         value.RemoveDacl(Allow()); Assert.AreEqual(2, value.DaclAces.Count);
-        Assert.AreEqual(owner, value.Owner.SddlSafe); Assert.AreEqual(group, value.Group.SddlSafe);
-        Assert.AreEqual(flags, value.DaclFlags); Assert.AreEqual(audit, value.SaclAces.Single().ToString());
+        Assert.AreEqual(owner, value.Owner.SddlSafe); 
+        Assert.AreEqual(group, value.Group.SddlSafe);
+        Assert.AreEqual(flags, value.DaclFlags);
+        Assert.IsNotNull(value.SaclAces);
+        Assert.AreEqual(audit, value.SaclAces.Single().ToString());
         Sddl reparsed = new(value.ToString(), ObjectType.File);
         Assert.AreEqual(value.ToString(), reparsed.ToString());
     }

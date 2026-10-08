@@ -125,7 +125,8 @@ public sealed class SecurityRightTests {
     public void MetadataEnumerationsRoundTripWellKnownPrincipalNames() {
         string[] full = MetaExtensions.GetAllFull<SidString>().ToArray();
         string[] expanded = MetaExtensions.GetAllExpanded<SidString>().ToArray();
-        Assert.IsTrue(full.Length > 0); Assert.IsTrue(expanded.Length > 0);
+        Assert.IsTrue(full.Length > 0); 
+        Assert.IsTrue(expanded.Length > 0);
         CollectionAssert.AreEquivalent(full, Trustee.EnumerateWellKnownPrincipals().ToArray());
         foreach (string name in full) {
             Assert.IsTrue(MetaExtensions.TryGetMetaFull(name, out SidString value));
