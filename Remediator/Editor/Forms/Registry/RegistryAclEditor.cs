@@ -88,8 +88,8 @@ public partial class RegistryAclEditor : Form {
             SddlAceType.SDDL_ACCESS_DENIED => "Deny",
             _ => null
         };
-        if (MetaExtensions.TryGetMetaAbbr(ace.Right.Value, out SddlRights rights)) {
-            row.Cells["AccessDgv"].Value = rights.GetDescription();
+        if (RegistryRight.ByVal.TryGetValue(ace.Right.ToValue(), out RegistryRight? right)) {
+            row.Cells["AccessDgv"].Value = right.GetDescription();
         } else {
             row.Cells["AccessDgv"].Value = "Special";
         }

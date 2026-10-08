@@ -85,8 +85,8 @@ public partial class FileAclEditor : Form {
             SddlAceType.SDDL_ACCESS_DENIED => "Deny",
             _ => null
         };
-        if (MetaExtensions.TryGetMetaAbbr(ace.Right.Value, out SddlRights rights)) {
-            row.Cells["AccessDgv"].Value = rights.GetDescription();
+        if (FileRight.ByVal.TryGetValue(ace.Right.ToValue(), out FileRight? right)) {
+            row.Cells["AccessDgv"].Value = right.GetDescription();
         } else {
             row.Cells["AccessDgv"].Value = "Special";
         }

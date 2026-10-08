@@ -1,8 +1,6 @@
-﻿using SapphTools.DHA.Stig.Remediator.Editor.Forms.Common;
-using SapphTools.SecurityDescriptor.Classes;
+﻿using SapphTools.SecurityDescriptor.Classes;
 using SapphTools.SecurityDescriptor.Enums;
 using System.Security.Principal;
-using SddlRight = SapphTools.SecurityDescriptor.Classes.Right;
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Forms.File;
 public partial class FileAceEditor : Form {
@@ -52,7 +50,7 @@ public partial class FileAceEditor : Form {
             _trustee = ace.Trustee;
             _account = new(_trustee.GetDisplay());
             PrincipalName.Text = _account.Value;
-            uint rights = ace.Right.GetHexValue();
+            uint rights = ace.Right.ToValue();
             if ((rights & FILE_ALL_ACCESS) == FILE_ALL_ACCESS) {
                 FullControl.Checked = true;
             } else {
@@ -110,7 +108,7 @@ public partial class FileAceEditor : Form {
     private void Ok_Click(object sender, EventArgs e) {
         SddlRight right;
         if (FullControl.Checked) {
-            right = SddlRight.Construct(SddlRights.SDDL_FILE_ALL);
+            right = SddlRight.Construct(FileRight.SDDL_FILE_ALL.Value);
         } else {
             uint rights = 0;
             if (Traverse.Checked)

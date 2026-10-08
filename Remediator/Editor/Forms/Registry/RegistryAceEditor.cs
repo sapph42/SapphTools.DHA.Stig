@@ -1,7 +1,6 @@
 ﻿using SapphTools.SecurityDescriptor.Classes;
 using SapphTools.SecurityDescriptor.Enums;
 using System.Security.Principal;
-using SddlRight = SapphTools.SecurityDescriptor.Classes.Right;
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Forms.Registry;
 public partial class RegistryAceEditor : Form {
@@ -47,7 +46,7 @@ public partial class RegistryAceEditor : Form {
             _trustee = ace.Trustee;
             _account = new(_trustee.GetDisplay());
             PrincipalName.Text = _account.Value;
-            uint rights = ace.Right.GetHexValue();
+            uint rights = ace.Right.ToValue();
             if ((rights & AllMask) == AllMask) {
                 FullControl.Checked = true;
             } else {
@@ -95,7 +94,7 @@ public partial class RegistryAceEditor : Form {
     private void Ok_Click(object sender, EventArgs e) {
         SddlRight right;
         if (FullControl.Checked) {
-            right = SddlRight.Construct(SddlRights.SDDL_KEY_ALL);
+            right = SddlRight.Construct(RegistryRight.SDDL_KEY_ALL.Value);
         } else {
             uint rights = 0;
             if (QueryValue.Checked)
