@@ -34,8 +34,8 @@ public sealed class SecurityRightTests {
             SddlRightValue? value = SddlRightValue.Construct(entry.Key, type);
             Assert.IsNotNull(value);
             Assert.AreSame(entry.Value, value);
-            Assert.IsFalse(string.IsNullOrWhiteSpace(value.GetDescription()));
-            Assert.AreEqual(entry.Value.Description, value.GetDescription());
+            Assert.IsFalse(string.IsNullOrWhiteSpace(value.Description));
+            Assert.AreEqual(entry.Value.Description, value.Description);
         }
         Assert.IsNull(SddlRightValue.Construct("Invented", type));
     }
@@ -123,8 +123,8 @@ public sealed class SecurityRightTests {
 
     [TestMethod]
     public void MetadataEnumerationsRoundTripWellKnownPrincipalNames() {
-        string[] full = MetaExtensions.GetAllFull<SidString>().ToArray();
-        string[] expanded = MetaExtensions.GetAllExpanded<SidString>().ToArray();
+        string[] full = [.. MetaExtensions.GetAllFull<SidString>()];
+        string[] expanded = [.. MetaExtensions.GetAllExpanded<SidString>()];
         Assert.IsTrue(full.Length > 0); 
         Assert.IsTrue(expanded.Length > 0);
         CollectionAssert.AreEquivalent(full, Trustee.EnumerateWellKnownPrincipals().ToArray());
