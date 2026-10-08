@@ -1,6 +1,4 @@
-﻿using SapphTools.DHA.Stig.Common.Classes;
-
-namespace SapphTools.DHA.Stig.Common.Converters;
+﻿namespace SapphTools.DHA.Stig.Common.Converters;
 public sealed class ValueConverter : JsonConverter<IValue> {
     public override IValue Read(
         ref Utf8JsonReader reader,
