@@ -17,6 +17,26 @@ public sealed class SecurityDescriptorModelTests {
     }
     private static Ace Allow(string trustee = "SY", string right = "GA") => new("A", "", right, null, null, trustee);
 
+    [DataTestMethod, DataRow("FA", "0x001F01FF"), DataRow("KR", "KX")]
+    [DataRow("GRGW", "0xC0000000")]
+    public void AceEqualityAndHashingUseEquivalentRightsMasks(string left, string right) {
+        Ace first = Allow(right: left), second = Allow(right: right);
+        Assert.IsTrue(first.Equals(second)); Assert.IsTrue(second.Equals(first));
+        Assert.AreEqual(first.GetHashCode(), second.GetHashCode());
+        Assert.AreEqual(1, new HashSet<Ace> { first, second }.Count);
+    }
+
+    [TestMethod]
+    public void AceClonePreservesSymbolicRightsAndRemainsEqual() {
+        Ace original = Allow(right: "FA"), clone = original.Clone();
+        Assert.AreNotSame(original, clone);
+        Assert.AreNotSame(original.Right, clone.Right);
+        Assert.AreEqual(original.ToString(), clone.ToString());
+        Assert.AreEqual("FA", clone.Right.ToString());
+        Assert.IsTrue(original.Equals(clone));
+        Assert.AreEqual(original.GetHashCode(), clone.GetHashCode());
+    }
+
     [DataTestMethod, DataRow("SY"), DataRow("BA"), DataRow("WD"), DataRow("AU")]
     public void TrusteesCompareCanonicalSidAcrossAliasAndNumericRepresentations(string alias) {
         Trustee first = Trustee.Construct(alias), second = Trustee.Construct(first.NativeSid.Value);
@@ -52,7 +72,7 @@ public sealed class SecurityDescriptorModelTests {
         Ace text = new("OA", "CIOI", "GR", objectId.ToString(), inheritId.ToString(), "SY");
         Ace typed = new(SddlAceType.SDDL_OBJECT_ACCESS_ALLOWED,
             SddlAceFlags.SDDL_CONTAINER_INHERIT | SddlAceFlags.SDDL_OBJECT_INHERIT,
-            Right.Construct("GR"), objectId, inheritId, Trustee.Construct("SY"));
+            SddlRight.Construct("GR"), objectId, inheritId, Trustee.Construct("SY"));
         Assert.IsTrue(text.Equals(typed)); Assert.IsTrue(typed.Equals(text));
         Assert.IsTrue(text.Equals((object)typed)); Assert.AreEqual(text.GetHashCode(), typed.GetHashCode());
         Assert.AreEqual(text.ToString(), typed.ToString());
@@ -69,7 +89,7 @@ public sealed class SecurityDescriptorModelTests {
         switch (field) {
             case "type": second.Type = SddlAceType.SDDL_ACCESS_DENIED; break;
             case "flags": second.Flags = SddlAceFlags.SDDL_INHERITED; break;
-            case "right": second.Right = Right.Construct("GR"); break;
+            case "right": second.Right = SddlRight.Construct("GR"); break;
             case "object": second.ObjectType = Guid.Parse("11111111-2222-3333-4444-555555555555"); break;
             case "inherit": second.ObjectInheritType = Guid.Parse("11111111-2222-3333-4444-555555555555"); break;
             case "trustee": second.Trustee = Trustee.Construct("BA"); break;
@@ -132,7 +152,7 @@ public sealed class SecurityDescriptorModelTests {
         Assert.AreEqual(source.ToString(), clone.ToString());
         Assert.AreNotSame(source.DaclAces, clone.DaclAces);
         Assert.AreNotSame(source.DaclAces![0], clone.DaclAces![0]);
-        clone.DaclAces[0].Right = Right.Construct("GR");
+        clone.DaclAces[0].Right = SddlRight.Construct("GR");
         clone.AddDacl(Allow("BA")); clone.Owner = Trustee.Construct("BA");
         Assert.AreEqual(1, source.DaclAces.Count);
         Assert.AreEqual("GA", source.DaclAces[0].Right.ToString()); Assert.AreEqual("SY", source.Owner!.SddlSafe);

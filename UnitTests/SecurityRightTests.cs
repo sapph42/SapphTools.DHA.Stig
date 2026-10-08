@@ -1,5 +1,3 @@
-using System.Reflection;
-using SapphTools.SecurityDescriptor.Attributes;
 using SapphTools.SecurityDescriptor.Classes;
 using SapphTools.SecurityDescriptor.Enums;
 using SapphTools.SecurityDescriptor.Extensions;
@@ -9,79 +7,117 @@ namespace UnitTests;
 [TestClass, TestCategory("Pure")]
 public sealed class SecurityRightTests {
     public static IEnumerable<object[]> Rights() {
-        foreach (SddlRights value in Enum.GetValues<SddlRights>().Distinct()) {
-            RightMetaAttribute? meta = typeof(SddlRights).GetField(value.ToString())?.GetCustomAttribute<RightMetaAttribute>();
-            if (meta is not null) yield return [value, meta.Abbr];
+        foreach (var entry in SddlRightValue.ByAbbreviation) {
+            yield return [entry.Key, entry.Value.Value];
         }
     }
     [DataTestMethod, DynamicData(nameof(Rights), DynamicDataSourceType.Method)]
-    public void SymbolicRightsPreserveMaskEqualityAndHash(SddlRights value, string abbreviation) {
-        Right first = Right.Construct(value), second = Right.Construct(abbreviation);
-        Assert.AreEqual((uint)value, first.GetHexValue(), abbreviation);
-        Assert.AreEqual(abbreviation, first.ToString());
+    public void SymbolicRightsPreserveMaskEqualityAndHash(string abbreviation, uint mask) {
+        SddlRight first = SddlRight.Construct(mask), second = SddlRight.Construct(abbreviation);
+        Assert.AreEqual(mask, first.ToValue(), abbreviation);
+        Assert.AreEqual(mask, second.ToValue(), abbreviation);
+        Assert.AreEqual(abbreviation, second.ToString());
+        Assert.AreEqual($"0x{mask:X8}", first.ToString());
         Assert.IsTrue(first.Equals(second)); Assert.IsTrue(second.Equals(first));
         Assert.IsTrue(first.Equals((object)second)); Assert.AreEqual(first.GetHashCode(), second.GetHashCode());
-        Assert.IsFalse(first.Equals((Right?)null)); Assert.IsFalse(first.Equals(new object()));
-        Assert.AreEqual(1, new HashSet<Right> { first, second }.Count);
+        Assert.IsFalse(first.Equals((SddlRight?)null)); Assert.IsFalse(first.Equals(new object()));
+        Assert.AreEqual(1, new HashSet<SddlRight> { first, second }.Count);
     }
 
     [DataTestMethod, DataRow(ObjectType.Generic), DataRow(ObjectType.Standard), DataRow(ObjectType.File)]
-    [DataRow(ObjectType.RegistryKey), DataRow(ObjectType.DirectoryService)]
+    [DataRow(ObjectType.RegistryKey), DataRow(ObjectType.DirectoryService), DataRow(ObjectType.Mandatory)]
     public void RightMetadataLookupHonorsObjectType(ObjectType type) {
-        string[] abbreviations = RightExtensions.GetAllAbbr(type).ToArray();
-        Assert.IsTrue(abbreviations.Length > 0);
-        foreach (string abbreviation in abbreviations) {
-            Assert.IsTrue(RightExtensions.TryGetRight(abbreviation, type, out SddlRights? value));
+        var rights = SddlRightValue.ByTypeAndAbbr[type];
+        Assert.IsTrue(rights.Count > 1);
+        foreach (var entry in rights) {
+            SddlRightValue? value = SddlRightValue.Construct(entry.Key, type);
             Assert.IsNotNull(value);
-            Assert.IsFalse(string.IsNullOrWhiteSpace(value.Value.GetDescription()));
+            Assert.AreSame(entry.Value, value);
+            Assert.IsFalse(string.IsNullOrWhiteSpace(value.GetDescription()));
+            Assert.AreEqual(entry.Value.Description, value.GetDescription());
         }
-        Assert.IsFalse(RightExtensions.TryGetRight("Invented", type, out SddlRights? missing));
-        Assert.IsNull(missing);
+        Assert.IsNull(SddlRightValue.Construct("Invented", type));
     }
 
     [TestMethod]
     public void RightsWithDifferentMasksCompareUnequal() {
-        Right read = Right.Construct("GR"), write = Right.Construct("GW");
+        SddlRight read = SddlRight.Construct("GR"), write = SddlRight.Construct("GW");
         Assert.IsFalse(read.Equals(write)); Assert.IsFalse(write.Equals(read));
-        Assert.IsFalse(RightExtensions.TryGetRight("GA", ObjectType.File, out _));
+        Assert.IsNull(SddlRightValue.Construct("GA", ObjectType.File));
     }
 
-    [DataTestMethod, DataRow(""), DataRow("INVALID"), DataRow("0xnothex")]
+    [DataTestMethod, DataRow("INVALID"), DataRow("0xnothex"), DataRow("ZZ")]
     public void InvalidRightsAreRejected(string text) {
-        Assert.ThrowsException<ArgumentException>(() => Right.Construct(text));
+        Assert.ThrowsException<ArgumentException>(() => SddlRight.Construct(text));
     }
 
-    [TestMethod, TestCategory("KnownRegression")]
-    public void MandatoryRightsMetadataIsNotLostToDuplicateEnumMasks() {
+    [DataTestMethod, DataRow(null), DataRow(""), DataRow(" ")]
+    public void EmptyRightsHaveAZeroMaskAndKeepTheirTextualRepresentation(string? text) {
+        SddlRight value = SddlRight.Construct(text);
+        Assert.AreEqual(0u, value.ToValue());
+        Assert.AreEqual(string.Empty, value.ToString());
+        Assert.IsTrue(value.Equals(SddlRight.Construct(0u)));
+        Assert.AreEqual(value.GetHashCode(), SddlRight.Construct(0u).GetHashCode());
+    }
+
+    [TestMethod]
+    public void MandatoryRightsMetadataIsNotLostToOverlappingMasks() {
         foreach (string abbreviation in new[] { "NR", "NW", "NX" }) {
-            Assert.IsTrue(RightExtensions.TryGetRight(abbreviation, ObjectType.Mandatory, out _), abbreviation);
+            Assert.IsNotNull(SddlRightValue.Construct(abbreviation, ObjectType.Mandatory), abbreviation);
         }
-        CollectionAssert.AreEquivalent(new[] { "NR", "NW", "NX" }, RightExtensions.GetAllAbbr(ObjectType.Mandatory).ToArray());
+        CollectionAssert.AreEquivalent(new[] { "NR", "NW", "NX" },
+            MandatoryRight.ByAbbr.Keys.Where(abbreviation => abbreviation.Length != 0).ToArray());
+        Assert.AreEqual(MandatoryRight.SDDL_NO_WRITE_UP.Value, DirectoryRight.SDDL_CREATE_CHILD.Value);
+        Assert.AreEqual("No write up", MandatoryRight.SDDL_NO_WRITE_UP.Description);
+        Assert.AreEqual("Create child objects", DirectoryRight.SDDL_CREATE_CHILD.Description);
+        Assert.IsFalse(MandatoryRight.SDDL_NO_WRITE_UP.Equals(DirectoryRight.SDDL_CREATE_CHILD));
     }
 
-    [DataTestMethod, TestCategory("KnownRegression"), DataRow("GRjunk"), DataRow("junkGR")]
+    [TestMethod]
+    public void RegistryAliasesKeepTheirTokensWhileAggregatesCompareMasks() {
+        Assert.AreEqual("KR", RegistryRight.ByAbbr["KR"].Abbr);
+        Assert.AreEqual("KX", RegistryRight.ByAbbr["KX"].Abbr);
+        Assert.IsFalse(RegistryRight.ByAbbr["KR"].Equals(RegistryRight.ByAbbr["KX"]));
+        SddlRight read = SddlRight.Construct("KR"), execute = SddlRight.Construct("KX");
+        Assert.IsTrue(read.Equals(execute));
+        Assert.AreEqual(read.GetHashCode(), execute.GetHashCode());
+        Assert.AreEqual("KRKX", SddlRight.Construct("KRKX").ToString());
+    }
+
+    [DataTestMethod, DataRow("GRjunk"), DataRow("junkGR")]
     public void RightsParserMustRejectUnconsumedCharacters(string text) {
-        Assert.ThrowsException<ArgumentException>(() => Right.Construct(text));
+        Assert.ThrowsException<ArgumentException>(() => SddlRight.Construct(text));
     }
 
-    [DataTestMethod, TestCategory("KnownRegression")]
+    [DataTestMethod]
     [DataRow(0u), DataRow(1u), DataRow(0x10000000u), DataRow(0x80000000u), DataRow(uint.MaxValue)]
     public void NumericRightsRetainTheirMaskAndUseParseableSddl(uint mask) {
-        Right value = Right.Construct(mask);
-        Assert.AreEqual(mask, value.GetHexValue());
+        SddlRight value = SddlRight.Construct(mask);
+        Assert.AreEqual(mask, value.ToValue());
         string text = value.ToString();
         Assert.IsTrue(text.StartsWith("0x", StringComparison.OrdinalIgnoreCase));
-        Right reparsed = Right.Construct(text);
-        Assert.AreEqual(mask, reparsed.GetHexValue());
+        SddlRight reparsed = SddlRight.Construct(text);
+        Assert.AreEqual(mask, reparsed.ToValue());
         Assert.IsTrue(value.Equals(reparsed)); Assert.AreEqual(value.GetHashCode(), reparsed.GetHashCode());
     }
 
-    [DataTestMethod, TestCategory("KnownRegression")]
-    [DataRow("GRGW", 0xC0000000u), DataRow("RCWD", 0x00060000u)]
+    [DataTestMethod]
+    [DataRow("GRGW", 0xC0000000u), DataRow("RCWD", 0x00060000u), DataRow("RCRP", 0x00020010u)]
     public void CombinedSymbolicRightsRetainEveryBit(string text, uint mask) {
-        Right value = Right.Construct(text);
-        Assert.AreEqual(mask, value.GetHexValue());
-        Assert.AreEqual(mask, Right.Construct(value.ToString()).GetHexValue());
+        SddlRight value = SddlRight.Construct(text);
+        Assert.AreEqual(mask, value.ToValue());
+        Assert.AreEqual(mask, SddlRight.Construct(value.ToString()).ToValue());
+    }
+
+    [DataTestMethod, DataRow(""), DataRow("GA"), DataRow("NW"), DataRow("KRKX")]
+    [DataRow("0x00000000"), DataRow("0xFFFFFFFF")]
+    public void RightsClonesPreserveTheirRepresentationAndEquality(string text) {
+        SddlRight original = SddlRight.Construct(text), clone = original.Clone();
+        Assert.AreNotSame(original, clone);
+        Assert.AreEqual(original.ToString(), clone.ToString());
+        Assert.AreEqual(original.ToValue(), clone.ToValue());
+        Assert.IsTrue(original.Equals(clone));
+        Assert.AreEqual(original.GetHashCode(), clone.GetHashCode());
     }
 
     [TestMethod]
