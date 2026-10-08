@@ -90,7 +90,7 @@ public partial class RegistryAclEditor : Form {
             _ => null
         };
         if (RegistryRight.ByVal.TryGetValue(ace.Right.ToValue(), out RegistryRight? right)) {
-            row.Cells["AccessDgv"].Value = right.GetDescription();
+            row.Cells["AccessDgv"].Value = right.Description;
         } else {
             row.Cells["AccessDgv"].Value = "Special";
         }

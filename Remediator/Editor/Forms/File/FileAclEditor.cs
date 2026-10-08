@@ -87,7 +87,7 @@ public partial class FileAclEditor : Form {
             _ => null
         };
         if (FileRight.ByVal.TryGetValue(ace.Right.ToValue(), out FileRight? right)) {
-            row.Cells["AccessDgv"].Value = right.GetDescription();
+            row.Cells["AccessDgv"].Value = right.Description;
         } else {
             row.Cells["AccessDgv"].Value = "Special";
         }
