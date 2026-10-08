@@ -103,7 +103,7 @@
             // 
             ErrorProvider.ContainerControl = this;
             // 
-            // FileSystemAclSettings
+            // RegistryAclSettings
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -114,7 +114,7 @@
             Controls.Add(Browse);
             Controls.Add(label1);
             Controls.Add(Target);
-            Name = "FileSystemAclSettings";
+            Name = "RegistryAclSettings";
             Size = new Size(565, 87);
             ((System.ComponentModel.ISupportInitialize)ErrorProvider).EndInit();
             ResumeLayout(false);

@@ -170,14 +170,14 @@ partial class RegistryAclEditor {
         Permissions.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         Permissions.Columns.AddRange(new DataGridViewColumn[] { PrincipalDgv, TypeDgv, AccessDgv, InheritedFromDgv, AppliesToDgv });
         Permissions.EditMode = DataGridViewEditMode.EditProgrammatically;
-        Permissions.Location = new Point(6, 57);
+        Permissions.Location = new Point(6, 68);
         Permissions.Margin = new Padding(2, 1, 2, 1);
         Permissions.Name = "Permissions";
         Permissions.ReadOnly = true;
         Permissions.RowHeadersVisible = false;
         Permissions.RowHeadersWidth = 82;
         Permissions.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        Permissions.Size = new Size(660, 207);
+        Permissions.Size = new Size(726, 207);
         Permissions.TabIndex = 6;
         Permissions.CellDoubleClick += Permissions_CellDoubleClick;
         // 
@@ -231,7 +231,7 @@ partial class RegistryAclEditor {
         // 
         // EditPermissions
         // 
-        EditPermissions.Location = new Point(192, 275);
+        EditPermissions.Location = new Point(192, 286);
         EditPermissions.Margin = new Padding(2, 1, 2, 1);
         EditPermissions.Name = "EditPermissions";
         EditPermissions.Size = new Size(84, 23);
@@ -242,7 +242,7 @@ partial class RegistryAclEditor {
         // 
         // RemovePermissions
         // 
-        RemovePermissions.Location = new Point(100, 275);
+        RemovePermissions.Location = new Point(100, 286);
         RemovePermissions.Margin = new Padding(2, 1, 2, 1);
         RemovePermissions.Name = "RemovePermissions";
         RemovePermissions.Size = new Size(84, 23);
@@ -253,7 +253,7 @@ partial class RegistryAclEditor {
         // 
         // AddPermissions
         // 
-        AddPermissions.Location = new Point(7, 275);
+        AddPermissions.Location = new Point(7, 286);
         AddPermissions.Margin = new Padding(2, 1, 2, 1);
         AddPermissions.Name = "AddPermissions";
         AddPermissions.Size = new Size(84, 23);
@@ -265,7 +265,7 @@ partial class RegistryAclEditor {
         // label2
         // 
         label2.AutoSize = true;
-        label2.Location = new Point(6, 34);
+        label2.Location = new Point(6, 45);
         label2.Margin = new Padding(2, 0, 2, 0);
         label2.Name = "label2";
         label2.Size = new Size(106, 15);
@@ -341,7 +341,7 @@ partial class RegistryAclEditor {
         DoubleBuffered = true;
         Margin = new Padding(2, 1, 2, 1);
         Name = "RegistryAclEditor";
-        Text = "RegAclEditor";
+        Text = "Registry Security";
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
         tableLayoutPanel1.ResumeLayout(false);
