@@ -1,6 +1,7 @@
 ﻿using SapphTools.DHA.Stig.Remediator.Editor.Forms.Common;
 using SapphTools.SecurityDescriptor;
 using SapphTools.SecurityDescriptor.Classes;
+using SapphTools.SecurityDescriptor.Classes.Rights;
 using SapphTools.SecurityDescriptor.Enums;
 using SapphTools.SecurityDescriptor.Extensions;
 using System.Data;

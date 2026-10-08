@@ -1,4 +1,5 @@
 using SapphTools.SecurityDescriptor.Classes;
+using SapphTools.SecurityDescriptor.Classes.Rights;
 using SapphTools.SecurityDescriptor.Enums;
 using SapphTools.SecurityDescriptor.Extensions;
 
