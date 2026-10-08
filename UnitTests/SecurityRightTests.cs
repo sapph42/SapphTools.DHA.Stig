@@ -63,10 +63,11 @@ public sealed class SecurityRightTests {
 
     [TestMethod]
     public void MandatoryRightsMetadataIsNotLostToOverlappingMasks() {
-        foreach (string abbreviation in new[] { "NR", "NW", "NX" }) {
+        string[] abbrs = ["NR", "NW", "NX"];
+        foreach (string abbreviation in abbrs) {
             Assert.IsNotNull(SddlRightValue.Construct(abbreviation, ObjectType.Mandatory), abbreviation);
         }
-        CollectionAssert.AreEquivalent(new[] { "NR", "NW", "NX" },
+        CollectionAssert.AreEquivalent(abbrs,
             MandatoryRight.ByAbbr.Keys.Where(abbreviation => abbreviation.Length != 0).ToArray());
         Assert.AreEqual(MandatoryRight.SDDL_NO_WRITE_UP.Value, DirectoryRight.SDDL_CREATE_CHILD.Value);
         Assert.AreEqual("No write up", MandatoryRight.SDDL_NO_WRITE_UP.Description);
