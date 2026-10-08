@@ -7,12 +7,17 @@ public class Test : IComparable<Test> {
     public int Phase { get; set; }
     public int Order { get; set; }
     public required TestConfig Config { get; set; }
-    public Guid[] Build { get; set; } = CurrentBuilds;
-    public bool TestRun { get; set; } = false;
-    public Dictionary<Rule, TestResult?> TestSuite { get; init; } = [];
-    public Dictionary<Rule, TestResult?> RecoverySuite { get; init; } = [];
-    public bool? TestPass => TestSuite.Values.All(r => r is null) ? null : TestSuite.Values.All(r => r is not null && r.Pass) && TestSuite.Values.Count(r => r is not null)==TestSuite.Keys.Count;
-    public bool? RecoveryPass => RecoverySuite.Values.All(r => r is null) ? null : RecoverySuite.Values.All(r => r is not null && r.Pass) && RecoverySuite.Values.Count(r => r is not null) == RecoverySuite.Keys.Count;
+    public Guid[] Build { get; init; } = CurrentBuilds;
+    public bool TestRun { get; set; } = false; // maybe change to => TestSuite.Any(t => t.Result is not null) ???
+    public SortedSet<TestCase> TestSuite { get; init; } = new(TestCase.Comparer);
+    public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCase.Comparer);
+    public bool? TestPass => TestSuite.All(r => r is null)
+        ? null
+        : TestSuite.All(r => r.Pass.HasValue && r.Pass.Value);
+    public bool? RecoveryPass => RecoverySuite.Count == 0 ||
+        RecoverySuite.All(r => r is null)
+            ? null
+            : RecoverySuite.All(r => r.Pass.HasValue && r.Pass.Value);
     public bool BuildsMatchCurrent => Build.SequenceEqual(CurrentBuilds);
 
     private static Guid[] GetBuilds() {
