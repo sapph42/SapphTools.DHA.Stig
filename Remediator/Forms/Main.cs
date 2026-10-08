@@ -103,6 +103,7 @@ public partial class Main : Form {
             }
             RuleCount.Text = $"Catalog loaded. {CatalogTable.Rows.Count} plugins available for remediation.";
         } else {
+            EditCatalogMenu.Enabled = false;
             RuleCount.Text = $"Catalog not loaded. Remediation unavailable.";
         }
         Catalog.DataSource = catalogSource;
@@ -306,6 +307,7 @@ public partial class Main : Form {
                     MessageBox.Show("No catalog exists at that path. Create a new catalog?", "New Catalog", MessageBoxButtons.YesNo);
                 if (res == DialogResult.Yes) {
                     CatalogPath.Text = ofd.FileName;
+                    EditCatalogMenu.Enabled = true;
                     CatalogTable.Rows.Clear();
                 }
                 return;
@@ -317,6 +319,7 @@ public partial class Main : Form {
                     GlobalConstants.JsonSerializerOptions
                 );
                 if (catalog is not null && catalog.Rules.Count > 0) {
+                    EditCatalogMenu.Enabled = true;
                     CatalogPath.Text = ofd.FileName;
                     StigCatalog = catalog;
                     CatalogTable.Rows.Clear();
