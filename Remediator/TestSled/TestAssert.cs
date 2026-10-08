@@ -108,11 +108,12 @@ public enum Assertion {
     MatchesRegex
 }
 public interface IAssertionObject {
-    [JsonInclude]
-    Type AssertionObjectType => GetType();
+    Type AssertionObjectType { get; }
 }
 public struct ValueAssertionObject
         (string name, object? expected = null, object? actual = null) : IAssertionObject {
+    [JsonInclude]
+    public readonly Type AssertionObjectType => GetType();
     public string Name { get; private set; } = name;
     public object? Expected { get; private set; } = expected;
     public object? Actual { get; private set; } = actual;
@@ -122,6 +123,8 @@ public struct ValueAssertionObject
 }
 public struct StateAssertionObject
         (string name, object? value = null) : IAssertionObject {
+    [JsonInclude]
+    public readonly Type AssertionObjectType => GetType();
     public string Name { get; private set; } = name;
     public object? Value { get; private set; } = value;
 
@@ -130,6 +133,8 @@ public struct StateAssertionObject
 }
 public struct ComparisonAssertionObject
         (string leftName, string rightName, object? leftValue = null, object? rightValue = null) : IAssertionObject {
+    [JsonInclude]
+    public readonly Type AssertionObjectType => GetType();
     public string LeftName { get; private set; } = leftName;
     public object? LeftValue { get; private set; } = leftValue;
     public string RightName { get; private set; } = rightName;
@@ -141,6 +146,8 @@ public struct ComparisonAssertionObject
 }
 public struct DualAssertionObject
         (string valueName, string otherName, object? valueValue = null, object? otherValue = null) : IAssertionObject {
+    [JsonInclude]
+    public readonly Type AssertionObjectType => GetType();
     public string ValueName { get; private set; } = valueName;
     public object? ValueValue { get; private set; } = valueValue;
     public string OtherName { get; private set; } = otherName;

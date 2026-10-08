@@ -44,7 +44,6 @@ public class IAOTypeConverter : JsonConverter<Type> {
     }
 
     public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options) {
-        writer.WritePropertyName(nameof(IAssertionObject.AssertionObjectType));
         writer.WriteStringValue(value.Name);
     }
 }
