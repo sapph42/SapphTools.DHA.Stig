@@ -29,13 +29,12 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
         if (other is null) {
             return false;
         }
-        return Order == other.Order && Rule.Equals(other?.Rule) && object.Equals(Pass, other.Pass);
+        return Order == other.Order && Rule.Equals(other?.Rule) && Equals(Pass, other.Pass);
     }
     public override int GetHashCode() {
         HashCode hc = new();
         hc.Add(Order);
         hc.Add(Rule);
-        hc.Add(Pass);
         return hc.ToHashCode();
     }
 }
