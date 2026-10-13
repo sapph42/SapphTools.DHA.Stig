@@ -162,7 +162,10 @@ public partial class ArrayEditor : Form {
         ActiveArray.RemoteProdTarget = GetTargets(ProdTargets);
         ActiveArray.Tests.Clear();
         foreach (DataRow row in TestTable.Rows.Cast<DataRow>()) {
-            if (!ActiveArray.Tests.Add(((Test)row["Test"]).Clone(withoutResults: true))) {
+            // A saved definition is based on the current binaries. Prior execution
+            // evidence cannot be carried across a definition edit or MVID update.
+            if (!ActiveArray.Tests.Add(((Test)row["Test"]).Clone(
+                    withoutResults: true, updateBuilds: true))) {
                 throw new InvalidOperationException("The test array contains duplicate phase/order positions.");
             }
         }
