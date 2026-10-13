@@ -17,16 +17,27 @@ public class RemediationAction : RemediationPreAction {
     public RemediationAction(RemediationPreAction action, string target) : base(action) { 
         Target = target;
     }
+    public RemediationAction Clone() {
+        return new(ToPreAction(), Target) {
+            TargetType = TargetType,
+            RollbackCapability = RollbackCapability,
+            Before = Before?.Clone(),
+            After = After?.Clone(),
+            Result = Result,
+            FailureMessage = new(FailureMessage),
+            RemediationTimestamp = new(RemediationTimestamp.Date, RemediationTimestamp.Offset)
+        };
+    }
     public RemediationPreAction ToPreAction() {
         return new() {
-            RemediationBatch = RemediationBatch,
-            RuleBatch = RuleBatch,
-            SettingBatch = SettingBatch,
+            RemediationBatch = new(RemediationBatch.ToByteArray()),
+            RuleBatch = new(RuleBatch.ToByteArray()),
+            SettingBatch = new(SettingBatch.ToByteArray()),
             ActionNumber = ActionNumber,
             Source = Source,
-            RuleId = RuleId,
-            Description = Description,
-            ComputerName = ComputerName,
+            RuleId = new(RuleId),
+            Description = new(Description),
+            ComputerName = new(ComputerName),
             SettingIndex = SettingIndex
         };
     }

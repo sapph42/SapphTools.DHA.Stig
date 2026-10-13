@@ -19,6 +19,19 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
     public required Rule Rule { get; init; }
     public TestResult? Result { get; set; }
     public bool? Pass => Result?.Pass;
+    public TestCase Clone(bool withoutResults = false) {
+        if (withoutResults) {
+            return new() {
+                Order = Order,
+                Rule = Rule.Clone()
+            };
+        }
+        return new() {
+            Order = Order,
+            Rule = Rule.Clone(),
+            Result = Result?.Clone()
+        };
+    }
     public int CompareTo(TestCase? other) {
         return Order.CompareTo(other?.Order);
     }

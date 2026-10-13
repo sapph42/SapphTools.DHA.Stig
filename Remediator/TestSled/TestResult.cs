@@ -24,4 +24,12 @@ public class TestResult {
             return ExpectedAfter.Equals(RemediationAction.After) && ExpectedAfter.Equals(ActualAfter);
         }
     }
+    public TestResult Clone() {
+        return new() {
+            ActualAfter = ActualAfter?.Clone(),
+            ExpectedAfter = ExpectedAfter?.Clone(),
+            ExpectedResult = ExpectedResult,
+            RemediationAction = RemediationAction?.Clone()
+        };
+    }
 }

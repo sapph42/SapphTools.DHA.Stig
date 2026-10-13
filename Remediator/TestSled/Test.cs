@@ -37,6 +37,22 @@ public class Test : IComparable<Test> {
         ];
         return build;
     }
+    public Test Clone(bool withoutResults = false) {
+        Test t = new() {
+            TestId = TestId,
+            Phase = Phase,
+            Order = Order,
+            Config = Config,
+            Build = [.. Build.Select(b => new Guid(b.ToByteArray()))],
+        };
+        foreach (TestCase tc in TestSuite) {
+            t.TestSuite.Add(tc.Clone(withoutResults));
+        }
+        foreach (TestCase tc in RecoverySuite) {
+            t.RecoverySuite.Add(tc.Clone(withoutResults));
+        }
+        return t;
+    }
     public int CompareTo(Test? other) {
         if (other is null) return 1;
         int phaseComp = Phase.CompareTo(other.Phase);
