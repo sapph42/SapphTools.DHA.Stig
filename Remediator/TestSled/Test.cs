@@ -29,8 +29,8 @@ public static class TestComparer {
                 x.Phase == y.Phase &&
                 x.Order == y.Order &&
                 x.Config.Equals(y.Config) &&
-                Enumerable.SequenceEqual(x.TestSuite, y.TestSuite) &&
-                Enumerable.SequenceEqual(x.RecoverySuite, y.RecoverySuite);
+                x.TestSuite.SequenceEqual(y.TestSuite, TestCaseComparer.Definition) &&
+                x.RecoverySuite.SequenceEqual(y.RecoverySuite, TestCaseComparer.Definition);
         }
         public int GetHashCode([DisallowNull] Test obj) {
             HashCode hc = new();
