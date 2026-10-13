@@ -87,13 +87,16 @@ public class Test : IComparable<Test> {
         ];
         return build;
     }
-    public Test Clone(bool withoutResults = false) {
+    public Test Clone(bool withoutResults = false, bool updateBuilds = false) {
+        if (updateBuilds && !withoutResults) {
+            throw new ArgumentException("Updating build IDs also requires discarding execution results.");
+        }
         Test t = new() {
             TestId = TestId,
             Phase = Phase,
             Order = Order,
             Config = Config,
-            Build = [.. Build],
+            Build = updateBuilds ? [.. CurrentBuilds] : [.. Build],
             TestRun = !withoutResults && TestRun,
         };
         foreach (TestCase tc in TestSuite) {
