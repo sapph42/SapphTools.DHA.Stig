@@ -2,6 +2,21 @@
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled; 
 public class Test : IComparable<Test> {
+    public class TestComparer : IComparer<Test> {
+        public int Compare(Test? x, Test? y) {
+            if (ReferenceEquals(x, y)) {
+                return 0;
+            }
+            if (x is null) {
+                return -1;
+            }
+            if (y is null) {
+                return 1;
+            }
+            return x.CompareTo(y);
+        }
+    }
+    public static readonly TestComparer Comparer = new();
     public static readonly Guid[] CurrentBuilds = GetBuilds();
     public int TestId { get; set; }
     public int Phase { get; set; }
