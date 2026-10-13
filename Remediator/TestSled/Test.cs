@@ -1,8 +1,9 @@
 ﻿using SapphTools.SecurityDescriptor;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled; 
-public class Test : IComparable<Test> {
-    public class TestComparer : IComparer<Test> {
+public static class TestComparer {
+    public class OrdinalComparer : IComparer<Test> {
         public int Compare(Test? x, Test? y) {
             if (ReferenceEquals(x, y)) {
                 return 0;
@@ -16,7 +17,40 @@ public class Test : IComparable<Test> {
             return x.CompareTo(y);
         }
     }
-    public static readonly TestComparer Comparer = new();
+    public class TestDefinitionComparer : IEqualityComparer<Test> {
+        public bool Equals(Test? x, Test? y) {
+            if (ReferenceEquals(x, y)) {
+                return true;
+            }
+            if (x is null || y is null) {
+                return false;
+            }
+            return x.TestId == y.TestId &&
+                x.Phase == y.Phase &&
+                x.Order == y.Order &&
+                x.Config.Equals(y.Config) &&
+                Enumerable.SequenceEqual(x.TestSuite, y.TestSuite) &&
+                Enumerable.SequenceEqual(x.RecoverySuite, y.RecoverySuite);
+        }
+        public int GetHashCode([DisallowNull] Test obj) {
+            HashCode hc = new();
+            hc.Add(obj.TestId);
+            hc.Add(obj.Phase);
+            hc.Add(obj.Order);
+            hc.Add(obj.Config);
+            foreach (TestCase tc in obj.TestSuite) {
+                hc.Add(tc);
+            }
+            foreach (TestCase tc in obj.RecoverySuite) {
+                hc.Add(tc);
+            }
+            return hc.ToHashCode();
+        }
+    }
+    public static readonly OrdinalComparer Ordinal = new();
+    public static readonly TestDefinitionComparer Definition = new();
+}
+public class Test : IComparable<Test> {
     public static readonly Guid[] CurrentBuilds = GetBuilds();
     public int TestId { get; set; }
     public int Phase { get; set; }
@@ -24,14 +58,14 @@ public class Test : IComparable<Test> {
     public required TestConfig Config { get; set; }
     public Guid[] Build { get; init; } = CurrentBuilds;
     public bool TestRun { get; set; } = false; // maybe change to => TestSuite.Any(t => t.Result is not null) ???
-    public SortedSet<TestCase> TestSuite { get; init; } = new(TestCase.Comparer);
-    public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCase.Comparer);
+    public SortedSet<TestCase> TestSuite { get; init; } = new(TestCaseComparer.Ordinal);
+    public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCaseComparer.Ordinal);
     public bool? TestPass {
         get {
             if (TestSuite.Count == 0 || TestSuite.All(tc => !tc.Pass.HasValue || tc.Result is null)) {
                 return null;
             }
-            return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
+            return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value) && BuildsMatchCurrent;
         }
     }
     public bool? RecoveryPass {
@@ -39,9 +73,10 @@ public class Test : IComparable<Test> {
             if (RecoverySuite.Count == 0) {
                 return true;
             }
-            return RecoverySuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
+            return RecoverySuite.All(tc => tc.Pass.HasValue && tc.Pass.Value) && BuildsMatchCurrent;
         }
     }
+    public bool Pass => TestPass.HasValue && TestPass.Value && RecoveryPass.HasValue && RecoveryPass.Value;
     public bool BuildsMatchCurrent => Build.SequenceEqual(CurrentBuilds);
 
     private static Guid[] GetBuilds() {

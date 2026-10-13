@@ -34,5 +34,29 @@ namespace SapphTools.DHA.Stig.Remediator.Properties {
                 this["CatalogPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TestSledDefinitionPath {
+            get {
+                return ((string)(this["TestSledDefinitionPath"]));
+            }
+            set {
+                this["TestSledDefinitionPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TestSledResultsPath {
+            get {
+                return ((string)(this["TestSledResultsPath"]));
+            }
+            set {
+                this["TestSledResultsPath"] = value;
+            }
+        }
     }
 }

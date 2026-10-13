@@ -210,9 +210,9 @@ public partial class ArrayEditor : Form {
     }
 
     private static List<string> GetTargets(TextBox input) =>
-        input.Lines.Select(line => line.Trim())
+        [.. input.Lines.Select(line => line.Trim())
             .Where(line => line.Length > 0)
-            .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            .Distinct(StringComparer.OrdinalIgnoreCase)];
 
     private void CheckValidity() {
         source.ResetBindings(false);

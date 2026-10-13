@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Data;
 using Rule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
@@ -56,7 +47,7 @@ public partial class TestEditor : Form {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 DataPropertyName = "CountOfSettings",
-                HeaderText = "O# of Settings",
+                HeaderText = "# of Settings",
                 Name = "CountOfSettings",
                 ReadOnly = true,
                 ValueType = typeof(int),
@@ -301,8 +292,7 @@ public partial class TestEditor : Form {
                 selection.Cells["Order"].Value is not int order) {
             return;
         }
-        DataRow[] ordered = table.Rows.Cast<DataRow>()
-            .OrderBy(row => (int)row["Order"]).ToArray();
+        DataRow[] ordered = [.. table.Rows.Cast<DataRow>().OrderBy(row => (int)row["Order"])];
         int index = Array.FindIndex(ordered, row => (int)row["Order"] == order);
         int next = index + direction;
         if (index < 0 || next < 0 || next >= ordered.Length) {
@@ -352,10 +342,10 @@ public partial class TestEditor : Form {
             MoveRecoveryUp, MoveRecoveryDown);
     }
 
-    private void UpdateSelectionButtons(DataGridView grid, DataTable table, Button edit, Button remove,
+    private static void UpdateSelectionButtons(DataGridView grid, DataTable table, Button edit, Button remove,
             Button up, Button down) {
         int? order = GetSelectedRow(grid)?.Cells["Order"].Value as int?;
-        DataRow[] rows = table.Rows.Cast<DataRow>().OrderBy(row => (int)row["Order"]).ToArray();
+        DataRow[] rows = [.. table.Rows.Cast<DataRow>().OrderBy(row => (int)row["Order"])];
         int index = order.HasValue ? Array.FindIndex(rows, row => (int)row["Order"] == order.Value) : -1;
         edit.Enabled = remove.Enabled = index >= 0;
         up.Enabled = index > 0;
@@ -411,7 +401,7 @@ public partial class TestEditor : Form {
             ConfigTarget.SelectedItem is TestTarget target && target != TestTarget.Invalid;
         UpdateSelectionButtons();
     }
-    private DataGridViewRow? GetSelectedRow(DataGridView target) {
+    private static DataGridViewRow? GetSelectedRow(DataGridView target) {
         if (target.SelectedRows.Count != 1) {
             return null;
         }

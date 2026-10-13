@@ -1,6 +1,8 @@
-﻿namespace SapphTools.DHA.Stig.Remediator.TestSled; 
-public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
-    public class TestCaseComparer : IComparer<TestCase> {
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SapphTools.DHA.Stig.Remediator.TestSled; 
+public static class TestCaseComparer {
+    public class OrdinalComparer : IComparer<TestCase> {
         public int Compare(TestCase? x, TestCase? y) {
             if (ReferenceEquals(x, y)) {
                 return 0;
@@ -14,7 +16,21 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             return x.CompareTo(y);
         }
     }
-    public static readonly TestCaseComparer Comparer = new();
+    public class TestCaseDefinitionComparer : IEqualityComparer<TestCase> {
+        public bool Equals(TestCase? x, TestCase? y) {
+            if (ReferenceEquals(x, y)) {
+                return true;
+            }
+            if (x is null || y is null) {
+                return false;
+            }
+            return x.Order == y.Order && x.Rule.Equals(y.Rule);
+        }
+        public int GetHashCode([DisallowNull] TestCase obj) => obj.GetHashCode();
+    }
+    public static readonly OrdinalComparer Ordinal = new();
+}
+public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
     public int Order { get; set; }
     public required Rule Rule { get; init; }
     public TestResult? Result { get; set; }
