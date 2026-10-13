@@ -29,6 +29,7 @@ public static class TestCaseComparer {
         public int GetHashCode([DisallowNull] TestCase obj) => obj.GetHashCode();
     }
     public static readonly OrdinalComparer Ordinal = new();
+    public static readonly TestCaseDefinitionComparer Definition = new();
 }
 public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
     public int Order { get; set; }
