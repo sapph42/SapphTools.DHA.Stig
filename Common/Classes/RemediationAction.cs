@@ -24,8 +24,8 @@ public class RemediationAction : RemediationPreAction {
             Before = Before?.Clone(),
             After = After?.Clone(),
             Result = Result,
-            FailureMessage = new(FailureMessage),
-            RemediationTimestamp = new(RemediationTimestamp.Date, RemediationTimestamp.Offset)
+            FailureMessage = FailureMessage,
+            RemediationTimestamp = RemediationTimestamp
         };
     }
     public RemediationPreAction ToPreAction() {
@@ -35,9 +35,9 @@ public class RemediationAction : RemediationPreAction {
             SettingBatch = new(SettingBatch.ToByteArray()),
             ActionNumber = ActionNumber,
             Source = Source,
-            RuleId = new(RuleId),
-            Description = new(Description),
-            ComputerName = new(ComputerName),
+            RuleId = RuleId,
+            Description = Description,
+            ComputerName = ComputerName,
             SettingIndex = SettingIndex
         };
     }
