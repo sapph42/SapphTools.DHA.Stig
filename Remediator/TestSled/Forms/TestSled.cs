@@ -10,7 +10,9 @@ public partial class TestSled : Form {
     private TestArray? testArrayResults;
     private readonly DataTable ResultsTable;
     private readonly BindingSource source;
-    private bool valid = false;
+    // Loading a definition is not evidence that its signature or build is valid.
+    public bool DefinitionVerified { get; private set; }
+    public bool ResultsValid { get; private set; }
     private readonly Label definitionStatus = new() { AutoSize = true, Location = new Point(904, 15) };
     private readonly Label resultStatus = new() { AutoSize = true, Location = new Point(904, 53) };
     public TestSled() {
@@ -159,7 +161,8 @@ public partial class TestSled : Form {
             return;
         }
 
-        // Do not alter the current selection until all checks, including signature, succeed.
+        // A readable definition is editable even when its catalog is absent,
+        // its signature is invalid, or its build IDs are out of date.
         testSledDefinitionFI = new FileInfo(dialog.FileName);
         testArrayDefinition = definition;
         TestSledDefinitionPath.Text = testSledDefinitionFI.FullName;
@@ -193,6 +196,8 @@ public partial class TestSled : Form {
         }
     }
 
+    // Parsing and checking file existence are the only prerequisites for editing.
+    // Signature and MVID checks are separate qualification predicates.
     private static bool TryLoadDefinition(string path, out TestArray? definition, out string error) {
         definition = null;
         error = string.Empty;
@@ -201,19 +206,8 @@ public partial class TestSled : Form {
             if (!file.Exists || !file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase)) {
                 throw new InvalidDataException("Select an existing JSON definition file.");
             }
-            TestArray candidate = TestArray.LoadFromJson(file.FullName)
+            definition = TestArray.LoadFromJson(file.FullName)
                 ?? throw new InvalidDataException("The definition file could not be deserialized.");
-            if (candidate.Tests.Count == 0 || candidate.Tests.Any(test => !test.BuildsMatchCurrent)) {
-                throw new InvalidDataException(
-                    "The definition is empty or one or more tests reference a different assembly build.");
-            }
-            string catalogPath = Path.Combine(file.DirectoryName
-                ?? throw new InvalidDataException("Cannot determine the definition directory."), "TestSled.cat");
-            if (!File.Exists(catalogPath)) {
-                throw new FileNotFoundException("No TestSled.cat was found alongside the definition.", catalogPath);
-            }
-            CatalogApi.VerifyCatalogMember(catalogPath, file.FullName);
-            definition = candidate;
             return true;
         } catch (Exception ex) {
             error = ex.Message;
@@ -221,21 +215,45 @@ public partial class TestSled : Form {
         }
     }
 
-    private void RefreshResults() {
-        valid = testArrayDefinition is not null && testArrayResults is not null &&
-            testSledDefinitionFI is FileInfo definition &&
-            testArrayResults.ResultsAreValid(definition.FullName);
+    private static bool VerifyDefinition(FileInfo definitionFile, TestArray definition) {
+        if (definition.Tests.Count == 0 || definition.Tests.Any(test => !test.BuildsMatchCurrent)) {
+            return false;
+        }
+        // Ensure the in-memory definition still corresponds to the signed bytes on disk.
+        if (TestArray.LoadFromJson(definitionFile.FullName) is not TestArray onDisk ||
+                !definition.DefinitionEquals(onDisk)) {
+            return false;
+        }
+        try {
+            string catalogPath = Path.Combine(definitionFile.DirectoryName
+                ?? throw new InvalidDataException("Cannot determine the definition directory."), "TestSled.cat");
+            if (!File.Exists(catalogPath)) return false;
+            CatalogApi.VerifyCatalogMember(catalogPath, definitionFile.FullName);
+            return true;
+        } catch {
+            return false;
+        }
+    }
 
-        definitionStatus.Text = testArrayDefinition is not null
-            ? "Verified" : HasSelectedJsonPath(testSledDefinitionFI) ? "Not verified" : "Not selected";
-        definitionStatus.ForeColor = testArrayDefinition is not null
-            ? Color.ForestGreen : HasSelectedJsonPath(testSledDefinitionFI) ? Color.Firebrick : SystemColors.GrayText;
+    private void RefreshResults() {
+        DefinitionVerified = testArrayDefinition is not null &&
+            testSledDefinitionFI is FileInfo definition &&
+            VerifyDefinition(definition, testArrayDefinition);
+        ResultsValid = DefinitionVerified && testArrayResults is not null &&
+            testSledDefinitionFI is FileInfo definitionPath &&
+            testArrayResults.ResultsAreValid(definitionPath.FullName);
+
+        definitionStatus.Text = testArrayDefinition is null
+            ? HasSelectedJsonPath(testSledDefinitionFI) ? "Not loaded" : "Not selected"
+            : DefinitionVerified ? "Verified" : "Unverified";
+        definitionStatus.ForeColor = testArrayDefinition is null && !HasSelectedJsonPath(testSledDefinitionFI)
+            ? SystemColors.GrayText : DefinitionVerified ? Color.ForestGreen : Color.Firebrick;
 
         resultStatus.Text = testArrayResults is null
             ? HasSelectedJsonPath(testSledResultsFI) ? "Not loaded" : "Not selected"
-            : valid ? "Valid" : "Invalid";
+            : ResultsValid ? "Valid" : "Invalid";
         resultStatus.ForeColor = testArrayResults is null && !HasSelectedJsonPath(testSledResultsFI)
-            ? SystemColors.GrayText : valid ? Color.ForestGreen : Color.Firebrick;
+            ? SystemColors.GrayText : ResultsValid ? Color.ForestGreen : Color.Firebrick;
 
         ResultsTable.Clear();
         if (testArrayResults is not null) {
