@@ -58,7 +58,8 @@ public class Test : IComparable<Test> {
             Phase = Phase,
             Order = Order,
             Config = Config,
-            Build = [.. Build.Select(b => new Guid(b.ToByteArray()))],
+            Build = [.. Build],
+            TestRun = !withoutResults && TestRun,
         };
         foreach (TestCase tc in TestSuite) {
             t.TestSuite.Add(tc.Clone(withoutResults));
