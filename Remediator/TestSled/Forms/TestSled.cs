@@ -216,15 +216,19 @@ public partial class TestSled : Form {
     }
 
     private static bool VerifyDefinition(FileInfo definitionFile, TestArray definition) {
-        if (definition.Tests.Count == 0 || definition.Tests.Any(test => !test.BuildsMatchCurrent)) {
-            return false;
-        }
-        // Ensure the in-memory definition still corresponds to the signed bytes on disk.
-        if (TestArray.LoadFromJson(definitionFile.FullName) is not TestArray onDisk ||
-                !definition.DefinitionEquals(onDisk)) {
-            return false;
-        }
         try {
+            if (definition.Tests is null || definition.Tests.Count == 0 ||
+                    definition.Tests.Any(test => test is null || !test.BuildsMatchCurrent)) {
+                return false;
+            }
+            // A refreshed editor copy is not verified until the bytes on disk and
+            // their signed catalog have actually been regenerated.
+            TestArray? onDisk = TestArray.LoadFromJson(definitionFile.FullName);
+            if (onDisk?.Tests is null || onDisk.Tests.Count == 0 ||
+                    onDisk.Tests.Any(test => test is null || !test.BuildsMatchCurrent) ||
+                    !definition.DefinitionEquals(onDisk)) {
+                return false;
+            }
             string catalogPath = Path.Combine(definitionFile.DirectoryName
                 ?? throw new InvalidDataException("Cannot determine the definition directory."), "TestSled.cat");
             if (!File.Exists(catalogPath)) return false;
@@ -239,9 +243,15 @@ public partial class TestSled : Form {
         DefinitionVerified = testArrayDefinition is not null &&
             testSledDefinitionFI is FileInfo definition &&
             VerifyDefinition(definition, testArrayDefinition);
-        ResultsValid = DefinitionVerified && testArrayResults is not null &&
-            testSledDefinitionFI is FileInfo definitionPath &&
-            testArrayResults.ResultsAreValid(definitionPath.FullName);
+        ResultsValid = false;
+        if (DefinitionVerified && testArrayResults is not null &&
+                testSledDefinitionFI is FileInfo definitionPath) {
+            try {
+                ResultsValid = testArrayResults.ResultsAreValid(definitionPath.FullName);
+            } catch {
+                ResultsValid = false;
+            }
+        }
 
         definitionStatus.Text = testArrayDefinition is null
             ? HasSelectedJsonPath(testSledDefinitionFI) ? "Not loaded" : "Not selected"
@@ -256,8 +266,9 @@ public partial class TestSled : Form {
             ? SystemColors.GrayText : ResultsValid ? Color.ForestGreen : Color.Firebrick;
 
         ResultsTable.Clear();
-        if (testArrayResults is not null) {
+        if (testArrayResults?.Tests is not null) {
             foreach (Test test in testArrayResults.Tests) {
+                if (test is null) continue;
                 ResultsTable.Rows.Add(
                     test.TestId,
                     test.Phase,
