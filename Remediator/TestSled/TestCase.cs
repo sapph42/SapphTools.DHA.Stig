@@ -15,7 +15,7 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
         }
     }
     public static readonly TestCaseComparer Comparer = new();
-    public int Order { get; init; }
+    public int Order { get; set; }
     public required Rule Rule { get; init; }
     public TestResult? Result { get; set; }
     public bool? Pass => Result?.Pass;
