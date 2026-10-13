@@ -233,10 +233,12 @@ public static class CatalogApi {
             using FileStream memberFile = File.OpenRead(fullMember);
             byte[] digest = new byte[32];
             uint digestLength = (uint)digest.Length;
-            if (!CryptCATAdminCalcHashFromFileHandle2(
-                    admin, memberFile.SafeFileHandle.DangerousGetHandle(), ref digestLength, digest, 0)
-                    || digestLength != digest.Length) {
-                throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to hash the catalog member.");
+            fixed (byte* pHash = digest) {
+                if (!CryptCATAdminCalcHashFromFileHandle2(
+                        admin, memberFile.SafeFileHandle.DangerousGetHandle(), ref digestLength, pHash, 0)
+                        || digestLength != digest.Length) {
+                    throw new Win32Exception(Marshal.GetLastWin32Error(), "Failed to hash the catalog member.");
+                }
             }
             string tag = Convert.ToHexString(digest);
             fixed (char* pCatalog = fullCatalog, pMember = fullMember, pTag = tag)
@@ -361,10 +363,13 @@ public static class CatalogApi {
     private delegate void CdfParseErrorCallback(uint errorArea, uint localError,
         [MarshalAs(UnmanagedType.LPWStr)] string line);
 
-    [DllImport("wintrust.dll", ExactSpelling = true, SetLastError = true)]
+    // Source-generated P/Invokes for blittable parameters and explicitly marshalled UTF-16 / BOOL.
+    [LibraryImport("wintrust.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool CryptCATCDFClose(IntPtr cdf);
+    private static partial bool CryptCATCDFClose(IntPtr cdf);
 
+    // These two CDF APIs take a managed delegate callback; retain runtime delegate
+    // marshalling rather than introducing a function-pointer trampoline.
     [DllImport("wintrust.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr CryptCATCDFOpen(
         [MarshalAs(UnmanagedType.LPWStr)] string cdfPath, CdfParseErrorCallback callback);
@@ -374,40 +379,39 @@ public static class CatalogApi {
         IntPtr cdf, IntPtr previousTag, CdfParseErrorCallback callback, ref IntPtr member,
         [MarshalAs(UnmanagedType.Bool)] bool continueOnError, IntPtr reserved);
 
-    [DllImport("wintrust.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
-    private static extern IntPtr CryptCATOpen(
-        [MarshalAs(UnmanagedType.LPWStr)] string path, uint flags,
-        IntPtr cryptProvider, uint version, uint encoding);
+    [LibraryImport("wintrust.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
+    private static partial IntPtr CryptCATOpen(
+        string path, uint flags, IntPtr cryptProvider, uint version, uint encoding);
 
-    [DllImport("wintrust.dll", ExactSpelling = true)]
+    [LibraryImport("wintrust.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool CryptCATClose(IntPtr catalog);
+    private static partial bool CryptCATClose(IntPtr catalog);
 
-    [DllImport("wintrust.dll", ExactSpelling = true)]
-    private static extern IntPtr CryptCATEnumerateMember(IntPtr catalog, IntPtr previousMember);
+    [LibraryImport("wintrust.dll")]
+    private static partial IntPtr CryptCATEnumerateMember(IntPtr catalog, IntPtr previousMember);
 
-    [DllImport("wintrust.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
+    [LibraryImport("wintrust.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool CryptCATAdminAcquireContext2(
+    private static partial bool CryptCATAdminAcquireContext2(
         out IntPtr catalogAdmin, IntPtr subsystem, string hashAlgorithm, IntPtr strongSignPolicy, uint flags);
 
-    [DllImport("wintrust.dll", ExactSpelling = true, SetLastError = true)]
+    [LibraryImport("wintrust.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool CryptCATAdminCalcHashFromFileHandle2(
-        IntPtr catalogAdmin, IntPtr file, ref uint hashSize, [Out] byte[] hash, uint flags);
+    private static unsafe partial bool CryptCATAdminCalcHashFromFileHandle2(
+        IntPtr catalogAdmin, IntPtr file, ref uint hashSize, byte* hash, uint flags);
 
-    [DllImport("wintrust.dll", ExactSpelling = true)]
+    [LibraryImport("wintrust.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool CryptCATAdminReleaseContext(IntPtr catalogAdmin, uint flags);
+    private static partial bool CryptCATAdminReleaseContext(IntPtr catalogAdmin, uint flags);
 
-    [DllImport("wintrust.dll", ExactSpelling = true)]
-    private static extern int WinVerifyTrust(IntPtr hwnd, ref Guid action, ref WintrustData data);
+    [LibraryImport("wintrust.dll")]
+    private static partial int WinVerifyTrust(IntPtr hwnd, ref Guid action, ref WintrustData data);
 
-    [DllImport("mssign32.dll", ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern unsafe int SignerSignEx(uint flags, SignerSubjectInfo* subject,
+    [LibraryImport("mssign32.dll")]
+    private static unsafe partial int SignerSignEx(uint flags, SignerSubjectInfo* subject,
         SignerCert* certificate, SignerSignatureInfo* signature, IntPtr provider,
         IntPtr timestamp, IntPtr request, IntPtr sipData, out IntPtr signerContext);
 
-    [DllImport("mssign32.dll", ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    private static extern int SignerFreeSignerContext(IntPtr signerContext);
+    [LibraryImport("mssign32.dll")]
+    private static partial int SignerFreeSignerContext(IntPtr signerContext);
 }
