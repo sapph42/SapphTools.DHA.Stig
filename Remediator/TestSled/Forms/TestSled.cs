@@ -29,11 +29,12 @@ public partial class TestSled : Form {
         if (!string.IsNullOrWhiteSpace(Settings.Default.TestSledResultsPath)) {
             testSledResultsFI = new(Settings.Default.TestSledResultsPath);
         }
-        if (testSledDefinitionFI is { Exists: true } definition &&
+        if (IsExistingLocalJsonFile(testSledDefinitionFI) &&
+                testSledDefinitionFI is FileInfo definition &&
                 TryLoadDefinition(definition.FullName, out TestArray? loadedDefinition, out _)) {
             testArrayDefinition = loadedDefinition;
         }
-        if (testSledResultsFI is { Exists: true } results) {
+        if (IsExistingLocalJsonFile(testSledResultsFI) && testSledResultsFI is FileInfo results) {
             testArrayResults = TestArray.LoadFromJson(results.FullName);
         }
         Tests.AutoGenerateColumns = false;
@@ -141,10 +142,10 @@ public partial class TestSled : Form {
     }
 
     private void TestSled_Load(object sender, EventArgs e) {
-        TestSledDefinitionPath.Text = testSledDefinitionFI is { Exists: true } definition
-            ? definition.FullName : string.Empty;
-        TestSledResultsPath.Text = testSledResultsFI is { Exists: true } results
-            ? results.FullName : string.Empty;
+        TestSledDefinitionPath.Text = HasSelectedJsonPath(testSledDefinitionFI)
+            ? testSledDefinitionFI!.FullName : string.Empty;
+        TestSledResultsPath.Text = HasSelectedJsonPath(testSledResultsFI)
+            ? testSledResultsFI!.FullName : string.Empty;
         RefreshResults();
     }
 
@@ -222,18 +223,18 @@ public partial class TestSled : Form {
 
     private void RefreshResults() {
         valid = testArrayDefinition is not null && testArrayResults is not null &&
-            testSledDefinitionFI is { Exists: true } definition &&
+            testSledDefinitionFI is FileInfo definition &&
             testArrayResults.ResultsAreValid(definition.FullName);
 
         definitionStatus.Text = testArrayDefinition is not null
-            ? "Verified" : testSledDefinitionFI is { Exists: true } ? "Invalid" : "Not selected";
+            ? "Verified" : HasSelectedJsonPath(testSledDefinitionFI) ? "Not verified" : "Not selected";
         definitionStatus.ForeColor = testArrayDefinition is not null
-            ? Color.ForestGreen : testSledDefinitionFI is { Exists: true } ? Color.Firebrick : SystemColors.GrayText;
+            ? Color.ForestGreen : HasSelectedJsonPath(testSledDefinitionFI) ? Color.Firebrick : SystemColors.GrayText;
 
         resultStatus.Text = testArrayResults is null
-            ? testSledResultsFI is { Exists: true } ? "Invalid" : "Not selected"
+            ? HasSelectedJsonPath(testSledResultsFI) ? "Not loaded" : "Not selected"
             : valid ? "Valid" : "Invalid";
-        resultStatus.ForeColor = testArrayResults is null && testSledResultsFI is not { Exists: true }
+        resultStatus.ForeColor = testArrayResults is null && !HasSelectedJsonPath(testSledResultsFI)
             ? SystemColors.GrayText : valid ? Color.ForestGreen : Color.Firebrick;
 
         ResultsTable.Clear();
@@ -252,6 +253,14 @@ public partial class TestSled : Form {
         }
         source.ResetBindings(false);
     }
+
+    private static bool HasSelectedJsonPath(FileInfo? file) =>
+        file is not null && file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase);
+
+    // Never probe a remembered network location on the UI thread. If the user
+    // explicitly picks it in the file dialog, normal loading is still supported.
+    private static bool IsExistingLocalJsonFile(FileInfo? file) =>
+        HasSelectedJsonPath(file) && IsLocalPath(file!.FullName) && file.Exists;
 
     private static OpenFileDialog CreateJsonFileDialog(FileInfo? previous) {
         OpenFileDialog dialog = new() {
