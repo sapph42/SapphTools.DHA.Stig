@@ -156,7 +156,6 @@ public static class CatalogApi {
             }
         }
 
-        uint index = 0;
         IntPtr signerContext = IntPtr.Zero;
         fixed (char* fileName = fullPath) {
             SignerFileInfo file = new() {
@@ -165,7 +164,7 @@ public static class CatalogApi {
             };
             SignerSubjectInfo subject = new() {
                 cbSize = (uint)sizeof(SignerSubjectInfo),
-                pdwIndex = &index,
+                pdwIndex = null,
                 dwSubjectChoice = SIGNER_SUBJECT_FILE,
                 pSignerFileInfo = &file
             };
