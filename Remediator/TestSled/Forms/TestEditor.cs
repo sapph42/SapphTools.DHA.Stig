@@ -154,7 +154,30 @@ public partial class TestEditor : Form {
         ActiveTest = new() {
             Config = new()
         };
-        //TODO: populate ConfigTarget.Items with TestTarget enum
+        ConfigTarget.DropDownStyle = ComboBoxStyle.DropDownList;
+        ConfigTarget.DataSource = Enum.GetValues<TestTarget>()
+            .Where(target => target != TestTarget.Invalid).ToArray();
+        ConfigTarget.SelectedItem = TestTarget.Local;
+
+        TestSuite.AllowUserToAddRows = false;
+        TestSuite.AllowUserToDeleteRows = false;
+        TestSuite.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        TestSuite.MultiSelect = false;
+        TestSuite.DataSource = testSource;
+        RecoverySuite.AllowUserToAddRows = false;
+        RecoverySuite.AllowUserToDeleteRows = false;
+        RecoverySuite.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        RecoverySuite.MultiSelect = false;
+        RecoverySuite.DataSource = recoverySource;
+        TestSuiteTable.DefaultView.Sort = "Order ASC";
+        RecoverySuiteTable.DefaultView.Sort = "Order ASC";
+
+        TestId.Text = "0"; // Assigned by ArrayEditor when a test is added.
+        Phase.Text = "1";
+        Order.Text = "1";
+        Phase.TextChanged += (_, _) => CheckValidity();
+        TestSuite.SelectionChanged += (_, _) => UpdateSelectionButtons();
+        RecoverySuite.SelectionChanged += (_, _) => UpdateSelectionButtons();
         CheckValidity();
     }
     public TestEditor(Test test) : this() {
@@ -168,10 +191,10 @@ public partial class TestEditor : Form {
         ConfigWhatIf.Checked = ActiveTest.Config.WhatIf;
         ConfigTarget.SelectedItem = ActiveTest.Config.Target;
         foreach (TestCase tc in ActiveTest.TestSuite) {
-            TestSuiteTable.Rows.Add(tc.Order, tc.Rule.RuleId, tc.Rule.Description, tc.Rule.Settings.Count, tc);
+            TestSuiteTable.Rows.Add(tc.Order, tc.Rule.RuleId, tc.Rule.Description, tc.Rule.Settings.Count, tc.Clone(withoutResults: true));
         }
         foreach (TestCase tc in ActiveTest.RecoverySuite) {
-            RecoverySuiteTable.Rows.Add(tc.Order, tc.Rule.RuleId, tc.Rule.Description, tc.Rule.Settings.Count, tc);
+            RecoverySuiteTable.Rows.Add(tc.Order, tc.Rule.RuleId, tc.Rule.Description, tc.Rule.Settings.Count, tc.Clone(withoutResults: true));
         }
         CheckValidity();
     }
@@ -180,7 +203,7 @@ public partial class TestEditor : Form {
         RuleEditor ruleEditor = new();
         if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is Rule rule) {
             TestCase tc = new() {
-                Order = TestSuiteTable.Rows.Cast<DataRow>().Select(r => (int)r["Order"]).Max() + 1,
+                Order = TestSuiteTable.Rows.Cast<DataRow>().Select(r => (int)r["Order"]).DefaultIfEmpty(0).Max() + 1,
                 Rule = rule.Clone()
             };
             TestSuiteTable.Rows.Add(tc.Order, rule.RuleId, rule.Description, rule.Settings.Count, tc);
@@ -212,16 +235,7 @@ public partial class TestEditor : Form {
         if (GetSelectedRow(TestSuite) is not DataGridViewRow row) {
             return;
         }
-        TestCase toRemove = (TestCase)row.Cells["TestCase"].Value;
-        if (TestSuiteTable.Rows.Find(toRemove.Order) is DataRow dataRow) {
-            ActiveTest.TestSuite.Remove(toRemove);
-            foreach (TestCase testCase in ActiveTest.TestSuite.Where(t => t.Order > toRemove.Order)) {
-                if (TestSuiteTable.Rows.Find(testCase.Order--) is DataRow drSibling) {
-                    drSibling["Order"] = testCase.Order;
-                }
-            }
-            TestSuiteTable.Rows.Remove(dataRow);
-        }
+        RemoveCase(TestSuiteTable, row);
         CheckValidity();
     }
 
@@ -229,7 +243,7 @@ public partial class TestEditor : Form {
         RuleEditor ruleEditor = new();
         if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is Rule rule) {
             TestCase tc = new() {
-                Order = RecoverySuiteTable.Rows.Cast<DataRow>().Select(r => (int)r["Order"]).Max() + 1,
+                Order = RecoverySuiteTable.Rows.Cast<DataRow>().Select(r => (int)r["Order"]).DefaultIfEmpty(0).Max() + 1,
                 Rule = rule.Clone()
             };
             RecoverySuiteTable.Rows.Add(tc.Order, rule.RuleId, rule.Description, rule.Settings.Count, tc);
@@ -261,47 +275,113 @@ public partial class TestEditor : Form {
         if (GetSelectedRow(RecoverySuite) is not DataGridViewRow row) {
             return;
         }
-        TestCase toRemove = (TestCase)row.Cells["TestCase"].Value;
-        if (RecoverySuiteTable.Rows.Find(toRemove.Order) is DataRow dataRow) {
-            ActiveTest.TestSuite.Remove(toRemove);
-            foreach (TestCase testCase in ActiveTest.TestSuite.Where(t => t.Order > toRemove.Order)) {
-                if (RecoverySuiteTable.Rows.Find(testCase.Order--) is DataRow drSibling) {
-                    drSibling["Order"] = testCase.Order;
-                }
-            }
-            RecoverySuiteTable.Rows.Remove(dataRow);
-        }
+        RemoveCase(RecoverySuiteTable, row);
         CheckValidity();
     }
 
-    private void MoveTestUp_Click(object sender, EventArgs e) {
-        //TODO: Implement reordering
+    private void MoveTestUp_Click(object sender, EventArgs e) => MoveCase(TestSuite, TestSuiteTable, testSource, -1);
+
+    private void MoveTestDown_Click(object sender, EventArgs e) => MoveCase(TestSuite, TestSuiteTable, testSource, 1);
+
+    private void MoveRecoveryUp_Click(object sender, EventArgs e) => MoveCase(RecoverySuite, RecoverySuiteTable, recoverySource, -1);
+
+    private void MoveRecoveryDown_Click(object sender, EventArgs e) => MoveCase(RecoverySuite, RecoverySuiteTable, recoverySource, 1);
+
+    // Each DataRow owns its fixed sequence slot. Move the cases, not the row keys.
+    // The editor deliberately leaves its SortedSets alone until OK reconstructs them.
+    private static void SetCase(DataRow row, TestCase testCase) {
+        row["RuleId"] = testCase.Rule.RuleId;
+        row["Description"] = testCase.Rule.Description;
+        row["CountOfSettings"] = testCase.Rule.Settings.Count;
+        row["TestCase"] = testCase;
     }
 
-    private void MoveTestDown_Click(object sender, EventArgs e) {
-        //TODO: Implement reordering
+    private void MoveCase(DataGridView grid, DataTable table, BindingSource binding, int direction) {
+        if (GetSelectedRow(grid) is not DataGridViewRow selection ||
+                selection.Cells["Order"].Value is not int order) {
+            return;
+        }
+        DataRow[] ordered = table.Rows.Cast<DataRow>()
+            .OrderBy(row => (int)row["Order"]).ToArray();
+        int index = Array.FindIndex(ordered, row => (int)row["Order"] == order);
+        int next = index + direction;
+        if (index < 0 || next < 0 || next >= ordered.Length) {
+            return;
+        }
+
+        DataRow current = ordered[index];
+        DataRow adjacent = ordered[next];
+        TestCase moving = ((TestCase)current["TestCase"]).Clone(withoutResults: true);
+        TestCase displaced = ((TestCase)adjacent["TestCase"]).Clone(withoutResults: true);
+        moving.Order = (int)adjacent["Order"];
+        displaced.Order = (int)current["Order"];
+        SetCase(current, displaced);
+        SetCase(adjacent, moving);
+
+        binding.ResetBindings(false);
+        grid.ClearSelection();
+        foreach (DataGridViewRow row in grid.Rows) {
+            if (row.Cells["Order"].Value is int selectedOrder && selectedOrder == moving.Order) {
+                row.Selected = true;
+                break;
+            }
+        }
+        UpdateSelectionButtons();
     }
 
-    private void MoveRecoveryUp_Click(object sender, EventArgs e) {
-        //TODO: Implement reordering
+    private static void RemoveCase(DataTable table, DataGridViewRow selection) {
+        if (selection.Cells["Order"].Value is not int order ||
+                table.Rows.Find(order) is not DataRow selected) {
+            return;
+        }
+        table.Rows.Remove(selected);
+        // Renumber in ascending order so every new primary key is currently vacant.
+        int nextOrder = 1;
+        foreach (DataRow row in table.Rows.Cast<DataRow>().OrderBy(row => (int)row["Order"])) {
+            TestCase testCase = ((TestCase)row["TestCase"]).Clone(withoutResults: true);
+            testCase.Order = nextOrder;
+            row["Order"] = nextOrder;
+            row["TestCase"] = testCase;
+            nextOrder++;
+        }
     }
 
-    private void MoveRecoveryDown_Click(object sender, EventArgs e) {
-        //TODO: Implement reordering
+    private void UpdateSelectionButtons() {
+        UpdateSelectionButtons(TestSuite, TestSuiteTable, EditTestCase, RemoveTestCase, MoveTestUp, MoveTestDown);
+        UpdateSelectionButtons(RecoverySuite, RecoverySuiteTable, EditRecoveryCase, RemoveRecoveryCase,
+            MoveRecoveryUp, MoveRecoveryDown);
+    }
+
+    private void UpdateSelectionButtons(DataGridView grid, DataTable table, Button edit, Button remove,
+            Button up, Button down) {
+        int? order = GetSelectedRow(grid)?.Cells["Order"].Value as int?;
+        DataRow[] rows = table.Rows.Cast<DataRow>().OrderBy(row => (int)row["Order"]).ToArray();
+        int index = order.HasValue ? Array.FindIndex(rows, row => (int)row["Order"] == order.Value) : -1;
+        edit.Enabled = remove.Enabled = index >= 0;
+        up.Enabled = index > 0;
+        down.Enabled = index >= 0 && index < rows.Length - 1;
     }
 
     private void Ok_Click(object sender, EventArgs e) {
+        if (!int.TryParse(Phase.Text, out int phase) || phase < 1 ||
+                !int.TryParse(Order.Text, out int order) || order < 1 ||
+                !int.TryParse(TestId.Text, out int testId) ||
+                ConfigTarget.SelectedItem is not TestTarget target || target == TestTarget.Invalid ||
+                TestSuiteTable.Rows.Count == 0) {
+            DialogResult = DialogResult.None;
+            return;
+        }
         Test = new() {
             Build = ActiveTest.Build,
             Config = new() {
                 AttemptRollback = ConfigRollback.Checked,
                 Elevated = ConfigElevate.Checked,
-                Target = (TestTarget)(ConfigTarget.SelectedItem ?? TestTarget.Local),
+                Target = target,
                 WhatIf = ConfigWhatIf.Checked
             },
-            Order = int.Parse(Order.Text),
-            Phase = int.Parse(Phase.Text),
-            TestId = int.Parse(TestId.Text)
+            Order = order,
+            Phase = phase,
+            TestId = testId
         };
         foreach (DataRow dr in TestSuiteTable.Rows) {
             if (dr["TestCase"] is not TestCase tc) {
@@ -325,7 +405,11 @@ public partial class TestEditor : Form {
     private void CheckValidity() {
         testSource.ResetBindings(false);
         recoverySource.ResetBindings(false);
-        Ok.Enabled = TestSuiteTable.Rows.Count > 0;
+        Ok.Enabled = TestSuiteTable.Rows.Count > 0 &&
+            int.TryParse(Phase.Text, out int phase) && phase > 0 &&
+            int.TryParse(Order.Text, out int order) && order > 0 &&
+            ConfigTarget.SelectedItem is TestTarget target && target != TestTarget.Invalid;
+        UpdateSelectionButtons();
     }
     private DataGridViewRow? GetSelectedRow(DataGridView target) {
         if (target.SelectedRows.Count != 1) {
