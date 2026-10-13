@@ -29,6 +29,7 @@ public static class TestComparer {
                 x.Phase == y.Phase &&
                 x.Order == y.Order &&
                 x.Config.Equals(y.Config) &&
+                x.Build.SequenceEqual(y.Build) &&
                 x.TestSuite.SequenceEqual(y.TestSuite, TestCaseComparer.Definition) &&
                 x.RecoverySuite.SequenceEqual(y.RecoverySuite, TestCaseComparer.Definition);
         }
@@ -38,6 +39,9 @@ public static class TestComparer {
             hc.Add(obj.Phase);
             hc.Add(obj.Order);
             hc.Add(obj.Config);
+            foreach (Guid build in obj.Build) {
+                hc.Add(build);
+            }
             foreach (TestCase tc in obj.TestSuite) {
                 hc.Add(tc);
             }
