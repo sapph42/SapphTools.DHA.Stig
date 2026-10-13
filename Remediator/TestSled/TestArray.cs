@@ -11,6 +11,7 @@ public class TestArray {
     public TestArray Clone() {
         TestArray ta = new() {
             ArrayVersion = ArrayVersion,
+            SledRunDate = SledRunDate,
             LocalTarget = LocalTarget,
             RemoteDevTarget = [.. RemoteDevTarget.ToArray()],
             RemoteProdTarget = [.. RemoteProdTarget.ToArray()],
