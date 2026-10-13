@@ -9,7 +9,7 @@ namespace SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
 /// Creates a catalog from a CDF, signs it with the user's code-signing certificate,
 /// and verifies a member against the signed catalog. Windows-only.
 /// </summary>
-public static class CatalogApi {
+public static partial class CatalogApi {
     private const uint CRYPTCAT_VERSION_2 = 0x200;
     private const uint SIGNER_SUBJECT_FILE = 1;
     private const uint SIGNER_CERT_STORE = 2;
@@ -149,8 +149,7 @@ public static class CatalogApi {
             if (rsa is not null) {
                 _ = rsa.SignHash(challenge, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
             } else {
-                using ECDsa? ecdsa = certificate.GetECDsaPrivateKey();
-                if (ecdsa is null)
+                using ECDsa? ecdsa = certificate.GetECDsaPrivateKey() ?? 
                     throw new NotSupportedException("The signing key must support RSA or ECDSA.");
                 _ = ecdsa.SignHash(challenge);
             }
@@ -187,7 +186,9 @@ public static class CatalogApi {
                     IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, out signerContext);
                 if (hr < 0) Marshal.ThrowExceptionForHR(hr);
             } finally {
-                if (signerContext != IntPtr.Zero) SignerFreeSignerContext(signerContext);
+                if (signerContext != IntPtr.Zero) {
+                    _ = SignerFreeSignerContext(signerContext);
+                }
                 GC.KeepAlive(certificate);
             }
         }
@@ -370,6 +371,7 @@ public static class CatalogApi {
 
     // These two CDF APIs take a managed delegate callback; retain runtime delegate
     // marshalling rather than introducing a function-pointer trampoline.
+#pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
     [DllImport("wintrust.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr CryptCATCDFOpen(
         [MarshalAs(UnmanagedType.LPWStr)] string cdfPath, CdfParseErrorCallback callback);
@@ -378,6 +380,7 @@ public static class CatalogApi {
     private static extern IntPtr CryptCATCDFEnumMembersByCDFTagEx(
         IntPtr cdf, IntPtr previousTag, CdfParseErrorCallback callback, ref IntPtr member,
         [MarshalAs(UnmanagedType.Bool)] bool continueOnError, IntPtr reserved);
+#pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
     [LibraryImport("wintrust.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
     private static partial IntPtr CryptCATOpen(

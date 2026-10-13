@@ -27,6 +27,7 @@
     <None Remove="Artifacts\B500E2230656EEC.sha256" />
     <None Remove="Artifacts\B500E2230656EEC.sst" />
     <None Remove="catalog.json" />
+    <None Remove="TestSled\SledCatalog\TestSled.cdf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="catalog.json" />
+    <Content Include="TestSled\SledCatalog\TestSled.cdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
