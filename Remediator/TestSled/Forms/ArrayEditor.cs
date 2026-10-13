@@ -2,7 +2,6 @@
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class ArrayEditor : Form {
-    private readonly TestArray? OriginalArray;
     private readonly DataTable TestTable;
     private readonly BindingSource source;
     private readonly TestArray ActiveArray;
@@ -86,28 +85,36 @@ public partial class ArrayEditor : Form {
             DataSource = TestTable
         };
         ActiveArray = new();
+        Tests.DataSource = source;
+        TestTable.DefaultView.Sort = "Phase ASC, Order ASC";
+        LocalTarget.Text = ActiveArray.LocalTarget;
+        LocalTarget.TextChanged += (_, _) => CheckValidity();
+        DevTargets.TextChanged += (_, _) => CheckValidity();
+        ProdTargets.TextChanged += (_, _) => CheckValidity();
+        CheckValidity();
     }
     public ArrayEditor(TestArray testArray) : this() {
-        OriginalArray = testArray;
         ActiveArray = testArray.Clone();
         LocalTarget.Text = ActiveArray.LocalTarget;
         DevTargets.Text = string.Join(Environment.NewLine, ActiveArray.RemoteDevTarget);
         ProdTargets.Text = string.Join(Environment.NewLine, ActiveArray.RemoteProdTarget);
-        foreach (Test test in OriginalArray.Tests) {
-            TestTable.Rows.Add(test.TestId, test.Phase, test.Order, test.TestSuite.Count, test.RecoverySuite.Count, test.Clone());
+        foreach (Test test in ActiveArray.Tests) {
+            AddTestRow(test.Clone(withoutResults: true));
         }
+        CheckValidity();
     }
     private void ArrayEditor_Load(object sender, EventArgs e) {
-        Tests.DataSource = source;
+        CheckValidity();
     }
     private void AddTest_Click(object sender, EventArgs e) {
         TestEditor testEditor = new();
         if (testEditor.ShowDialog() == DialogResult.OK && testEditor.Test is Test test) {
-            test.TestId = ActiveArray.Tests.Max(t => t.TestId) + 1;
-            test.Order = ActiveArray.Tests.Where(t => t.Phase == test.Phase).Max(t => t.Order) + 1;
-            if (ActiveArray.Tests.Add(test)) {
-                TestTable.Rows.Add(test.TestId, test.Phase, test.Order, test.TestSuite.Count, test.RecoverySuite.Count, test.Clone());
-            }
+            test.TestId = TestTable.Rows.Cast<DataRow>()
+                .Select(row => (int)row["TestId"]).DefaultIfEmpty(0).Max() + 1;
+            test.Order = TestTable.Rows.Cast<DataRow>()
+                .Where(row => (int)row["Phase"] == test.Phase)
+                .Select(row => (int)row["Order"]).DefaultIfEmpty(0).Max() + 1;
+            AddTestRow(test.Clone(withoutResults: true));
         }
         CheckValidity();
     }
@@ -115,16 +122,21 @@ public partial class ArrayEditor : Form {
         if (GetSelectedRow() is not DataGridViewRow row || TestTable.Rows.Find(row.Cells["TestId"].Value) is not DataRow dRow) {
             return;
         }
-        Test test = ((Test)row.Cells["Test"].Value).Clone();
-        TestEditor testEditor = new(test);
-        if (testEditor.ShowDialog() == DialogResult.OK && testEditor.Test is not null) {
-            test = testEditor.Test.Clone();
-            dRow["TestId"] = test.TestId;
-            dRow["Phase"] = test.Phase;
-            dRow["Order"] = test.Order;
-            dRow["TestSuiteCount"] = test.TestSuite.Count;
-            dRow["RecoverySuiteCount"] = test.RecoverySuite.Count;
-            dRow["Test"] = test;
+        Test previous = (Test)dRow["Test"];
+        TestEditor testEditor = new(previous.Clone(withoutResults: true));
+        if (testEditor.ShowDialog() == DialogResult.OK && testEditor.Test is Test updated) {
+            updated = updated.Clone(withoutResults: true);
+            updated.TestId = previous.TestId;
+            if (updated.Phase != previous.Phase) {
+                updated.Order = TestTable.Rows.Cast<DataRow>()
+                    .Where(item => item != dRow && (int)item["Phase"] == updated.Phase)
+                    .Select(item => (int)item["Order"]).DefaultIfEmpty(0).Max() + 1;
+            } else {
+                updated.Order = previous.Order;
+            }
+            UpdateTestRow(dRow, updated);
+            RenumberPhase(previous.Phase);
+            if (updated.Phase != previous.Phase) RenumberPhase(updated.Phase);
         }
         CheckValidity();
     }
@@ -134,26 +146,25 @@ public partial class ArrayEditor : Form {
         }
         Test toRemove = (Test)row.Cells["Test"].Value;
         if (TestTable.Rows.Find(toRemove.TestId) is DataRow dataRow) {
-            ActiveArray.Tests.Remove(toRemove);
-            foreach (Test test in ActiveArray.Tests.Where(t => t.Phase == toRemove.Phase)) {
-                if (test.Order > toRemove.Order) {
-                    test.Order--;
-                    if (TestTable.Rows.Find(test.TestId) is DataRow drSibling) {
-                        drSibling["Order"] = test.Order;
-                    }
-                }
-            }
             TestTable.Rows.Remove(dataRow);
+            RenumberPhase(toRemove.Phase);
         }
         CheckValidity();
     }
     private void Ok_Click(object sender, EventArgs e) {
-        ActiveArray.LocalTarget = LocalTarget.Text;
-        ActiveArray.RemoteDevTarget = [..DevTargets.Lines];
-        ActiveArray.RemoteProdTarget = [.. ProdTargets.Lines];
+        CheckValidity();
+        if (!Ok.Enabled) {
+            DialogResult = DialogResult.None;
+            return;
+        }
+        ActiveArray.LocalTarget = LocalTarget.Text.Trim();
+        ActiveArray.RemoteDevTarget = GetTargets(DevTargets);
+        ActiveArray.RemoteProdTarget = GetTargets(ProdTargets);
         ActiveArray.Tests.Clear();
         foreach (DataRow row in TestTable.Rows.Cast<DataRow>()) {
-            ActiveArray.Tests.Add((Test)row["Test"]);
+            if (!ActiveArray.Tests.Add(((Test)row["Test"]).Clone(withoutResults: true))) {
+                throw new InvalidOperationException("The test array contains duplicate phase/order positions.");
+            }
         }
         TestArray = ActiveArray.Clone();
         Close();
@@ -171,12 +182,52 @@ public partial class ArrayEditor : Form {
             RemoveTest.Enabled = false;
         }
     }
+    private void AddTestRow(Test test) {
+        TestTable.Rows.Add(test.TestId, test.Phase, test.Order,
+            test.TestSuite.Count, test.RecoverySuite.Count, test);
+    }
+
+    private static void UpdateTestRow(DataRow row, Test test) {
+        row["TestId"] = test.TestId;
+        row["Phase"] = test.Phase;
+        row["Order"] = test.Order;
+        row["TestSuiteCount"] = test.TestSuite.Count;
+        row["RecoverySuiteCount"] = test.RecoverySuite.Count;
+        row["Test"] = test;
+    }
+
+    private void RenumberPhase(int phase) {
+        int order = 1;
+        foreach (DataRow row in TestTable.Rows.Cast<DataRow>()
+                .Where(row => (int)row["Phase"] == phase)
+                .OrderBy(row => (int)row["Order"])
+                .ThenBy(row => (int)row["TestId"])) {
+            Test test = ((Test)row["Test"]).Clone(withoutResults: true);
+            test.Order = order;
+            UpdateTestRow(row, test);
+            order++;
+        }
+    }
+
+    private static List<string> GetTargets(TextBox input) =>
+        input.Lines.Select(line => line.Trim())
+            .Where(line => line.Length > 0)
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
     private void CheckValidity() {
         source.ResetBindings(false);
-        Ok.Enabled = !string.IsNullOrWhiteSpace(LocalTarget.Text) &&
-            !string.IsNullOrWhiteSpace(DevTargets.Text) &&
-            !string.IsNullOrWhiteSpace(ProdTargets.Text) &&
-            Tests.Rows.Count > 0;
+        var tests = TestTable.Rows.Cast<DataRow>().Select(row => (Test)row["Test"]).ToArray();
+        List<string> dev = GetTargets(DevTargets);
+        List<string> prod = GetTargets(ProdTargets);
+        Ok.Enabled = !string.IsNullOrWhiteSpace(LocalTarget.Text) && tests.Length > 0 &&
+            tests.All(test => test.Config.Target switch {
+                TestTarget.Local => true,
+                TestTarget.SingleRemoteDev => dev.Count >= 1,
+                TestTarget.FullRemoteDev => dev.Count >= 1,
+                TestTarget.SingleRemoteProd => prod.Count >= 1,
+                TestTarget.FullRemoteProd => prod.Count >= 1,
+                _ => false
+            });
     }
     private DataGridViewRow? GetSelectedRow() {
         if (Tests.SelectedRows.Count != 1) {
