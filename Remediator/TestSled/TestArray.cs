@@ -47,7 +47,9 @@ public class TestArray {
         if (LoadFromJson(definitionPath) is not TestArray definition) {
             return false;
         }
-        if (!Success || !DefinitionEquals(definition)) {
+        if (!Success || definition.Tests.Count == 0 ||
+                definition.Tests.Any(test => !test.BuildsMatchCurrent) ||
+                !DefinitionEquals(definition)) {
             return false;
         }
         if (Path.GetDirectoryName(definitionPath) is not string folder) {
