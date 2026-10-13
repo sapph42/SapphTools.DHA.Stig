@@ -11,13 +11,22 @@ public class Test : IComparable<Test> {
     public bool TestRun { get; set; } = false; // maybe change to => TestSuite.Any(t => t.Result is not null) ???
     public SortedSet<TestCase> TestSuite { get; init; } = new(TestCase.Comparer);
     public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCase.Comparer);
-    public bool? TestPass => TestSuite.All(r => r is null)
-        ? null
-        : TestSuite.All(r => r.Pass.HasValue && r.Pass.Value);
-    public bool? RecoveryPass => RecoverySuite.Count == 0 ||
-        RecoverySuite.All(r => r is null)
-            ? null
-            : RecoverySuite.All(r => r.Pass.HasValue && r.Pass.Value);
+    public bool? TestPass {
+        get {
+            if (TestSuite.Count == 0 || TestSuite.All(tc => !tc.Pass.HasValue || tc.Result is null)) {
+                return null;
+            }
+            return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
+        }
+    }
+    public bool? RecoveryPass {
+        get {
+            if (RecoverySuite.Count == 0) {
+                return true;
+            }
+            return RecoverySuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
+        }
+    }
     public bool BuildsMatchCurrent => Build.SequenceEqual(CurrentBuilds);
 
     private static Guid[] GetBuilds() {
