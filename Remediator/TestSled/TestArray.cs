@@ -15,13 +15,14 @@ public class TestArray {
         if (other is null) {
             return false;
         }
-        if (LocalTarget != other.LocalTarget) {
+        if (ArrayVersion != other.ArrayVersion ||
+                !string.Equals(LocalTarget, other.LocalTarget, StringComparison.OrdinalIgnoreCase)) {
             return false;
         }
-        if (RemoteDevTarget.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(other.RemoteDevTarget.Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase)) {
+        if (!RemoteDevTarget.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(other.RemoteDevTarget.Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase)) {
             return false;
         }
-        if (RemoteProdTarget.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(other.RemoteProdTarget.Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase)) {
+        if (!RemoteProdTarget.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(other.RemoteProdTarget.Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase)) {
             return false;
         }
         if (!Enumerable.SequenceEqual(Tests, other.Tests, TestComparer.Definition)) {
