@@ -35,17 +35,36 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
     public int Order { get; set; }
     public required Rule Rule { get; init; }
     public TestResult? Result { get; set; }
-    public bool? Pass => Result?.Pass;
+    public required IValue ExpectedAfter { get; init; }
+    public required ActionResult ExpectedResult { get; init; }
+    public bool? Pass {
+        get {
+            if (Result is null) {
+                return null;
+            }
+            if (!Result.RemediationActions.All(a => a.Result==ExpectedResult)) {
+                return false;
+            }
+            if (!IValue.Equals(ExpectedAfter, Result.ActualAfter)) {
+                return false;
+            }
+            return true;
+        }
+    }
     public TestCase Clone(bool withoutResults = false) {
         if (withoutResults) {
             return new() {
                 Order = Order,
-                Rule = Rule.Clone()
+                Rule = Rule.Clone(),
+                ExpectedAfter = ExpectedAfter,
+                ExpectedResult = ExpectedResult
             };
         }
         return new() {
             Order = Order,
             Rule = Rule.Clone(),
+            ExpectedAfter = ExpectedAfter,
+            ExpectedResult = ExpectedResult,
             Result = Result?.Clone()
         };
     }
