@@ -5,15 +5,15 @@ using System.Text.Json;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled; 
 public class TestArray {
-    private Guid[] _build = [..CurrentBuilds];
+    private ImmutableArray<Guid> _build = [..CurrentBuilds];
     public static readonly ImmutableArray<Guid> CurrentBuilds = [.. GetBuilds()];
     public int ArrayVersion { get; set; } = 1;
     public string LocalTarget { get; set; } = Environment.MachineName;
     public List<string> RemoteDevTarget { get; set; } = [];
     public List<string> RemoteProdTarget { get; set; } = [];
     public Guid[] Build {
-        get => _build;
-        init => _build = value;
+        get => [.._build];
+        init => _build = [..value];
     }
     public SortedSet<Test> Tests { get; init; } = new(TestComparer.Ordinal);
     public DateTime SledRunDate {  get; set; } = DateTime.Now;
