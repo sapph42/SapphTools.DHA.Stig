@@ -24,7 +24,10 @@ public static class TestCaseComparer {
             if (x is null || y is null) {
                 return false;
             }
-            return x.Order == y.Order && x.Rule.Equals(y.Rule);
+            return x.Order == y.Order && 
+                x.Rule.Equals(y.Rule) && 
+                IValue.Equals(x.ExpectedAfter, y.ExpectedAfter) &&
+                x.ExpectedResult == y.ExpectedResult;
         }
         public int GetHashCode([DisallowNull] TestCase obj) => obj.GetHashCode();
     }
@@ -56,14 +59,14 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             return new() {
                 Order = Order,
                 Rule = Rule.Clone(),
-                ExpectedAfter = ExpectedAfter,
+                ExpectedAfter = ExpectedAfter.Clone(),
                 ExpectedResult = ExpectedResult
             };
         }
         return new() {
             Order = Order,
             Rule = Rule.Clone(),
-            ExpectedAfter = ExpectedAfter,
+            ExpectedAfter = ExpectedAfter.Clone(),
             ExpectedResult = ExpectedResult,
             Result = Result?.Clone()
         };
