@@ -32,6 +32,7 @@
             DefBrowse = new Button();
             ResultBrowse = new Button();
             Status = new Label();
+            RunTests = new Button();
             ((System.ComponentModel.ISupportInitialize)Tests).BeginInit();
             SuspendLayout();
             // 
@@ -120,11 +121,22 @@
             Status.TabIndex = 11;
             Status.Text = "label4";
             // 
+            // RunTests
+            // 
+            RunTests.Location = new Point(910, 84);
+            RunTests.Name = "RunTests";
+            RunTests.Size = new Size(75, 23);
+            RunTests.TabIndex = 12;
+            RunTests.Text = "Run Tests";
+            RunTests.UseVisualStyleBackColor = true;
+            RunTests.Click += RunTests_Click;
+            // 
             // TestSled
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1056, 563);
+            ClientSize = new Size(998, 563);
+            Controls.Add(RunTests);
             Controls.Add(Status);
             Controls.Add(ResultBrowse);
             Controls.Add(DefBrowse);
@@ -153,5 +165,6 @@
         private Button DefBrowse;
         private Button ResultBrowse;
         private Label Status;
+        private Button RunTests;
     }
 }

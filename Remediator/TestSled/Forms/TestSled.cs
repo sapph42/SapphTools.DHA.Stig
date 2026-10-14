@@ -56,12 +56,7 @@ public partial class TestSled : Form {
     private readonly DataTable ResultsTable;
     private readonly BindingSource source;
     private StateNotify state = new();
-    // Loading a definition is not evidence that its signature or build is valid.
-    public bool DefinitionVerified { get; private set; }
-    public bool ResultsValid { get; private set; }
 
-    private readonly Label definitionStatus = new() { AutoSize = true, Location = new Point(904, 15) };
-    private readonly Label resultStatus = new() { AutoSize = true, Location = new Point(904, 53) };
     public TestSled() {
         InitializeComponent();
         state.PropertyChanged += (_, __) => {
@@ -185,8 +180,6 @@ public partial class TestSled : Form {
         Tests.DataSource = source;
         TestSledDefinitionPath.ReadOnly = true;
         TestSledResultsPath.ReadOnly = true;
-        Controls.Add(definitionStatus);
-        Controls.Add(resultStatus);
     }
 
     private void TestSled_Load(object sender, EventArgs e) {
