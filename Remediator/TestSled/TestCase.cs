@@ -45,6 +45,9 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             if (Result is null) {
                 return null;
             }
+            if (Result.RemediationActions.Count == 0) {
+                return false;
+            }
             if (!Result.RemediationActions.All(a => a.Result==ExpectedResult)) {
                 return false;
             }
