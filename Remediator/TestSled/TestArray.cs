@@ -1,11 +1,12 @@
 ﻿using SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
 using SapphTools.SecurityDescriptor;
+using System.Collections.Immutable;
 using System.Text.Json;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled; 
 public class TestArray {
-    private Guid[] _build = CurrentBuilds;
-    public static readonly Guid[] CurrentBuilds = GetBuilds();
+    private Guid[] _build = [..CurrentBuilds];
+    public static readonly ImmutableArray<Guid> CurrentBuilds = [.. GetBuilds()];
     public int ArrayVersion { get; set; } = 1;
     public string LocalTarget { get; set; } = Environment.MachineName;
     public List<string> RemoteDevTarget { get; set; } = [];
@@ -77,7 +78,7 @@ public class TestArray {
         return CatalogApi.VerifyCatalogFile(catalogPath, definitionPath);
     }
     public void UpdateBuilds() {
-        _build = CurrentBuilds;
+        _build = [..CurrentBuilds];
     }
     private static Guid[] GetBuilds() {
         Guid[] build = [
