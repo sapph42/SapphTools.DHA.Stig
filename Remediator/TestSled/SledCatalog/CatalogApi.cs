@@ -22,53 +22,6 @@ public static partial class CatalogApi {
     private static readonly Guid GenericVerifyV2 = new("00AAC56B-CD44-11D0-8CC2-00C04FC295EE");
 
     /// <summary>
-    /// Enumerates valid code-signing certificates associated with private keys in CurrentUser\My.
-    /// HasPrivateKey describes the store's key association; a removed smart card may still fail at signing time.
-    /// </summary>
-    public static X509Certificate2Collection GetCodeSigningCertificates() {
-        using X509Store store = new(StoreName.My, StoreLocation.CurrentUser);
-        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-        X509Certificate2Collection result = [];
-        DateTime now = DateTime.Now;
-        foreach (X509Certificate2 certificate in store.Certificates) {
-            if (!certificate.HasPrivateKey || now < certificate.NotBefore || now > certificate.NotAfter) {
-                continue;
-            }
-            bool codeSigning = certificate.Extensions.OfType<X509EnhancedKeyUsageExtension>()
-                .Any(eku => eku.EnhancedKeyUsages.Cast<Oid>()
-                    .Any(usage => usage.Value == CodeSigningOid));
-            bool canSign = certificate.Extensions.OfType<X509KeyUsageExtension>()
-                .All(usage => (usage.KeyUsages & X509KeyUsageFlags.DigitalSignature) != 0);
-            if (codeSigning && canSign) {
-                result.Add(certificate);
-            }
-        }
-        return result;
-    }
-
-    /// <summary>
-    /// Selects automatically if there is one candidate; otherwise uses the standard Windows certificate UI.
-    /// Returns null if the user cancels the selection dialog.
-    /// </summary>
-    public static X509Certificate2? SelectSigningCertificate(IntPtr ownerWindow = default) {
-        X509Certificate2Collection candidates = GetCodeSigningCertificates();
-        if (candidates.Count == 0) {
-            throw new InvalidOperationException(
-                "No currently valid Code Signing certificate with an associated private key was found in CurrentUser\\My.");
-        }
-        if (candidates.Count == 1) {
-            return candidates[0];
-        }
-        if (!Environment.UserInteractive) {
-            throw new InvalidOperationException("Certificate selection requires an interactive Windows session.");
-        }
-        X509Certificate2Collection selected = X509Certificate2UI.SelectFromCollection(
-            candidates, "Test Sled catalog signing", "Select a Code Signing certificate",
-            X509SelectionFlag.SingleSelection, ownerWindow);
-        return selected.Count == 0 ? null : selected[0];
-    }
-
-    /// <summary>
     /// Generates the unsigned catalog from a CDF. The CDF controls the catalog's output name/directory.
     /// CatalogVersion=2 and HashAlgorithms=SHA256 are required by the bundled TestSled.cdf.
     /// </summary>
@@ -216,16 +169,59 @@ public static partial class CatalogApi {
         }
     }
 
-    /// <summary>
-    /// Verifies a catalog member's SHA-256 digest and the catalog's Windows trust policy.
-    /// Do not replace this check with ReadCatalogFile, which only enumerates untrusted metadata.
-    /// </summary>
-    public static unsafe void VerifyCatalogMember(string catalogPath, string memberPath) {
+    public static bool VerifyCatalogFile(string catalogPath, string memberPath) {
+        try {
+            VerifyCatalogMember(catalogPath, memberPath);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    internal static X509Certificate2Collection GetCodeSigningCertificates() {
+        using X509Store store = new(StoreName.My, StoreLocation.CurrentUser);
+        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+        X509Certificate2Collection result = [];
+        DateTime now = DateTime.Now;
+        foreach (X509Certificate2 certificate in store.Certificates) {
+            if (!certificate.HasPrivateKey || now < certificate.NotBefore || now > certificate.NotAfter) {
+                continue;
+            }
+            bool codeSigning = certificate.Extensions.OfType<X509EnhancedKeyUsageExtension>()
+                .Any(eku => eku.EnhancedKeyUsages.Cast<Oid>()
+                    .Any(usage => usage.Value == CodeSigningOid));
+            bool canSign = certificate.Extensions.OfType<X509KeyUsageExtension>()
+                .All(usage => (usage.KeyUsages & X509KeyUsageFlags.DigitalSignature) != 0);
+            if (codeSigning && canSign) {
+                result.Add(certificate);
+            }
+        }
+        return result;
+    }
+    internal static X509Certificate2? SelectSigningCertificate(IntPtr ownerWindow = default) {
+        X509Certificate2Collection candidates = GetCodeSigningCertificates();
+        if (candidates.Count == 0) {
+            throw new InvalidOperationException(
+                "No currently valid Code Signing certificate with an associated private key was found in CurrentUser\\My.");
+        }
+        if (candidates.Count == 1) {
+            return candidates[0];
+        }
+        if (!Environment.UserInteractive) {
+            throw new InvalidOperationException("Certificate selection requires an interactive Windows session.");
+        }
+        X509Certificate2Collection selected = X509Certificate2UI.SelectFromCollection(
+            candidates, "Test Sled catalog signing", "Select a Code Signing certificate",
+            X509SelectionFlag.SingleSelection, ownerWindow);
+        return selected.Count == 0 ? null : selected[0];
+    }
+    internal static unsafe void VerifyCatalogMember(string catalogPath, string memberPath) {
         ArgumentException.ThrowIfNullOrWhiteSpace(catalogPath);
         ArgumentException.ThrowIfNullOrWhiteSpace(memberPath);
         string fullCatalog = Path.GetFullPath(catalogPath);
         string fullMember = Path.GetFullPath(memberPath);
-        if (!File.Exists(fullCatalog)) throw new FileNotFoundException("Catalog not found.", fullCatalog);
+        if (!File.Exists(fullCatalog))
+            throw new FileNotFoundException("Catalog not found.", fullCatalog);
 
         if (!CryptCATAdminAcquireContext2(out IntPtr admin, IntPtr.Zero, "SHA256", IntPtr.Zero, 0)) {
             throw new Win32Exception(Marshal.GetLastWin32Error(), "Unable to initialize SHA-256 catalog verification.");

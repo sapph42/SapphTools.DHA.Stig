@@ -233,8 +233,7 @@ public partial class TestSled : Form {
             string catalogPath = Path.Combine(definitionFile.DirectoryName
                 ?? throw new InvalidDataException("Cannot determine the definition directory."), "TestSled.cat");
             if (!File.Exists(catalogPath)) return false;
-            CatalogApi.VerifyCatalogMember(catalogPath, definitionFile.FullName);
-            return true;
+            return CatalogApi.VerifyCatalogFile(catalogPath, definitionFile.FullName);
         } catch {
             return false;
         }

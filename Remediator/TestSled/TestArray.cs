@@ -73,11 +73,8 @@ public class TestArray {
         if (!File.Exists(catalogPath)) {
             return false;
         }
-        try {
-            CatalogApi.VerifyCatalogMember(catalogPath, definitionPath);
-            return true;
-        } catch {
-            return false;
+        return CatalogApi.VerifyCatalogFile(catalogPath, definitionPath);
+    }
     public void UpdateBuilds() {
         _build = CurrentBuilds;
     }
