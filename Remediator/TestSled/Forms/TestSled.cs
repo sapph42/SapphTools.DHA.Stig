@@ -1,5 +1,6 @@
 ﻿using SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
 using System.Data;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestSled : Form {
@@ -10,7 +11,20 @@ public partial class TestSled : Form {
         public const string NoResults = "No TestSled results file has been selected, or the selected file could not be parsed.";
         public const string Fail = "The selected results file shows one or more test failures.";
         public const string Mismatch = "The selected results file does not match the definition file.";
+        public const string Catalog = "No valid catalog file was found in the directory with the definition file.";
         public const string None = "";
+        public static string GetMessage(TestSledState state) {
+            return state switch {
+                var x when x.HasFlag(TestSledState.NoDefinition) => NoDefinition,
+                var x when x.HasFlag(TestSledState.NoResults) => NoResults,
+                var x when x.HasFlag(TestSledState.DefinitionMismatch) => Mismatch,
+                var x when x.HasFlag(TestSledState.VersionMismatch) => Version,
+                var x when x.HasFlag(TestSledState.ResultsFail) => Fail,
+                var x when x.HasFlag(TestSledState.NoCatalog) => Catalog,
+                var x when x.HasFlag(TestSledState.Unsigned) => Unsigned,
+                TestSledState.Valid => None,
+            };
+        }
     }
     private FileInfo? testSledDefinitionFI;
     private FileInfo? testSledResultsFI;
@@ -18,9 +32,11 @@ public partial class TestSled : Form {
     private TestArray? testArrayResults;
     private readonly DataTable ResultsTable;
     private readonly BindingSource source;
+    private TestSledState state = TestSledState.Valid;
     // Loading a definition is not evidence that its signature or build is valid.
     public bool DefinitionVerified { get; private set; }
     public bool ResultsValid { get; private set; }
+
     private readonly Label definitionStatus = new() { AutoSize = true, Location = new Point(904, 15) };
     private readonly Label resultStatus = new() { AutoSize = true, Location = new Point(904, 53) };
     public TestSled() {
@@ -39,14 +55,17 @@ public partial class TestSled : Form {
         if (!string.IsNullOrWhiteSpace(Settings.Default.TestSledResultsPath)) {
             testSledResultsFI = new(Settings.Default.TestSledResultsPath);
         }
-        if (IsExistingLocalJsonFile(testSledDefinitionFI) &&
-                testSledDefinitionFI is FileInfo definition &&
-                TryLoadDefinition(definition.FullName, out TestArray? loadedDefinition, out _)) {
-            testArrayDefinition = loadedDefinition;
-        }
-        if (IsExistingLocalJsonFile(testSledResultsFI) && testSledResultsFI is FileInfo results) {
-            testArrayResults = TestArray.LoadFromJson(results.FullName);
-        }
+        //if (IsExistingLocalJsonFile(testSledDefinitionFI) &&
+        //        testSledDefinitionFI is FileInfo definition &&
+        //        TryLoadDefinition(definition.FullName, out TestArray? loadedDefinition, out _)) {
+        //    testArrayDefinition = loadedDefinition;
+        //}
+        //if (IsExistingLocalJsonFile(testSledResultsFI) && testSledResultsFI is FileInfo results) {
+        //    testArrayResults = TestArray.LoadFromJson(results.FullName);
+        //}
+        //LoadFromJson does all this work, I think. DRY
+        testArrayDefinition = TestArray.LoadFromJson(Settings.Default.TestSledDefinitionPath);
+        testArrayResults = TestArray.LoadFromJson(Settings.Default.TestSledResultsPath);
         Tests.AutoGenerateColumns = false;
         Tests.Columns.AddRange([
             new DataGridViewTextBoxColumn() {
@@ -152,140 +171,114 @@ public partial class TestSled : Form {
     }
 
     private void TestSled_Load(object sender, EventArgs e) {
-        TestSledDefinitionPath.Text = HasSelectedJsonPath(testSledDefinitionFI)
-            ? testSledDefinitionFI!.FullName : string.Empty;
-        TestSledResultsPath.Text = HasSelectedJsonPath(testSledResultsFI)
-            ? testSledResultsFI!.FullName : string.Empty;
-        RefreshResults();
+        //TestSledDefinitionPath.Text = HasSelectedJsonPath(testSledDefinitionFI)
+        //    ? testSledDefinitionFI!.FullName : string.Empty;
+        //TestSledResultsPath.Text = HasSelectedJsonPath(testSledResultsFI)
+        //    ? testSledResultsFI!.FullName : string.Empty;
+        // I don't need to care if the file specifically ends in .json just because that's how I define OFD
+        // Correct content matters more than metadata
+        //TestSledDefinitionPath.Text = testSledDefinitionFI?.FullName ?? string.Empty;
+        //TestSledResultsPath.Text = testSledResultsFI?.FullName ?? string.Empty;
+        //RefreshResults();
+        Verify(testSledDefinitionFI?.FullName, testSledResultsFI?.FullName);
     }
 
     private void DefBrowse_Click(object sender, EventArgs e) {
         using OpenFileDialog dialog = CreateJsonFileDialog(testSledDefinitionFI);
         dialog.Title = "Select Test Sled definition";
-        if (dialog.ShowDialog(this) != DialogResult.OK) return;
-        if (!TryLoadDefinition(dialog.FileName, out TestArray? definition, out string error)) {
-            MessageBox.Show(this, error, "Invalid Test Sled definition",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        if (dialog.ShowDialog() != DialogResult.OK) {
             return;
         }
+        //if (!TryLoadDefinition(dialog.FileName, out TestArray? definition, out string error)) {
+        //    MessageBox.Show(this, error, "Invalid Test Sled definition",
+        //        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    return;
+        //}
 
-        // A readable definition is editable even when its catalog is absent,
-        // its signature is invalid, or its build IDs are out of date.
-        testSledDefinitionFI = new FileInfo(dialog.FileName);
-        testArrayDefinition = definition;
-        TestSledDefinitionPath.Text = testSledDefinitionFI.FullName;
-        Settings.Default.TestSledDefinitionPath = testSledDefinitionFI.FullName;
-        Settings.Default.Save();
-        RefreshResults();
+        //// A readable definition is editable even when its catalog is absent,
+        //// its signature is invalid, or its build IDs are out of date.
+        //testSledDefinitionFI = new FileInfo(dialog.FileName);
+        //testArrayDefinition = definition;
+        //TestSledDefinitionPath.Text = testSledDefinitionFI.FullName;
+        //Settings.Default.TestSledDefinitionPath = testSledDefinitionFI.FullName;
+        //Settings.Default.Save();
+        //RefreshResults();
+        //I think Verify will handle all this
+        Verify(dialog.FileName, TestSledResultsPath.Text);
     }
 
     private void ResultBrowse_Click(object sender, EventArgs e) {
         using OpenFileDialog dialog = CreateJsonFileDialog(testSledResultsFI);
         dialog.Title = "Select Test Sled results";
-        if (dialog.ShowDialog(this) != DialogResult.OK) return;
-
-        try {
-            FileInfo file = new(dialog.FileName);
-            if (!file.Exists || !file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase)) {
-                throw new InvalidDataException("Select an existing JSON results file.");
-            }
-            TestArray loaded = TestArray.LoadFromJson(file.FullName)
-                ?? throw new InvalidDataException("The results file could not be deserialized.");
-            // A well-formed but invalid result file is still shown, with a red status indicator.
-            testSledResultsFI = file;
-            testArrayResults = loaded;
-            TestSledResultsPath.Text = file.FullName;
-            Settings.Default.TestSledResultsPath = file.FullName;
-            Settings.Default.Save();
-            RefreshResults();
-        } catch (Exception ex) {
-            MessageBox.Show(this, ex.Message, "Unable to load Test Sled results",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        if (dialog.ShowDialog() != DialogResult.OK) {
+            return;
         }
+        //I think Verify will handle all this
+        Verify(TestSledDefinitionPath.Text, dialog.FileName);
     }
 
     // Parsing and checking file existence are the only prerequisites for editing.
     // Signature and MVID checks are separate qualification predicates.
-    private static bool TryLoadDefinition(string path, out TestArray? definition, out string error) {
-        definition = null;
-        error = string.Empty;
-        try {
-            FileInfo file = new(path);
-            if (!file.Exists || !file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase)) {
-                throw new InvalidDataException("Select an existing JSON definition file.");
-            }
-            definition = TestArray.LoadFromJson(file.FullName)
-                ?? throw new InvalidDataException("The definition file could not be deserialized.");
-            return true;
-        } catch (Exception ex) {
-            error = ex.Message;
-            return false;
-        }
-    }
+    //private static bool TryLoadDefinition(string path, out TestArray? definition, out string error) {
+    //    definition = null;
+    //    error = string.Empty;
+    //    try {
+    //        FileInfo file = new(path);
+    //        if (!file.Exists || !file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase)) {
+    //            throw new InvalidDataException("Select an existing JSON definition file.");
+    //        }
+    //        definition = TestArray.LoadFromJson(file.FullName)
+    //            ?? throw new InvalidDataException("The definition file could not be deserialized.");
+    //        return true;
+    //    } catch (Exception ex) {
+    //        error = ex.Message;
+    //        return false;
+    //    }
+    //}
 
     //Kinda like this better. Thinking about what parts to replace with this
-    private void Verify() {
+    private void Verify(string? defPath, string? resPath) {
         Status.Text = Messages.None;
-        DefinitionVerified = false;
-        ResultsValid = false;
-        if (string.IsNullOrWhiteSpace(TestSledDefinitionPath.Text)) {
-            Status.Text = Messages.NoDefinition;
-            DefinitionVerified = false;
-            return;
-        } else if (!File.Exists(TestSledDefinitionPath.Text)) {
-            Status.Text = Messages.NoDefinition;
-            DefinitionVerified = false;
-            return;
-        } else if (TestArray.LoadFromJson(TestSledDefinitionPath.Text) is not TestArray def) {
-            Status.Text = Messages.NoDefinition;
-            DefinitionVerified = false;
-            return;
+        state = TestSledState.Valid;
+        if (string.IsNullOrWhiteSpace(defPath) || 
+                !File.Exists(defPath) ||
+                TestArray.LoadFromJson(defPath) is not TestArray def) {
+            state |= TestSledState.NoDefinition;
         } else {
-            testSledDefinitionFI = new(TestSledDefinitionPath.Text);
+            testSledDefinitionFI = new(defPath);
             testArrayDefinition = def;
-            DefinitionVerified = true;
+            TestSledDefinitionPath.Text = defPath;
+            Settings.Default.TestSledDefinitionPath = defPath;
+            Settings.Default.Save();
         }
-        if (string.IsNullOrWhiteSpace(TestSledResultsPath.Text)) {
-            Status.Text = Messages.NoResults;
-            ResultsValid = false;
-            return;
-        } else if (!File.Exists(TestSledResultsPath.Text)) {
-            Status.Text = Messages.NoDefinition;
-            ResultsValid = false;
-            return;
-        } else if (TestArray.LoadFromJson(TestSledResultsPath.Text) is not TestArray res) {
-            Status.Text = Messages.NoResults;
-            ResultsValid = false;
-            return;
-        } else {
-            testSledResultsFI = new FileInfo(TestSledResultsPath.Text);
+        if (string.IsNullOrWhiteSpace(resPath) ||
+                !File.Exists(resPath) || 
+                TestArray.LoadFromJson(resPath) is not TestArray res) {
+            state |= TestSledState.NoResults;
+        } else if (testSledDefinitionFI is not null && testArrayDefinition is not null) {
+            testSledResultsFI = new FileInfo(resPath);
             testArrayResults = res;
+            TestSledResultsPath.Text = resPath;
+            Settings.Default.TestSledResultsPath = defPath;
+            Settings.Default.Save();
+            RefreshResults();
             string catPath = Path.Combine(testSledDefinitionFI.DirectoryName!, "TestSled.cat");
             if (!res.BuildsMatchCurrent) {
-                Status.Text = Messages.Version;
-                ResultsValid = false;
-                return;
-            } else if (!testArrayDefinition.DefinitionEquals(res)) {
-                Status.Text = Messages.Mismatch;
-                ResultsValid = false; 
-                return;
-            } else if (!File.Exists(catPath)) {
-                Status.Text = Messages.Unsigned;
-                ResultsValid = false;
-                return;
+                state |= TestSledState.VersionMismatch;
+            }
+            if (!testArrayDefinition.DefinitionEquals(res)) {
+                state |= TestSledState.DefinitionMismatch;
+            }
+            if (!File.Exists(catPath)) {
+                state |= TestSledState.NoCatalog | TestSledState.Unsigned;
             } else if (!CatalogApi.VerifyCatalogFile(catPath, testSledDefinitionFI.FullName)) {
-                Status.Text = Messages.Unsigned;
-                ResultsValid = false;
-                return;
-            } else if (!res.Success) {
-                Status.Text = Messages.Fail;
-                ResultsValid = false;
-                return;
-            } else {
-                Status.Text = Messages.None;
-                ResultsValid = true;
+                state |= TestSledState.Unsigned;
+            }
+            if (!res.Success) {
+                state |= TestSledState.ResultsFail;
             }
         }
+        Status.Text = Messages.GetMessage(state);
     }
     private static bool VerifyDefinition(FileInfo definitionFile, TestArray definition) {
         try {
@@ -312,31 +305,33 @@ public partial class TestSled : Form {
     }
 
     private void RefreshResults() {
-        DefinitionVerified = testArrayDefinition is not null &&
-            testSledDefinitionFI is FileInfo definition &&
-            VerifyDefinition(definition, testArrayDefinition);
-        ResultsValid = false;
-        if (DefinitionVerified && testArrayResults is not null &&
-                testSledDefinitionFI is FileInfo definitionPath) {
-            try {
-                ResultsValid = testArrayResults.ResultsAreValid(definitionPath.FullName);
-            } catch {
-                ResultsValid = false;
-            }
+        //DefinitionVerified = testArrayDefinition is not null &&
+        //    testSledDefinitionFI is FileInfo definition &&
+        //    VerifyDefinition(definition, testArrayDefinition);
+        //ResultsValid = false;
+        //if (DefinitionVerified && testArrayResults is not null &&
+        //        testSledDefinitionFI is FileInfo definitionPath) {
+        //    try {
+        //        ResultsValid = testArrayResults.ResultsAreValid(definitionPath.FullName);
+        //    } catch {
+        //        ResultsValid = false;
+        //    }
+        //}
+
+        //definitionStatus.Text = testArrayDefinition is null
+        //    ? HasSelectedJsonPath(testSledDefinitionFI) ? "Not loaded" : "Not selected"
+        //    : DefinitionVerified ? "Verified" : "Unverified";
+        //definitionStatus.ForeColor = testArrayDefinition is null && !HasSelectedJsonPath(testSledDefinitionFI)
+        //    ? SystemColors.GrayText : DefinitionVerified ? Color.ForestGreen : Color.Firebrick;
+
+        //resultStatus.Text = testArrayResults is null
+        //    ? HasSelectedJsonPath(testSledResultsFI) ? "Not loaded" : "Not selected"
+        //    : ResultsValid ? "Valid" : "Invalid";
+        //resultStatus.ForeColor = testArrayResults is null && !HasSelectedJsonPath(testSledResultsFI)
+        //    ? SystemColors.GrayText : ResultsValid ? Color.ForestGreen : Color.Firebrick;
+        if (testArrayResults is null) {
+            return;
         }
-
-        definitionStatus.Text = testArrayDefinition is null
-            ? HasSelectedJsonPath(testSledDefinitionFI) ? "Not loaded" : "Not selected"
-            : DefinitionVerified ? "Verified" : "Unverified";
-        definitionStatus.ForeColor = testArrayDefinition is null && !HasSelectedJsonPath(testSledDefinitionFI)
-            ? SystemColors.GrayText : DefinitionVerified ? Color.ForestGreen : Color.Firebrick;
-
-        resultStatus.Text = testArrayResults is null
-            ? HasSelectedJsonPath(testSledResultsFI) ? "Not loaded" : "Not selected"
-            : ResultsValid ? "Valid" : "Invalid";
-        resultStatus.ForeColor = testArrayResults is null && !HasSelectedJsonPath(testSledResultsFI)
-            ? SystemColors.GrayText : ResultsValid ? Color.ForestGreen : Color.Firebrick;
-
         ResultsTable.Clear();
         if (testArrayResults?.Tests is not null) {
             foreach (Test test in testArrayResults.Tests) {
@@ -355,28 +350,32 @@ public partial class TestSled : Form {
         source.ResetBindings(false);
     }
 
-    private static bool HasSelectedJsonPath(FileInfo? file) =>
-        file is not null && file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase);
+    //private static bool HasSelectedJsonPath(FileInfo? file) =>
+    //    file is not null && file.Extension.Equals(".json", StringComparison.OrdinalIgnoreCase);
 
     // Never probe a remembered network location on the UI thread. If the user
     // explicitly picks it in the file dialog, normal loading is still supported.
-    private static bool IsExistingLocalJsonFile(FileInfo? file) =>
-        HasSelectedJsonPath(file) && IsLocalPath(file!.FullName) && file.Exists;
+    //private static bool IsExistingLocalJsonFile(FileInfo? file) =>
+    //    HasSelectedJsonPath(file) && IsLocalPath(file!.FullName) && file.Exists;
     private static OpenFileDialog CreateJsonFileDialog(FileInfo? previous) => CreateJsonFileDialog(previous?.DirectoryName);
     private static OpenFileDialog CreateJsonFileDialog(string? previous) {
         string startPath = previous ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        Task timeout = Task.Delay(500);
+        static async Task FastCheck(string server) {
+            CancellationTokenSource cts = new(100);
+            _ = await System.Net.Dns.GetHostEntryAsync(server, cts.Token);
+            System.Net.NetworkInformation.Ping p = new();
+            cts = new(100);
+            if ((await p.SendPingAsync(server, TimeSpan.FromMilliseconds(100), new byte[1], null, cts.Token)).Status != 
+                    System.Net.NetworkInformation.IPStatus.Success) {
+                throw new Exception();
+            }
+        }
         if (Path.GetPathRoot(startPath) is string root) {
             if (root.StartsWith("\\\\")) {
                 root = root[2..root.IndexOf('\\', 2)];
-                CancellationTokenSource cts = new(100);
                 try {
-                    _ = System.Net.Dns.GetHostEntryAsync(root, cts.Token).GetAwaiter().GetResult();
-                } catch {
-                    startPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                }
-                try {
-                    System.Net.NetworkInformation.Ping p = new();
-                    if (p.Send(root, 100, new byte[1], null).Status != System.Net.NetworkInformation.IPStatus.Success) {
+                    if (Task.WaitAny(timeout, FastCheck(root)) == 0) {
                         startPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                     }
                 } catch {
@@ -412,20 +411,20 @@ public partial class TestSled : Form {
     //    return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
     //}
 
-    private static bool IsLocalPath(string path) {
-        try {
-            if (path.StartsWith(@"\\", StringComparison.Ordinal) ||
-                    path.StartsWith("//", StringComparison.Ordinal) ||
-                    !Path.IsPathFullyQualified(path)) {
-                return false;
-            }
-            if (Uri.TryCreate(path, UriKind.Absolute, out Uri? uri) && !uri.IsFile) {
-                return false;
-            }
-            string? root = Path.GetPathRoot(path);
-            return root is not null && new DriveInfo(root).DriveType != DriveType.Network;
-        } catch {
-            return false;
-        }
-    }
+    //private static bool IsLocalPath(string path) {
+    //    try {
+    //        if (path.StartsWith(@"\\", StringComparison.Ordinal) ||
+    //                path.StartsWith("//", StringComparison.Ordinal) ||
+    //                !Path.IsPathFullyQualified(path)) {
+    //            return false;
+    //        }
+    //        if (Uri.TryCreate(path, UriKind.Absolute, out Uri? uri) && !uri.IsFile) {
+    //            return false;
+    //        }
+    //        string? root = Path.GetPathRoot(path);
+    //        return root is not null && new DriveInfo(root).DriveType != DriveType.Network;
+    //    } catch {
+    //        return false;
+    //    }
+    //}
 }
