@@ -61,7 +61,12 @@ public partial class TestSled : Form {
         InitializeComponent();
         state.PropertyChanged += (_, __) => {
             Status.Text = Messages.GetMessage(state.Value);
-            RunTests.Enabled = state.Value == TestSledState.Valid;
+            RunTests.Enabled = state.Value switch {
+                var x when x.HasFlag(TestSledState.NoDefinition) => false,
+                var x when x.HasFlag(TestSledState.NoCatalog) => false,
+                var x when x.HasFlag(TestSledState.Unsigned) => false,
+                _ => true
+            };
         };
         string? procPath = Environment.ProcessPath;
         string? procDir = null;
