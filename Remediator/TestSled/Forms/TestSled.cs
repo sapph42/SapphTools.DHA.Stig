@@ -1,9 +1,17 @@
-﻿using System.Data;
-using System.Drawing;
-using SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
+﻿using SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
+using System.Data;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestSled : Form {
+    private static class Messages {
+        public const string Unsigned = "The definition file has not been signed. TestSled is not available on unsigned TestArrays.";
+        public const string Version = "The results were obtained against a previous version. TestSled must be run again for valid results.";
+        public const string NoDefinition = "No TestSled definition file has been selected, or the selected file could not be parsed.";
+        public const string NoResults = "No TestSled results file has been selected, or the selected file could not be parsed.";
+        public const string Fail = "The selected results file shows one or more test failures.";
+        public const string Mismatch = "The selected results file does not match the definition file.";
+        public const string None = "";
+    }
     private FileInfo? testSledDefinitionFI;
     private FileInfo? testSledResultsFI;
     private TestArray? testArrayDefinition;
@@ -215,6 +223,70 @@ public partial class TestSled : Form {
         }
     }
 
+    //Kinda like this better. Thinking about what parts to replace with this
+    private void Verify() {
+        Status.Text = Messages.None;
+        DefinitionVerified = false;
+        ResultsValid = false;
+        if (string.IsNullOrWhiteSpace(TestSledDefinitionPath.Text)) {
+            Status.Text = Messages.NoDefinition;
+            DefinitionVerified = false;
+            return;
+        } else if (!File.Exists(TestSledDefinitionPath.Text)) {
+            Status.Text = Messages.NoDefinition;
+            DefinitionVerified = false;
+            return;
+        } else if (TestArray.LoadFromJson(TestSledDefinitionPath.Text) is not TestArray def) {
+            Status.Text = Messages.NoDefinition;
+            DefinitionVerified = false;
+            return;
+        } else {
+            testSledDefinitionFI = new(TestSledDefinitionPath.Text);
+            testArrayDefinition = def;
+            DefinitionVerified = true;
+        }
+        if (string.IsNullOrWhiteSpace(TestSledResultsPath.Text)) {
+            Status.Text = Messages.NoResults;
+            ResultsValid = false;
+            return;
+        } else if (!File.Exists(TestSledResultsPath.Text)) {
+            Status.Text = Messages.NoDefinition;
+            ResultsValid = false;
+            return;
+        } else if (TestArray.LoadFromJson(TestSledResultsPath.Text) is not TestArray res) {
+            Status.Text = Messages.NoResults;
+            ResultsValid = false;
+            return;
+        } else {
+            testSledResultsFI = new FileInfo(TestSledResultsPath.Text);
+            testArrayResults = res;
+            string catPath = Path.Combine(testSledDefinitionFI.DirectoryName!, "TestSled.cat");
+            if (!res.BuildsMatchCurrent) {
+                Status.Text = Messages.Version;
+                ResultsValid = false;
+                return;
+            } else if (!testArrayDefinition.DefinitionEquals(res)) {
+                Status.Text = Messages.Mismatch;
+                ResultsValid = false; 
+                return;
+            } else if (!File.Exists(catPath)) {
+                Status.Text = Messages.Unsigned;
+                ResultsValid = false;
+                return;
+            } else if (!CatalogApi.VerifyCatalogFile(catPath, testSledDefinitionFI.FullName)) {
+                Status.Text = Messages.Unsigned;
+                ResultsValid = false;
+                return;
+            } else if (!res.Success) {
+                Status.Text = Messages.Fail;
+                ResultsValid = false;
+                return;
+            } else {
+                Status.Text = Messages.None;
+                ResultsValid = true;
+            }
+        }
+    }
     private static bool VerifyDefinition(FileInfo definitionFile, TestArray definition) {
         try {
             if (definition.Tests is null || definition.Tests.Count == 0 ||
@@ -290,34 +362,55 @@ public partial class TestSled : Form {
     // explicitly picks it in the file dialog, normal loading is still supported.
     private static bool IsExistingLocalJsonFile(FileInfo? file) =>
         HasSelectedJsonPath(file) && IsLocalPath(file!.FullName) && file.Exists;
-
-    private static OpenFileDialog CreateJsonFileDialog(FileInfo? previous) {
+    private static OpenFileDialog CreateJsonFileDialog(FileInfo? previous) => CreateJsonFileDialog(previous?.DirectoryName);
+    private static OpenFileDialog CreateJsonFileDialog(string? previous) {
+        string startPath = previous ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        if (Path.GetPathRoot(startPath) is string root) {
+            if (root.StartsWith("\\\\")) {
+                root = root[2..root.IndexOf('\\', 2)];
+                CancellationTokenSource cts = new(100);
+                try {
+                    _ = System.Net.Dns.GetHostEntryAsync(root, cts.Token).GetAwaiter().GetResult();
+                } catch {
+                    startPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+                try {
+                    System.Net.NetworkInformation.Ping p = new();
+                    if (p.Send(root, 100, new byte[1], null).Status != System.Net.NetworkInformation.IPStatus.Success) {
+                        startPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    }
+                } catch {
+                    startPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
+            } else if (!DriveInfo.GetDrives().Any(d => d.Name.Equals(root[..3], StringComparison.OrdinalIgnoreCase) && d.IsReady)) {
+                startPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+        }
         OpenFileDialog dialog = new() {
             Filter = "JSON files (*.json)|*.json",
             FilterIndex = 1,
             CheckFileExists = true,
             CheckPathExists = true,
             Multiselect = false,
-            InitialDirectory = GetSafeInitialDirectory(previous)
+            InitialDirectory = startPath
         };
         return dialog;
     }
-
-    private static string GetSafeInitialDirectory(FileInfo? previous) {
-        // An unreachable UNC share or mapped network drive can freeze OpenFileDialog
-        // before it appears. Do not probe those paths on the UI thread.
-        string? preferred = previous?.DirectoryName;
-        if (!string.IsNullOrWhiteSpace(preferred) && IsLocalPath(preferred) &&
-                Directory.Exists(preferred)) {
-            return preferred;
-        }
-        string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        if (!string.IsNullOrWhiteSpace(documents) && IsLocalPath(documents) &&
-                Directory.Exists(documents)) {
-            return documents;
-        }
-        return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-    }
+    //private static string GetSafeInitialDirectory(FileInfo? previous) {
+    //    // An unreachable UNC share or mapped network drive can freeze OpenFileDialog
+    //    // before it appears. Do not probe those paths on the UI thread.
+    //    string? preferred = previous?.DirectoryName;
+    //    if (!string.IsNullOrWhiteSpace(preferred) && IsLocalPath(preferred) &&
+    //            Directory.Exists(preferred)) {
+    //        return preferred;
+    //    }
+    //    string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+    //    if (!string.IsNullOrWhiteSpace(documents) && IsLocalPath(documents) &&
+    //            Directory.Exists(documents)) {
+    //        return documents;
+    //    }
+    //    return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    //}
 
     private static bool IsLocalPath(string path) {
         try {

@@ -1,4 +1,5 @@
 ﻿using SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
+using SapphTools.SecurityDescriptor;
 using System.Text.Json;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled; 

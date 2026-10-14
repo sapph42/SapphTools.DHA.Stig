@@ -31,6 +31,7 @@
             label3 = new Label();
             DefBrowse = new Button();
             ResultBrowse = new Button();
+            Status = new Label();
             ((System.ComponentModel.ISupportInitialize)Tests).BeginInit();
             SuspendLayout();
             // 
@@ -108,11 +109,23 @@
             ResultBrowse.UseVisualStyleBackColor = true;
             ResultBrowse.Click += ResultBrowse_Click;
             // 
+            // Status
+            // 
+            Status.AutoSize = true;
+            Status.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            Status.ForeColor = Color.Red;
+            Status.Location = new Point(173, 95);
+            Status.Name = "Status";
+            Status.Size = new Size(40, 15);
+            Status.TabIndex = 11;
+            Status.Text = "label4";
+            // 
             // TestSled
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1056, 563);
+            Controls.Add(Status);
             Controls.Add(ResultBrowse);
             Controls.Add(DefBrowse);
             Controls.Add(label3);
@@ -139,5 +152,6 @@
         private Label label3;
         private Button DefBrowse;
         private Button ResultBrowse;
+        private Label Status;
     }
 }
