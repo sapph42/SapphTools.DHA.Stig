@@ -224,7 +224,7 @@ public partial class TestSled : Form {
                 TestTarget.FullRemoteDev => [..results.RemoteDevTarget],
                 TestTarget.FullRemoteProd => [..results.RemoteProdTarget],
             };
-            bool failed = false;
+            bool passed = false;
             foreach (TestCase testCase in test.TestSuite) {
                 foreach (string target in targets) {
                     List<RemediationActionResult> res = Rem.Execute(testCase.Rule, batch, target, test.Config.WhatIf);
@@ -232,16 +232,16 @@ public partial class TestSled : Form {
                             .Where(r => r.Value is not null)
                             .Select(r => r.Value!)
                             .OrderByDescending(a => a.ActionNumber);
-                    failed = res.Any(r => !r.IsSuccess);
+                    passed = res.All(r => r.IsSuccess);
                     testCase.Result = new() {
                         ActualAfter = actions.Last().After,
                         RemediationActions = [.. actions]
                     };
-                    failed &= testCase.Pass ?? false;
+                    passed &= testCase.Pass ?? false;
                     if (test.Config.AttemptRollback) {
                         foreach (RemediationAction actionRes in actions) {
                             RemediationActionResult rollRes = Roll.Execute(batch, actionRes);
-                            failed &= rollRes.IsSuccess;
+                            passed &= rollRes.IsSuccess;
                         }
                     }
                 }
@@ -253,16 +253,16 @@ public partial class TestSled : Form {
                             .Where(r => r.Value is not null)
                             .Select(r => r.Value!)
                             .OrderByDescending(a => a.ActionNumber);
-                    failed &= res.Any(r => !r.IsSuccess);
+                    passed &= res.All(r => r.IsSuccess);
                     testCase.Result = new() {
                         ActualAfter = actions.Last().After,
                         RemediationActions = [.. actions]
                     };
-                    failed &= testCase.Pass ?? false;
+                    passed &= testCase.Pass ?? false;
                 }
             }
             test.TestRun = true;
-            if (failed) {
+            if (!passed) {
                 break;
             }
         }
