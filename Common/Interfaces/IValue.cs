@@ -10,7 +10,10 @@ public interface IValue : IEquatable<IValue> {
         if (ReferenceEquals(lhs, rhs)) { 
             return true; 
         }
-        return lhs!.Equals(rhs);
+        if (lhs is not null) {
+            return lhs.Equals(rhs);
+        }
+        return rhs!.Equals(lhs);
     }
 }
 
