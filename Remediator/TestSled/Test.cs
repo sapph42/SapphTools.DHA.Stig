@@ -60,7 +60,6 @@ public class Test : IComparable<Test> {
     public int Phase { get; set; }
     public int Order { get; set; }
     public required TestConfig Config { get; set; }
-    public Guid[] Build { get; init; } = CurrentBuilds;
     public bool TestRun { get; set; } = false; // maybe change to => TestSuite.Any(t => t.Result is not null) ???
     public SortedSet<TestCase> TestSuite { get; init; } = new(TestCaseComparer.Ordinal);
     public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCaseComparer.Ordinal);
@@ -69,7 +68,7 @@ public class Test : IComparable<Test> {
             if (TestSuite.Count == 0 || TestSuite.All(tc => !tc.Pass.HasValue || tc.Result is null)) {
                 return null;
             }
-            return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value) && BuildsMatchCurrent;
+            return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
         }
     }
     public bool? RecoveryPass {
@@ -77,24 +76,11 @@ public class Test : IComparable<Test> {
             if (RecoverySuite.Count == 0) {
                 return true;
             }
-            return RecoverySuite.All(tc => tc.Pass.HasValue && tc.Pass.Value) && BuildsMatchCurrent;
+            return RecoverySuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
         }
     }
     public bool Pass => TestPass.HasValue && TestPass.Value && RecoveryPass.HasValue && RecoveryPass.Value;
-    public bool BuildsMatchCurrent => Build.SequenceEqual(CurrentBuilds);
-
-    private static Guid[] GetBuilds() {
-        Guid[] build = [
-            typeof(Constants).Module.ModuleVersionId,
-            typeof(Test).Module.ModuleVersionId,
-            typeof(Sddl).Module.ModuleVersionId,
-        ];
-        return build;
-    }
-    public Test Clone(bool withoutResults = false, bool updateBuilds = false) {
-        if (updateBuilds && !withoutResults) {
-            throw new ArgumentException("Updating build IDs also requires discarding execution results.");
-        }
+    public Test Clone(bool withoutResults = false) {
         Test t = new() {
             TestId = TestId,
             Phase = Phase,

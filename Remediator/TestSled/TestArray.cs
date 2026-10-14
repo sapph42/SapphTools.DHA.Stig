@@ -3,14 +3,21 @@ using System.Text.Json;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled; 
 public class TestArray {
+    private Guid[] _build = CurrentBuilds;
+    public static readonly Guid[] CurrentBuilds = GetBuilds();
     public int ArrayVersion { get; set; } = 1;
     public string LocalTarget { get; set; } = Environment.MachineName;
     public List<string> RemoteDevTarget { get; set; } = [];
     public List<string> RemoteProdTarget { get; set; } = [];
+    public Guid[] Build {
+        get => _build;
+        init => _build = value;
+    }
     public SortedSet<Test> Tests { get; init; } = new(TestComparer.Ordinal);
     public DateTime SledRunDate {  get; set; } = DateTime.Now;
     public bool Success => Tests.All(t => t.TestRun && t.Pass) && Tests.Count != 0;
     public Test? LastRunTest => Tests.OrderBy(l => l).LastOrDefault(l => l.TestRun);
+    public bool BuildsMatchCurrent => Build.SequenceEqual(CurrentBuilds);
     public bool DefinitionEquals(TestArray? other) {
         if (other is null) {
             return false;
@@ -25,21 +32,28 @@ public class TestArray {
         if (!RemoteProdTarget.Order(StringComparer.OrdinalIgnoreCase).SequenceEqual(other.RemoteProdTarget.Order(StringComparer.OrdinalIgnoreCase), StringComparer.OrdinalIgnoreCase)) {
             return false;
         }
+        if (!Build.SequenceEqual(other.Build)) {
+            return false;
+        }
         if (!Enumerable.SequenceEqual(Tests, other.Tests, TestComparer.Definition)) {
             return false;
         }
         return true;
     }
-    public TestArray Clone() {
+    public TestArray Clone(bool withoutResults = false, bool updateBuilds = false) {
+        if (updateBuilds && !withoutResults) {
+            throw new ArgumentException("Updating build IDs also requires discarding execution results.");
+        }
         TestArray ta = new() {
             ArrayVersion = ArrayVersion,
             SledRunDate = SledRunDate,
             LocalTarget = LocalTarget,
             RemoteDevTarget = [.. RemoteDevTarget.ToArray()],
             RemoteProdTarget = [.. RemoteProdTarget.ToArray()],
+            Build = updateBuilds ? [.. CurrentBuilds] : [.. Build],
         };
         foreach (Test test in Tests) {
-            ta.Tests.Add(test.Clone());
+            ta.Tests.Add(test.Clone(withoutResults));
         }
         return ta;
     }
@@ -48,7 +62,7 @@ public class TestArray {
             return false;
         }
         if (!Success || definition.Tests.Count == 0 ||
-                definition.Tests.Any(test => !test.BuildsMatchCurrent) ||
+                !definition.BuildsMatchCurrent ||
                 !DefinitionEquals(definition)) {
             return false;
         }
@@ -64,7 +78,16 @@ public class TestArray {
             return true;
         } catch {
             return false;
-        }
+    public void UpdateBuilds() {
+        _build = CurrentBuilds;
+    }
+    private static Guid[] GetBuilds() {
+        Guid[] build = [
+            typeof(Constants).Module.ModuleVersionId,
+            typeof(Test).Module.ModuleVersionId,
+            typeof(Sddl).Module.ModuleVersionId,
+        ];
+        return build;
     }
     public static TestArray? LoadFromJson(string? path) {
         if (path is null) {

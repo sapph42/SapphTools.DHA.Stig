@@ -362,7 +362,6 @@ public partial class TestEditor : Form {
             return;
         }
         Test = new() {
-            Build = ActiveTest.Build,
             Config = new() {
                 AttemptRollback = ConfigRollback.Checked,
                 Elevated = ConfigElevate.Checked,

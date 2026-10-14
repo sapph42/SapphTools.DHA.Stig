@@ -218,14 +218,15 @@ public partial class TestSled : Form {
     private static bool VerifyDefinition(FileInfo definitionFile, TestArray definition) {
         try {
             if (definition.Tests is null || definition.Tests.Count == 0 ||
-                    definition.Tests.Any(test => test is null || !test.BuildsMatchCurrent)) {
+                    definition.Tests.Any(test => test is null) || 
+                    !definition.BuildsMatchCurrent) {
                 return false;
             }
             // A refreshed editor copy is not verified until the bytes on disk and
             // their signed catalog have actually been regenerated.
             TestArray? onDisk = TestArray.LoadFromJson(definitionFile.FullName);
             if (onDisk?.Tests is null || onDisk.Tests.Count == 0 ||
-                    onDisk.Tests.Any(test => test is null || !test.BuildsMatchCurrent) ||
+                    onDisk.Tests.Any(test => test is null) ||
                     !definition.DefinitionEquals(onDisk)) {
                 return false;
             }
