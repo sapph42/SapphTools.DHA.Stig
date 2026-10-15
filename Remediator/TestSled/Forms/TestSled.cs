@@ -229,7 +229,7 @@ public partial class TestSled : Form {
                 TestTarget.FullRemoteDev => [..results.RemoteDevTarget],
                 TestTarget.FullRemoteProd => [..results.RemoteProdTarget],
             };
-            bool passed = false;
+            bool passed = true;
             foreach (TestCase testCase in test.TestSuite) {
                 foreach (string target in targets) {
                     List<RemediationActionResult> res = Rem.Execute(testCase.Rule, batch, target, test.Config.WhatIf);
@@ -237,7 +237,7 @@ public partial class TestSled : Form {
                             .Where(r => r.Value is not null)
                             .Select(r => r.Value!)
                             .OrderByDescending(a => a.ActionNumber);
-                    passed = res.All(r => r.IsSuccess);
+                    passed &= res.All(r => r.IsSuccess);
                     testCase.Result = new() {
                         ActualAfter = actions.Last().After,
                         RemediationActions = [.. actions]
