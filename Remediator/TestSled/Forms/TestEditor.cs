@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Rule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestEditor : Form {
@@ -9,6 +8,7 @@ public partial class TestEditor : Form {
     private readonly BindingSource testSource;
     private readonly BindingSource recoverySource;
     private readonly Test ActiveTest;
+    private string SimulatedRuleId => $"T{TestId.Text}P{Phase.Text}O{Order.Text}";
     public Test? Test;
     public TestEditor() {
         InitializeComponent();
@@ -27,9 +27,9 @@ public partial class TestEditor : Form {
             new DataGridViewTextBoxColumn() {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
-                DataPropertyName = "RuleId",
-                HeaderText = "RuleId",
-                Name = "RuleId",
+                DataPropertyName = "Setting",
+                HeaderText = "Setting",
+                Name = "Setting",
                 ReadOnly = true,
                 ValueType = typeof(string),
                 Visible = true,
@@ -37,20 +37,21 @@ public partial class TestEditor : Form {
             new DataGridViewTextBoxColumn() {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
-                DataPropertyName = "Description",
-                HeaderText = "Description",
-                Name = "Description",
+                DataPropertyName = "ExpectedAfter",
+                HeaderText = "Expected After",
+                Name = "ExpectedAfter",
                 ReadOnly = true,
                 ValueType = typeof(string),
                 Visible = true,
-            },new DataGridViewTextBoxColumn() {
+            },
+            new DataGridViewTextBoxColumn() {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
-                DataPropertyName = "CountOfSettings",
-                HeaderText = "# of Settings",
-                Name = "CountOfSettings",
+                DataPropertyName = "ExpectedResult",
+                HeaderText = "Expected Result",
+                Name = "ExpectedResult",
                 ReadOnly = true,
-                ValueType = typeof(int),
+                ValueType = typeof(string),
                 Visible = true,
             },
             new DataGridViewTextBoxColumn() {
@@ -64,6 +65,28 @@ public partial class TestEditor : Form {
                 Visible = false
             }
         ]);
+        TestSuite.CellFormatting += (s, e) => {
+            switch (TestSuite.Columns[e.ColumnIndex].Name) {
+                case "Setting":
+                    if (e.Value is Setting setting) {
+                        e.Value = setting.Data.TargetString;
+                        e.FormattingApplied = true;
+                    }
+                    break;
+                case "ExpectedAfter":
+                    if (e.Value is IValue data) {
+                        e.Value = data.TargetString;
+                        e.FormattingApplied = true;
+                    }
+                    break;
+                case "ExpectedResult":
+                    if (e.Value is ActionResult res) {
+                        e.Value = res.ToString();
+                        e.FormattingApplied = true;
+                    }
+                    break;
+            }
+        };
         RecoverySuite.AutoGenerateColumns = false;
         RecoverySuite.Columns.AddRange([
             new DataGridViewTextBoxColumn() {
@@ -79,9 +102,9 @@ public partial class TestEditor : Form {
             new DataGridViewTextBoxColumn() {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
-                DataPropertyName = "RuleId",
-                HeaderText = "RuleId",
-                Name = "RuleId",
+                DataPropertyName = "Setting",
+                HeaderText = "Setting",
+                Name = "Setting",
                 ReadOnly = true,
                 ValueType = typeof(string),
                 Visible = true,
@@ -89,20 +112,21 @@ public partial class TestEditor : Form {
             new DataGridViewTextBoxColumn() {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
-                DataPropertyName = "Description",
-                HeaderText = "Description",
-                Name = "Description",
+                DataPropertyName = "ExpectedAfter",
+                HeaderText = "Expected After",
+                Name = "ExpectedAfter",
                 ReadOnly = true,
                 ValueType = typeof(string),
                 Visible = true,
-            },new DataGridViewTextBoxColumn() {
+            },
+            new DataGridViewTextBoxColumn() {
                 CellTemplate = new DataGridViewTextBoxCell(),
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
-                DataPropertyName = "CountOfSettings",
-                HeaderText = "O# of Settings",
-                Name = "CountOfSettings",
+                DataPropertyName = "ExpectedResult",
+                HeaderText = "Expected Result",
+                Name = "ExpectedResult",
                 ReadOnly = true,
-                ValueType = typeof(int),
+                ValueType = typeof(string),
                 Visible = true,
             },
             new DataGridViewTextBoxColumn() {
@@ -116,22 +140,44 @@ public partial class TestEditor : Form {
                 Visible = false
             }
         ]);
+        RecoverySuite.CellFormatting += (s, e) => {
+            switch (RecoverySuite.Columns[e.ColumnIndex].Name) {
+                case "Setting":
+                    if (e.Value is Setting setting) {
+                        e.Value = setting.Data.TargetString;
+                        e.FormattingApplied = true;
+                    }
+                    break;
+                case "ExpectedAfter":
+                    if (e.Value is IValue data) {
+                        e.Value = data.TargetString;
+                        e.FormattingApplied = true;
+                    }
+                    break;
+                case "ExpectedResult":
+                    if (e.Value is ActionResult res) {
+                        e.Value = res.ToString();
+                        e.FormattingApplied = true;
+                    }
+                    break;
+            }
+        };
         TestSuiteTable = new();
         DataColumn testOrder = new("Order", typeof(int));
         TestSuiteTable.Columns.AddRange([
             testOrder,
-            new("RuleId", typeof(string)),
-            new("Description", typeof(string)),
-            new("CountOfSettings", typeof(int)),
+            new("Setting", typeof(Setting)),
+            new("ExpectedAfter", typeof(IValue)),
+            new("ExpectedResult", typeof(ActionResult)),
             new("TestCase", typeof(TestCase))
         ]);
         RecoverySuiteTable = new();
         DataColumn recoveryOrder = new("Order", typeof(int));
         RecoverySuiteTable.Columns.AddRange([
             recoveryOrder,
-            new("RuleId", typeof(string)),
-            new("Description", typeof(string)),
-            new("CountOfSettings", typeof(int)),
+            new("Setting", typeof(Setting)),
+            new("ExpectedAfter", typeof(IValue)),
+            new("ExpectedResult", typeof(ActionResult)),
             new("TestCase", typeof(TestCase))
         ]);
         TestSuiteTable.PrimaryKey = [testOrder];
@@ -182,22 +228,20 @@ public partial class TestEditor : Form {
         ConfigWhatIf.Checked = ActiveTest.Config.WhatIf;
         ConfigTarget.SelectedItem = ActiveTest.Config.Target;
         foreach (TestCase tc in ActiveTest.TestSuite) {
-            TestSuiteTable.Rows.Add(tc.Order, tc.Rule.RuleId, tc.Rule.Description, tc.Rule.Settings.Count, tc.Clone(withoutResults: true));
+            TestSuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         foreach (TestCase tc in ActiveTest.RecoverySuite) {
-            RecoverySuiteTable.Rows.Add(tc.Order, tc.Rule.RuleId, tc.Rule.Description, tc.Rule.Settings.Count, tc.Clone(withoutResults: true));
+            RecoverySuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         CheckValidity();
     }
 
     private void AddTestCase_Click(object sender, EventArgs e) {
-        RuleEditor ruleEditor = new();
-        if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is Rule rule) {
-            TestCase tc = new() {
-                Order = TestSuiteTable.Rows.Cast<DataRow>().Select(r => (int)r["Order"]).DefaultIfEmpty(0).Max() + 1,
-                Rule = rule.Clone()
-            };
-            TestSuiteTable.Rows.Add(tc.Order, rule.RuleId, rule.Description, rule.Settings.Count, tc);
+        TestCaseEditor testCaseEditor = new() {
+            SimulatedRuleId = SimulatedRuleId,
+        };
+        if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase tc) {
+            TestSuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         CheckValidity();
     }
@@ -207,17 +251,14 @@ public partial class TestEditor : Form {
                 TestSuiteTable.Rows.Find(row.Cells["Order"].Value) is not DataRow dRow) {
             return;
         }
-        TestCase targetCase = ((TestCase)dRow["TestCase"]).Clone();
-        RuleEditor ruleEditor = new(targetCase.Rule.Clone());
-        if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is Rule rule) {
-            TestCase tc = new() {
-                Order = targetCase.Order,
-                Rule = rule.Clone()
-            };
-            dRow["RuleId"] = rule.RuleId;
-            dRow["Description"] = rule.Description;
-            dRow["CountOfSettings"] = rule.Settings.Count;
-            dRow["TestCase"] = tc;
+        TestCaseEditor testCaseEditor = new(((TestCase)dRow["TestCase"]).Clone()) {
+            SimulatedRuleId = SimulatedRuleId,
+        };
+        if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase testCase) {
+            dRow["Setting"] = testCase.Setting;
+            dRow["ExpectedAfter"] = testCase.ExpectedAfter;
+            dRow["ExpectedResult"] = testCase.ExpectedResult;
+            dRow["TestCase"] = testCase;
         }
         CheckValidity();
     }
@@ -231,13 +272,11 @@ public partial class TestEditor : Form {
     }
 
     private void AddRecoveryCase_Click(object sender, EventArgs e) {
-        RuleEditor ruleEditor = new();
-        if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is Rule rule) {
-            TestCase tc = new() {
-                Order = RecoverySuiteTable.Rows.Cast<DataRow>().Select(r => (int)r["Order"]).DefaultIfEmpty(0).Max() + 1,
-                Rule = rule.Clone()
-            };
-            RecoverySuiteTable.Rows.Add(tc.Order, rule.RuleId, rule.Description, rule.Settings.Count, tc);
+        TestCaseEditor testCaseEditor = new() {
+            SimulatedRuleId = SimulatedRuleId,
+        };
+        if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase tc) {
+            RecoverySuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         CheckValidity();
     }
@@ -247,17 +286,14 @@ public partial class TestEditor : Form {
                 RecoverySuiteTable.Rows.Find(row.Cells["Order"].Value) is not DataRow dRow) {
             return;
         }
-        TestCase targetCase = ((TestCase)dRow["TestCase"]).Clone();
-        RuleEditor ruleEditor = new(targetCase.Rule.Clone());
-        if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is Rule rule) {
-            TestCase tc = new() {
-                Order = targetCase.Order,
-                Rule = rule.Clone()
-            };
-            dRow["RuleId"] = rule.RuleId;
-            dRow["Description"] = rule.Description;
-            dRow["CountOfSettings"] = rule.Settings.Count;
-            dRow["TestCase"] = tc;
+        TestCaseEditor testCaseEditor = new(((TestCase)dRow["TestCase"]).Clone()) {
+            SimulatedRuleId = SimulatedRuleId
+        };
+        if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase testCase) {
+            dRow["Setting"] = testCase.Setting;
+            dRow["ExpectedAfter"] = testCase.ExpectedAfter;
+            dRow["ExpectedResult"] = testCase.ExpectedResult;
+            dRow["TestCase"] = testCase;
         }
         CheckValidity();
     }
@@ -281,9 +317,9 @@ public partial class TestEditor : Form {
     // Each DataRow owns its fixed sequence slot. Move the cases, not the row keys.
     // The editor deliberately leaves its SortedSets alone until OK reconstructs them.
     private static void SetCase(DataRow row, TestCase testCase) {
-        row["RuleId"] = testCase.Rule.RuleId;
-        row["Description"] = testCase.Rule.Description;
-        row["CountOfSettings"] = testCase.Rule.Settings.Count;
+        row["Setting"] = testCase.Setting;
+        row["ExpectedAfter"] = testCase.ExpectedAfter;
+        row["ExpectedResult"] = testCase.ExpectedResult;
         row["TestCase"] = testCase;
     }
 

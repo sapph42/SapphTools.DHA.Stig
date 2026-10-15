@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Rem = SapphTools.DHA.Stig.Remediator.Classes.Remediators.Remediator;
 using Roll = SapphTools.DHA.Stig.Remediator.Classes.Remediators.Rollbacker;
+using Rule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestSled : Form {
@@ -232,7 +233,12 @@ public partial class TestSled : Form {
             bool passed = true;
             foreach (TestCase testCase in test.TestSuite) {
                 foreach (string target in targets) {
-                    List<RemediationActionResult> res = Rem.Execute(testCase.Rule, batch, target, test.Config.WhatIf);
+                    Rule synthRule = new() {
+                        RuleId = $"T{test.TestId}P{test.Phase}O{test.Order}",
+                        Description = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}",
+                        Settings = [testCase.Setting]
+                    };
+                    List<RemediationActionResult> res = Rem.Execute(synthRule, batch, target, test.Config.WhatIf);
                     IEnumerable<RemediationAction> actions = res
                             .Where(r => r.Value is not null)
                             .Select(r => r.Value!)
@@ -253,7 +259,12 @@ public partial class TestSled : Form {
             }
             foreach (TestCase testCase in test.RecoverySuite) {
                 foreach (string target in targets) {
-                    List<RemediationActionResult> res = Rem.Execute(testCase.Rule, batch, target, whatIf:false);
+                    Rule synthRule = new() {
+                        RuleId = $"T{test.TestId}P{test.Phase}O{test.Order}",
+                        Description = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}",
+                        Settings = [testCase.Setting]
+                    };
+                    List<RemediationActionResult> res = Rem.Execute(synthRule, batch, target, whatIf:false);
                     IEnumerable<RemediationAction> actions = res
                             .Where(r => r.Value is not null)
                             .Select(r => r.Value!)

@@ -169,9 +169,15 @@
             // 
             // TestSuite
             // 
+            TestSuite.AllowUserToAddRows = false;
+            TestSuite.AllowUserToDeleteRows = false;
             TestSuite.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            TestSuite.EditMode = DataGridViewEditMode.EditProgrammatically;
             TestSuite.Location = new Point(12, 178);
+            TestSuite.MultiSelect = false;
             TestSuite.Name = "TestSuite";
+            TestSuite.RowHeadersVisible = false;
+            TestSuite.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             TestSuite.Size = new Size(500, 374);
             TestSuite.TabIndex = 8;
             // 
@@ -195,9 +201,15 @@
             // 
             // RecoverySuite
             // 
+            RecoverySuite.AllowUserToAddRows = false;
+            RecoverySuite.AllowUserToDeleteRows = false;
             RecoverySuite.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            RecoverySuite.EditMode = DataGridViewEditMode.EditProgrammatically;
             RecoverySuite.Location = new Point(545, 178);
+            RecoverySuite.MultiSelect = false;
             RecoverySuite.Name = "RecoverySuite";
+            RecoverySuite.RowHeadersVisible = false;
+            RecoverySuite.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             RecoverySuite.Size = new Size(500, 374);
             RecoverySuite.TabIndex = 10;
             // 

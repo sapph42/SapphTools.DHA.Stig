@@ -25,7 +25,7 @@ public static class TestCaseComparer {
                 return false;
             }
             return x.Order == y.Order && 
-                x.Rule.Equals(y.Rule) && 
+                x.Setting.Equals(y.Setting) && 
                 IValue.Equals(x.ExpectedAfter, y.ExpectedAfter) &&
                 x.ExpectedResult == y.ExpectedResult;
         }
@@ -35,10 +35,30 @@ public static class TestCaseComparer {
     public static readonly TestCaseDefinitionComparer Definition = new();
 }
 public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
+    private IValue? _expectedAfter;
+    private Setting? _setting;
     public int Order { get; set; }
-    public required Rule Rule { get; init; }
+    public required Setting Setting {
+        get => _setting!;
+        init {
+            ArgumentNullException.ThrowIfNull(value);
+            if (_expectedAfter is not null) {
+                Validate(value, _expectedAfter);
+            }
+            _setting = value;
+        }
+    }
     public TestResult? Result { get; set; }
-    public required IValue ExpectedAfter { get; init; }
+    public required IValue ExpectedAfter {
+        get => _expectedAfter!;
+        init {
+            ArgumentNullException.ThrowIfNull(value);
+            if (_setting is not null) {
+                Validate(_setting, value);
+            }
+            _expectedAfter = value;
+        }
+    }
     public required ActionResult ExpectedResult { get; init; }
     public bool? Pass {
         get {
@@ -61,14 +81,14 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
         if (withoutResults) {
             return new() {
                 Order = Order,
-                Rule = Rule.Clone(),
+                Setting = Setting.Clone(),
                 ExpectedAfter = ExpectedAfter.Clone(),
                 ExpectedResult = ExpectedResult
             };
         }
         return new() {
             Order = Order,
-            Rule = Rule.Clone(),
+            Setting = Setting.Clone(),
             ExpectedAfter = ExpectedAfter.Clone(),
             ExpectedResult = ExpectedResult,
             Result = Result?.Clone()
@@ -84,12 +104,17 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
         if (other is null) {
             return false;
         }
-        return Order == other.Order && Rule.Equals(other?.Rule) && Equals(Pass, other.Pass);
+        return Order == other.Order && Setting.Equals(other?.Setting) && Equals(Pass, other.Pass);
     }
     public override int GetHashCode() {
         HashCode hc = new();
         hc.Add(Order);
-        hc.Add(Rule);
+        hc.Add(Setting);
         return hc.ToHashCode();
+    }
+    private static void Validate(Setting setting, IValue after) {
+        if (setting.Data.GetType() != after.GetType()) {
+            throw new ArgumentException("Setting.Data and ExpectedAfter must have matching types.");
+        }
     }
 }
