@@ -1,35 +1,24 @@
 ﻿using Microsoft.Win32;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal partial class RegistryValuePatternRemediator : IRemediator {
     private RegistryValuePatternRemediator() { }
-    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
-        if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            return new ArgumentException($"No such setting exists at order index {settingIndex}");
-        }
-        Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
-        IValue data = setting.Data;
+    public static IValue? GetActualState(IValue target, string computerName) {
+        throw new NotImplementedException(); // Think about if this is even possible
+    }
+    public static RemediationActionResult Remediate(RemediatorDto dto) {
+        IValue data = dto.Setting.Data.Clone();
         if (data is not RegistryValuePatternValue val) {
             return new ArgumentException(
-                $"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type " + 
+                $"Expected {nameof(dto)}.Setting.Data to be of type " + 
                 $"RegistryValuePatternValue, was {data.GetType().Name}"
             );
         }
         Guid settingBatch = Guid.NewGuid();
-        string targetHost = computerName ?? Environment.MachineName;
-        RemediationPreAction pre = new() {
-            RemediationBatch = remBatch,
-            RuleBatch = ruleBatch,
-            SettingBatch = settingBatch,
-            RuleId = rule.RuleId,
-            Description = rule.Description,
-            ComputerName = targetHost,
-            SettingIndex = settingIndex,
-            Source = ActionSource.Catalog
-        };
-        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? targetKey, whatIf);
+        string targetHost = dto.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new(dto, settingBatch, targetHost);
+        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? targetKey, dto.WhatIf);
         if (!createRes.IsSuccess || targetKey is null) {
             return createRes;
         }
@@ -40,7 +29,7 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         try {
             keys = [targetKey];
             firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
-            secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, whatIf);
+            secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, dto.WhatIf);
             thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
             RemediationActionResult? res = null;
             foreach (RegKey key in thirdRoundKeys) {
@@ -58,7 +47,7 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
                     Kind = resolvedBefore.Kind,
                     ResolvedTarget = resolvedBefore
                 };
-                RemediationActionResult thisRes = RegistryValueRemediator.SubRemediate(pre, before, key, resolvedTarget, whatIf);
+                RemediationActionResult thisRes = RegistryValueRemediator.SubRemediate(pre, before, key, resolvedTarget, dto.WhatIf);
                 if (res is null || !thisRes.IsSuccess) {
                     res = thisRes;
                 }

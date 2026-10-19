@@ -1,34 +1,46 @@
-﻿using Microsoft.Win32;
-using System.IO;
-using static SapphTools.DHA.Stig.Remediator.Classes.RegistryCommon;
-
-namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
+﻿namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
 internal class RegistryKeyRemediator : IRemediator {
     private RegistryKeyRemediator() { }
-    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
-        if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            return new ArgumentException($"No such setting exists at order index {settingIndex}");
+    public static IValue? GetActualState(IValue target, string computerName) {
+        if (target is not RegistryKeyValue val) {
+            throw new ArgumentException($"Expected {target} to be of type RegistryKeyValue, was {target.GetType().Name}");
         }
-        Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
-        IValue data = setting.Data;
+        RegKey? targetKey = null;
+        try {
+            try {
+                targetKey = new(val.Target, computerName);
+                if (targetKey is null) {
+                    return null;
+                }
+            } catch {
+                return null;
+            }
+            try {
+                using RegKey? tk = targetKey.OpenSubKey(val.Name);
+                if (tk is null) {
+                    return null;
+                }
+                return tk.GetKeyValue();
+            } catch {
+                return null;
+            }
+        } catch {
+            return null;
+        } finally {
+            targetKey?.Dispose();
+        }
+    }
+    public static RemediationActionResult Remediate(RemediatorDto dto) {
+        IValue data = dto.Setting.Data.Clone();
         if (data is not RegistryKeyValue val) {
-            return new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryKeyValue, was {data.GetType().Name}");
+            return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type RegistryKeyValue, was {data.GetType().Name}");
         }
         Guid settingBatch = Guid.NewGuid();
-        string targetHost = computerName ?? Environment.MachineName;
-        RemediationPreAction pre = new() {
-            RemediationBatch = remBatch,
-            RuleBatch = ruleBatch,
-            SettingBatch = settingBatch,
-            RuleId = rule.RuleId,
-            Description = rule.Description,
-            ComputerName = targetHost,
-            SettingIndex = settingIndex,
-            Source = ActionSource.Catalog
-        };
+        string targetHost = dto.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new(dto, settingBatch, targetHost);
         RegKey? key = null;
         try {
-            return SubRemediate(val.Target, targetHost, pre, out key, whatIf);
+            return SubRemediate(val.Target, targetHost, pre, out key, dto.WhatIf);
         } finally {
             key?.Dispose();
         }

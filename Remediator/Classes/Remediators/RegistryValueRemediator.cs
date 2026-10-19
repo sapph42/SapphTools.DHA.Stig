@@ -4,31 +4,43 @@ using System.Diagnostics;
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal partial class RegistryValueRemediator : IRemediator {
     private RegistryValueRemediator() { }
-    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
-        Debug.WriteLine($"Starting remediation of {rule.RuleId} on {computerName}");
-        if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            return new ArgumentException($"No such setting exists at order index {settingIndex}");
+    public static IValue? GetActualState(IValue target, string computerName) {
+        if (target is not RegistryValueValue val) {
+            throw new ArgumentException($"Expected {target} to be of type RegistryValueValue, was {target.GetType().Name}");
         }
-        Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
-        IValue data = setting.Data;
+        RegKey? targetKey = null;
+        try {
+            try {
+                targetKey = new(val.Target, computerName);
+                if (targetKey is null) {
+                    return null;
+                }
+            } catch {
+                return null;
+            }
+            try {
+                return targetKey.GetValueValue(val.Name);
+            } catch {
+                return null;
+            }
+        } catch {
+            return null;
+        } finally {
+            targetKey?.Dispose();
+        }
+    }
+    public static RemediationActionResult Remediate(RemediatorDto dto) {
+        Debug.WriteLine($"Starting remediation of {dto.RuleId} on {dto.ComputerName}");
+        IValue data = dto.Setting.Data.Clone();
         if (data is not RegistryValueValue val) {
             return new ArgumentException(
-                $"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type RegistryValueValue, was {data.GetType().Name}"
+                $"Expected {nameof(dto)}.Setting.Data to be of type RegistryValueValue, was {data.GetType().Name}"
             );
         }
         Guid settingBatch = Guid.NewGuid();
-        string targetHost = computerName ?? Environment.MachineName;
-        RemediationPreAction pre = new() {
-            RemediationBatch = remBatch,
-            RuleBatch = ruleBatch,
-            SettingBatch = settingBatch,
-            RuleId = rule.RuleId,
-            Description = rule.Description,
-            ComputerName = targetHost,
-            SettingIndex = settingIndex,
-            Source = ActionSource.Catalog
-        };
-        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? key, whatIf);
+        string targetHost = dto.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new(dto, settingBatch, targetHost);
+        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? key, dto.WhatIf);
         if (createRes.Value?.Result == ActionResult.WhatIf) {
             key?.Dispose();
             return Logger.LogWhatIf(pre, TargetType.RegistryValue, val.TargetString, RollbackCapability.NotApplicable, null, null);
@@ -41,7 +53,7 @@ internal partial class RegistryValueRemediator : IRemediator {
                     Data = key.GetValue(val.Name),
                     Kind = key.GetValueKind(val.Name)
                 };
-                return SubRemediate(pre, before, key, val, whatIf);
+                return SubRemediate(pre, before, key, val, dto.WhatIf);
             } catch (Exception ex) {
                 return Logger.LogError(pre, TargetType.RegistryValue, val.Target, ex.Message, false);
             } finally {

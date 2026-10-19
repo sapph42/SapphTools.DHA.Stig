@@ -65,4 +65,15 @@ public class RemediationPreAction {
         ComputerName = pre.ComputerName;
         SettingIndex = pre.SettingIndex;
     }
+    [SetsRequiredMembers]
+    public RemediationPreAction(RemediatorDto dto, Guid settingBatch, string? computerName = null) {
+        RemediationBatch = dto.RemediationBatch;
+        RuleBatch = dto.RuleBatch;
+        SettingBatch = settingBatch;
+        RuleId = dto.RuleId;
+        Description = dto.Description;
+        ComputerName = computerName ?? dto.ComputerName ?? Environment.MachineName;
+        SettingIndex = dto.SettingIndex;
+        Source = dto.Source;
+    }
 }

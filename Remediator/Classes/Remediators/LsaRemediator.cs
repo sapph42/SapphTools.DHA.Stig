@@ -4,28 +4,31 @@ using System.ComponentModel;
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators; 
 internal class LsaRemediator : IRemediator {
     private LsaRemediator() { }
-    public static RemediationActionResult Remediate(Rule rule, int settingIndex, Guid remBatch, Guid ruleBatch, string? computerName, bool whatIf = true) {
-        if (!rule.Settings.Where(s => s.Order == settingIndex).Any()) {
-            return new ArgumentException($"No such setting exists at order index {settingIndex}");
+    public static IValue? GetActualState(IValue target, string computerName) {
+        if (target is not SeRightsValue val) {
+            throw new ArgumentException($"Expected {target} to be of type SeRightsValue, was {target.GetType().Name}");
         }
-        Setting setting = rule.Settings.Where(s => s.Order == settingIndex).First();
-        IValue data = setting.Data;
+        LsaConnection? conn = null;
+        try {
+            try {
+                conn = new(computerName, val);
+                return conn.GetBeforeValue();
+            } catch {
+                return null;
+            }
+        } finally {
+            conn?.Dispose();
+        }
+    }
+    public static RemediationActionResult Remediate(RemediatorDto dto) {
+        IValue data = dto.Setting.Data.Clone();
         if (data is not SeRightsValue val) {
-            return new ArgumentException($"Expected {nameof(rule)}.Settings[{nameof(settingIndex)}].Data to be of type SeRightsValue, was {data.GetType().Name}");
+            return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type SeRightsValue, was {data.GetType().Name}");
         }
         Guid settingBatch = Guid.NewGuid();
-        string targetHost = computerName ?? Environment.MachineName;
-        RemediationPreAction pre = new() {
-            RemediationBatch = remBatch,
-            RuleBatch = ruleBatch,
-            SettingBatch = settingBatch,
-            RuleId = rule.RuleId,
-            Description = rule.Description,
-            ComputerName = targetHost,
-            SettingIndex = settingIndex,
-            Source = ActionSource.Catalog
-        };
-        return SetRights(pre, val, whatIf);
+        string targetHost = dto.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new(dto, settingBatch, targetHost);
+        return SetRights(pre, val, dto.WhatIf);
     }
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
         if (logEntry.Before is null) {
