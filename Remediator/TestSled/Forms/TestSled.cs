@@ -248,7 +248,7 @@ public partial class TestSled : Form {
                         (!res.HasValue ||
                             (res.Value.Result == testCase.ExpectedResult)
                         );
-                    testCase.Result = new() {
+                    testCase.Results[target] = new() {
                         ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
                         RemediationAction = res?.Value
                     };
@@ -256,8 +256,15 @@ public partial class TestSled : Form {
                     logger.LogWritten -= Logger_LogWritten;
                     if (test.Config.AttemptRollback) {
                         foreach (RemediationAction action in actions.OrderByDescending(a => a.ActionNumber)) {
+                            if (action.RollbackCapability != RollbackCapability.Automatic) {
+                                continue;
+                            }
                             RemediationActionResult rollRes = Roll.Execute(batch, action, null);
-                            passed &= rollRes.HasValue && rollRes.Value.Result != ActionResult.ActionFailure;
+                            testCase.Results[target] = new() {
+                                ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
+                                RemediationAction = rollRes.Value
+                            };
+                            passed &= rollRes.IsSuccess && rollRes.HasValue && rollRes.Value.Result != ActionResult.ActionFailure;
                         }
                     }
                 }
@@ -274,7 +281,7 @@ public partial class TestSled : Form {
                         (!res.HasValue ||
                             (res.Value.Result == testCase.ExpectedResult)
                         );
-                    testCase.Result = new() {
+                    testCase.Results[target] = new() {
                         ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
                         RemediationAction = res?.Value
                     };

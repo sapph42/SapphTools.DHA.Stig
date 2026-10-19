@@ -60,7 +60,7 @@ public class Test : IComparable<Test> {
     public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCaseComparer.Ordinal);
     public bool? TestPass {
         get {
-            if (TestSuite.Count == 0 || TestSuite.All(tc => !tc.Pass.HasValue || tc.Result is null)) {
+            if (TestSuite.Count == 0 || TestSuite.All(tc => !tc.Pass.HasValue || tc.Results.Count == 0)) {
                 return null;
             }
             return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);

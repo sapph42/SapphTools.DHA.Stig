@@ -46,7 +46,12 @@ public partial class SettingEditor : Form {
         ResumeLayout();
         RuleId = ruleId;
     }
-
+    public void RestrictTargetTypes(TargetType[] allowed) {
+        ActionType.Items.Clear();
+        foreach (TargetType type in allowed) {
+            ActionType.Items.Add(type);
+        }
+    }
     private void ActionType_SelectedIndexChanged(object sender, EventArgs e) {
         SuspendLayout();
         SettingsContainer.Controls.Remove(ValueSetting);
@@ -67,7 +72,6 @@ public partial class SettingEditor : Form {
         SettingsContainer.Controls.Add(ValueSetting);
         ResumeLayout();
     }
-
     private void Ok_Click(object sender, EventArgs e) {
         if (!ValueSetting.IsValid) {
             return;
@@ -89,7 +93,6 @@ public partial class SettingEditor : Form {
         }
         Close();
     }
-
     private void Cancel_Click(object sender, EventArgs e) {
         Close();
     }

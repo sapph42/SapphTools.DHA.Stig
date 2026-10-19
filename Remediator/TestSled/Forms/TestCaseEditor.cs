@@ -75,6 +75,11 @@ public partial class TestCaseEditor : Form {
                 RuleId = SimulatedRuleId
             };
         }
+        TargetType[] banned = [TargetType.RegistryValuePattern, TargetType.CertStore];
+        TargetType[] allowed = [.. Enum.GetValues(typeof(TargetType))
+            .OfType<TargetType>()
+            .Where(t => !banned.Contains(t))];
+        settingEditor.RestrictTargetTypes(allowed);
         if (settingEditor.ShowDialog() == DialogResult.OK && settingEditor.Setting is Setting setting) {
             ActiveSetting = setting.Clone();
             ActiveSetting.Order = 0;
@@ -117,6 +122,7 @@ public partial class TestCaseEditor : Form {
         ResumeLayout();
     }
     private void Ok_Click(object sender, EventArgs e) {
+        Ok.DialogResult = DialogResult.None;
         if (!ValueSetting.IsValid) {
             return;
         }
@@ -130,6 +136,7 @@ public partial class TestCaseEditor : Form {
             ExpectedAfter = ActiveExpectedAfter.Clone(),
             ExpectedResult = ActiveExpectedResult.Value
         };
+        Ok.DialogResult = DialogResult.OK;
         Close();
     }
     private void Cancel_Click(object sender, EventArgs e) {

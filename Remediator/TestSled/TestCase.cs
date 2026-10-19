@@ -48,7 +48,7 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             _setting = value;
         }
     }
-    public TestResult? Result { get; set; }
+    public Dictionary<string, TestResult?> Results { get; set; } = [];
     public required IValue ExpectedAfter {
         get => _expectedAfter!;
         init {
@@ -62,16 +62,16 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
     public required ActionResult ExpectedResult { get; init; }
     public bool? Pass {
         get {
-            if (Result is null) {
+            if (Results.Count == 0) {
                 return null;
             }
-            if (Result.RemediationAction is null) {
+            if (Results.Values.Any(r => r is null || r.RemediationAction is null)) {
                 return false;
             }
-            if (Result.RemediationAction.Result != ExpectedResult) {
+            if (Results.Values.Any(r => r!.RemediationAction!.Result != ExpectedResult)) {
                 return false;
             }
-            if (!IValue.Equals(ExpectedAfter, Result.ActualAfter)) {
+            if (Results.Values.Any(r => !IValue.Equals(ExpectedAfter, r?.ActualAfter))) { 
                 return false;
             }
             return true;
@@ -86,12 +86,16 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
                 ExpectedResult = ExpectedResult
             };
         }
+        Dictionary<string, TestResult?> results = [];
+        foreach (string key in Results.Keys) {
+            results[key] = Results[key];
+        }
         return new() {
             Order = Order,
             Setting = Setting.Clone(),
             ExpectedAfter = ExpectedAfter.Clone(),
             ExpectedResult = ExpectedResult,
-            Result = Result?.Clone()
+            Results = results
         };
     }
     public int CompareTo(TestCase? other) {

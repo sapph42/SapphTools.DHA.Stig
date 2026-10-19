@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using SapphTools.DHA.Stig.Common.Classes;
+using System.Data;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestEditor : Form {
@@ -241,7 +242,13 @@ public partial class TestEditor : Form {
             SimulatedRuleId = SimulatedRuleId,
         };
         if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase tc) {
-            TestSuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
+            TestCase testCase = tc.Clone(withoutResults: true);
+            if (TestSuiteTable.Rows.Count == 0) {
+                testCase.Order = 0;
+            } else {
+                testCase.Order = (int)TestSuiteTable.Compute("MAX(Order)", "") + 1;
+            }
+            TestSuiteTable.Rows.Add(testCase.Order, testCase.Setting, testCase.ExpectedAfter, testCase.ExpectedResult, testCase);
         }
         CheckValidity();
     }

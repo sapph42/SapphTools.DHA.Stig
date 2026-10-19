@@ -44,7 +44,7 @@ internal static partial class RegistryCommon {
     public static RemediationActionResult CheckRegistryKey(RegistryKey hive, string path, RemediationPreAction preAction, bool parsed = false, bool whatIf = true, Logger? logger = null) {
         logger ??= new Logger();
         try {
-            if (CheckRegistryKey(hive, path, out RegistryKey? ret, parsed, logger)) {
+            if (CheckRegistryKey(hive, path, out RegistryKey? ret, parsed)) {
                 using (ret) { }
                 return RemediationActionResult.IntermediateSuccessFactory();
             } else {
