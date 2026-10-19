@@ -153,6 +153,16 @@ public partial class RegKey : IDisposable, IEquatable<RegistryKey>, IEquatable<R
             return RegistryValueKind.None;
         }
     }
+    public RegistryValueValue GetValueValue(string name) {
+        RegistryValueKind kind = GetValueKind(name);
+        object? val = GetValue(name, kind);
+        return new() {
+            Target = FullName,
+            Name = name,
+            Data = val,
+            Kind = kind
+        };
+    }
     public RegKey? OpenKey(string path) {
         if (path.StartsWith(FullName, StringComparison.OrdinalIgnoreCase)) {
             RegistryKey? key = _key.OpenSubKey(path[FullName.Length..].TrimStart('\\'));

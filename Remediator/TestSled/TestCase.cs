@@ -25,7 +25,7 @@ public static class TestCaseComparer {
                 return false;
             }
             return x.Order == y.Order && 
-                x.Setting.Equals(y.Setting) && 
+                x.Setting.DeepEquals(y.Setting) && 
                 IValue.Equals(x.ExpectedAfter, y.ExpectedAfter) &&
                 x.ExpectedResult == y.ExpectedResult;
         }
@@ -65,10 +65,10 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             if (Result is null) {
                 return null;
             }
-            if (Result.RemediationActions.Count == 0) {
+            if (Result.RemediationAction is null) {
                 return false;
             }
-            if (!Result.RemediationActions.All(a => a.Result==ExpectedResult)) {
+            if (Result.RemediationAction.Result != ExpectedResult) {
                 return false;
             }
             if (!IValue.Equals(ExpectedAfter, Result.ActualAfter)) {

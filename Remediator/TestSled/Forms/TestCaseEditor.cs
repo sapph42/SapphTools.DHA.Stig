@@ -62,11 +62,11 @@ public partial class TestCaseEditor : Form {
         ActiveSetting = ActiveTestCase.Setting;
         ActiveExpectedAfter = ActiveTestCase.ExpectedAfter;
         ActiveExpectedResult = ActiveTestCase.ExpectedResult;
-        ExpectedResult.SelectedItem = ActiveExpectedAfter;
+        ExpectedResult.SelectedItem = ActiveExpectedResult;
         UpdateSettingTable();
         UpdateSettingsControl();
     }
-    private void EditRule_Click(object sender, EventArgs e) {
+    private void EditSetting_Click(object sender, EventArgs e) {
         SettingEditor settingEditor;
         if (ActiveSetting is not null) {
             settingEditor = new(ActiveSetting.Clone(), SimulatedRuleId);
@@ -77,6 +77,7 @@ public partial class TestCaseEditor : Form {
         }
         if (settingEditor.ShowDialog() == DialogResult.OK && settingEditor.Setting is Setting setting) {
             ActiveSetting = setting.Clone();
+            ActiveSetting.Order = 0;
             UpdateSettingTable();
             if (!ActiveSetting.Data.GetType().Equals(ActiveExpectedAfter?.GetType())) {
                 ActiveExpectedAfter = null;
@@ -105,7 +106,7 @@ public partial class TestCaseEditor : Form {
                 TargetType.RegistryValuePattern => new RegistryValuePatternSettings(ActiveExpectedAfter as RegistryValuePatternValue),
                 TargetType.SeRight => new SeRightsSettings(ActiveExpectedAfter as SeRightsValue),
                 TargetType.CertStore => new CertificatesValueSettings(
-                    ActiveExpectedAfter as CertificatesValue, 
+                    ActiveExpectedAfter as CertificatesValue,
                     SimulatedRuleId
                 ),
                 _ => new ValueSettings()
@@ -114,5 +115,29 @@ public partial class TestCaseEditor : Form {
         ValueSetting.Location = new Point(6, 22);
         SettingsContainer.Controls.Add(ValueSetting);
         ResumeLayout();
+    }
+
+    private void Ok_Click(object sender, EventArgs e) {
+        if (!ValueSetting.IsValid) {
+            return;
+        }
+        if (ValueSetting.Value is null || ActiveSetting is null) {
+            return;
+        }
+        ActiveExpectedAfter = ValueSetting.Value;
+        ActiveTestCase = new() {
+            Order = OriginalTestCase?.Order ?? -1,
+            Setting = ActiveSetting.Clone(),
+            ExpectedAfter = ActiveExpectedAfter.Clone(),
+            ExpectedResult = ActiveExpectedResult
+        };
+        Close();
+    }
+
+    private void Cancel_Click(object sender, EventArgs e) {
+        ActiveTestCase = null;
+        ActiveExpectedAfter = null;
+        ActiveSetting = null;
+        Close();
     }
 }

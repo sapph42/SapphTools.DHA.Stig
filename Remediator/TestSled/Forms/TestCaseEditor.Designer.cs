@@ -30,6 +30,8 @@
             EditSetting = new Button();
             SettingsContainer = new GroupBox();
             ValueSetting = new ValueSettings();
+            Ok = new Button();
+            Cancel = new Button();
             ((System.ComponentModel.ISupportInitialize)SettingView).BeginInit();
             SettingsContainer.SuspendLayout();
             SuspendLayout();
@@ -82,7 +84,7 @@
             EditSetting.TabIndex = 14;
             EditSetting.Text = "Edit Setting";
             EditSetting.UseVisualStyleBackColor = true;
-            EditSetting.Click += EditRule_Click;
+            EditSetting.Click += EditSetting_Click;
             // 
             // SettingsContainer
             // 
@@ -101,11 +103,33 @@
             ValueSetting.Size = new Size(764, 318);
             ValueSetting.TabIndex = 0;
             // 
+            // Ok
+            // 
+            Ok.Location = new Point(632, 490);
+            Ok.Name = "Ok";
+            Ok.Size = new Size(75, 23);
+            Ok.TabIndex = 16;
+            Ok.Text = "OK";
+            Ok.UseVisualStyleBackColor = true;
+            Ok.Click += Ok_Click;
+            // 
+            // Cancel
+            // 
+            Cancel.Location = new Point(713, 490);
+            Cancel.Name = "Cancel";
+            Cancel.Size = new Size(75, 23);
+            Cancel.TabIndex = 17;
+            Cancel.Text = "Cancel";
+            Cancel.UseVisualStyleBackColor = true;
+            Cancel.Click += Cancel_Click;
+            // 
             // TestCaseEditor
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(956, 553);
+            ClientSize = new Size(801, 524);
+            Controls.Add(Cancel);
+            Controls.Add(Ok);
             Controls.Add(SettingsContainer);
             Controls.Add(EditSetting);
             Controls.Add(label1);
@@ -129,5 +153,7 @@
         private Button EditSetting;
         private GroupBox SettingsContainer;
         private ValueSettings ValueSetting;
+        private Button Ok;
+        private Button Cancel;
     }
 }

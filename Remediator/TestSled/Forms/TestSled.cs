@@ -233,46 +233,39 @@ public partial class TestSled : Form {
             bool passed = true;
             foreach (TestCase testCase in test.TestSuite) {
                 foreach (string target in targets) {
-                    Rule synthRule = new() {
-                        RuleId = $"T{test.TestId}P{test.Phase}O{test.Order}",
-                        Description = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}",
-                        Settings = [testCase.Setting]
-                    };
-                    List<RemediationActionResult> res = Rem.Execute(synthRule, batch, target, test.Config.WhatIf);
-                    IEnumerable<RemediationAction> actions = res
-                            .Where(r => r.Value is not null)
-                            .Select(r => r.Value!)
-                            .OrderByDescending(a => a.ActionNumber);
-                    passed &= res.All(r => r.IsSuccess);
+                    Setting clonedSetting = testCase.Setting.Clone();
+                    clonedSetting.Order = 0;
+                    string synthRuleId = $"T{test.TestId}P{test.Phase}O{test.Order}C{testCase.Order}";
+                    string synthDesc = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, TestCase {testCase.Order}";
+                    RemediationActionResult res = Rem.ExecuteTestCase(testCase, batch, target, synthRuleId, synthDesc, test.Config.WhatIf);
+                    passed &= (res.HasValue == testCase.ExpectedAfter is not null) &&
+                        (!res.HasValue ||
+                            (res.Value.Result == testCase.ExpectedResult)
+                        );
                     testCase.Result = new() {
-                        ActualAfter = actions.Last().After,
-                        RemediationActions = [.. actions]
+                        ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
+                        RemediationAction = res?.Value
                     };
                     passed &= testCase.Pass ?? false;
                     if (test.Config.AttemptRollback) {
-                        foreach (RemediationAction actionRes in actions) {
-                            RemediationActionResult rollRes = Roll.Execute(batch, actionRes);
-                            passed &= rollRes.IsSuccess;
-                        }
+                        // Gonna have to think hard how to do this
                     }
                 }
             }
             foreach (TestCase testCase in test.RecoverySuite) {
                 foreach (string target in targets) {
-                    Rule synthRule = new() {
-                        RuleId = $"T{test.TestId}P{test.Phase}O{test.Order}",
-                        Description = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}",
-                        Settings = [testCase.Setting]
-                    };
-                    List<RemediationActionResult> res = Rem.Execute(synthRule, batch, target, whatIf:false);
-                    IEnumerable<RemediationAction> actions = res
-                            .Where(r => r.Value is not null)
-                            .Select(r => r.Value!)
-                            .OrderByDescending(a => a.ActionNumber);
-                    passed &= res.All(r => r.IsSuccess);
+                    Setting clonedSetting = testCase.Setting.Clone();
+                    clonedSetting.Order = 0;
+                    string synthRuleId = $"T{test.TestId}P{test.Phase}O{test.Order}R{testCase.Order}";
+                    string synthDesc = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, RecoveryCase {testCase.Order}";
+                    RemediationActionResult res = Rem.ExecuteTestCase(testCase, batch, target, synthRuleId, synthDesc, test.Config.WhatIf);
+                    passed &= (res.HasValue == testCase.ExpectedAfter is not null) &&
+                        (!res.HasValue ||
+                            (res.Value.Result == testCase.ExpectedResult)
+                        );
                     testCase.Result = new() {
-                        ActualAfter = actions.Last().After,
-                        RemediationActions = [.. actions]
+                        ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
+                        RemediationAction = res?.Value
                     };
                     passed &= testCase.Pass ?? false;
                 }
