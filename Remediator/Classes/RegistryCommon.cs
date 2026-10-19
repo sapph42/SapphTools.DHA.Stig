@@ -4,14 +4,15 @@ using System.Text.RegularExpressions;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes;
 internal static partial class RegistryCommon {
-    public static RemediationActionResult BasicChecks(RemediationPreAction preAction, string target, [NotNullWhen(true)] out RegistryKey? leaf, bool whatIf) {
+    public static RemediationActionResult BasicChecks(RemediationPreAction preAction, string target, [NotNullWhen(true)] out RegistryKey? leaf, bool whatIf, Logger? logger = null) {
         leaf = null;
+        logger ??= new Logger();
         if (GetHive(target) is not RegistryHive hive) {
-            return Logger.LogError(preAction, TargetType.RegistryKey, target, "Could not resolve hive from path", whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, target, "Could not resolve hive from path", whatIf);
         }
         string? leafPath = GetPath(target);
         if (leafPath is null) {
-            return Logger.LogError(preAction, TargetType.RegistryKey, target, "Key path was not well-formed.", whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, target, "Key path was not well-formed.", whatIf);
         }
         RegistryKey baseKey;
         try {
@@ -20,9 +21,9 @@ internal static partial class RegistryCommon {
                 _ => RegistryKey.OpenBaseKey(hive, RegistryView.Registry64)
             };
         } catch {
-            return Logger.LogError(preAction, TargetType.RegistryKey, hive.ToString(), "Could not open hive.", whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, hive.ToString(), "Could not open hive.", whatIf);
         }
-        return TryOpenSubKey(preAction, baseKey, leafPath, out leaf, whatIf);
+        return TryOpenSubKey(preAction, baseKey, leafPath, out leaf, whatIf, logger);
     }
     public static bool CheckRegistryKey(RegistryKey hive, string path, [NotNullWhen(true)] out RegistryKey? key, bool parsed = false) {
         if (!parsed) {
@@ -40,9 +41,10 @@ internal static partial class RegistryCommon {
         }
         return true;
     }
-    public static RemediationActionResult CheckRegistryKey(RegistryKey hive, string path, RemediationPreAction preAction, bool parsed = false, bool whatIf = true) {
+    public static RemediationActionResult CheckRegistryKey(RegistryKey hive, string path, RemediationPreAction preAction, bool parsed = false, bool whatIf = true, Logger? logger = null) {
+        logger ??= new Logger();
         try {
-            if (CheckRegistryKey(hive, path, out RegistryKey? ret, parsed)) {
+            if (CheckRegistryKey(hive, path, out RegistryKey? ret, parsed, logger)) {
                 using (ret) { }
                 return RemediationActionResult.IntermediateSuccessFactory();
             } else {
@@ -57,9 +59,9 @@ internal static partial class RegistryCommon {
                 );
             }
         } catch (ArgumentException argEx) {
-            return Logger.LogError(preAction, TargetType.RegistryKey, path, argEx.Message, whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, path, argEx.Message, whatIf);
         } catch (Exception ex) {
-            return Logger.LogError(preAction, TargetType.RegistryKey, path, $"Exception thrown opening key.: {ex.Message}", whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, path, $"Exception thrown opening key.: {ex.Message}", whatIf);
         }
     }
     public static RegistryHive? GetHive(string path) {
@@ -111,8 +113,9 @@ internal static partial class RegistryCommon {
         }
         return parts[^1];
     }
-    public static RemediationActionResult TryGetHiveKey(RemediationPreAction preAction, RegistryHive hive, out RegistryKey? leaf, bool whatIf) {
+    public static RemediationActionResult TryGetHiveKey(RemediationPreAction preAction, RegistryHive hive, out RegistryKey? leaf, bool whatIf, Logger? logger = null) {
         leaf = null;
+        logger ??= new Logger();
         try {
             leaf = preAction.ComputerName switch {
                 string t when t is not null => RegistryKey.OpenRemoteBaseKey(hive, t),
@@ -120,7 +123,7 @@ internal static partial class RegistryCommon {
             };
             return RemediationActionResult.IntermediateSuccessFactory();
         } catch {
-            return Logger.LogError(preAction, TargetType.RegistryKey, hive.ToString(), "Could not open hive.", whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, hive.ToString(), "Could not open hive.", whatIf);
         }
     }
     public static RemediationActionResult TryOpenSubKey(
@@ -128,11 +131,13 @@ internal static partial class RegistryCommon {
             RegistryKey key, 
             string subKeyName, 
             out RegistryKey? subkey, 
-            bool whatIf) {
+            bool whatIf,
+            Logger? logger = null) {
+        logger ??= new Logger();
         try {
             subkey = key.OpenSubKey(subKeyName, true);
             if (subkey is null) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction, 
                     TargetType.RegistryKey, 
                     key.Name + "\\" + subKeyName, 
@@ -143,7 +148,7 @@ internal static partial class RegistryCommon {
             return RemediationActionResult.IntermediateSuccessFactory();
         } catch (Exception ex) {
             subkey = null;
-            return Logger.LogError(preAction, TargetType.RegistryKey, key.Name + "\\" + subKeyName, ex.Message, whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, key.Name + "\\" + subKeyName, ex.Message, whatIf);
         }
     }
 

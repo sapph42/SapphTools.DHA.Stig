@@ -35,17 +35,18 @@ internal class FileAclRemediator : IRemediator {
             return null;
         }
     }
-    public static RemediationActionResult Remediate(RemediatorDto dto) {
+    public static RemediationActionResult Remediate(RemediatorDto dto, Logger? logger = null) {
         IValue data = dto.Setting.Data.Clone();
         if (data is not FileSystemAclValue val) {
             return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type FileSystemAclValue, was {data.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = dto.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
-        return SetAcl(pre, val, dto.WhatIf);
+        return SetAcl(pre, val, logger, dto.WhatIf);
     }
-    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger = null) {
         if (logEntry.Before is null) {
             return new ArgumentException("Cannot rollback a log entry with a null Before property.", nameof(logEntry));
         }
@@ -53,6 +54,7 @@ internal class FileAclRemediator : IRemediator {
         if (data is not FileSystemAclValue val) {
             return new ArgumentException($"Expected {nameof(logEntry)}.Before to be of type FileSystemAclValue, was {data.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = logEntry.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
@@ -65,9 +67,9 @@ internal class FileAclRemediator : IRemediator {
             SettingIndex = logEntry.SettingIndex,
             Source = ActionSource.Catalog
         };
-        return SetAcl(pre, val, whatIf: false);
+        return SetAcl(pre, val, logger, whatIf: false);
     }
-    private static RemediationActionResult SetAcl(RemediationPreAction preAction, FileSystemAclValue val, bool whatIf = true) {
+    private static RemediationActionResult SetAcl(RemediationPreAction preAction, FileSystemAclValue val, Logger logger, bool whatIf = true) {
         FileSystemInfo info;
         string target;
         if (preAction.ComputerName.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase)) {
@@ -75,7 +77,7 @@ internal class FileAclRemediator : IRemediator {
         } else {
             string? root = Path.GetPathRoot(val.Target);
             if (root is null) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.FileSystemAcl,
                     val.Target,
@@ -94,7 +96,7 @@ internal class FileAclRemediator : IRemediator {
             info = new FileInfo(target);
         }
         if (!info.Exists) {
-            return Logger.LogError(
+            return logger.LogError(
                 preAction,
                 TargetType.FileSystemAcl,
                 val.Target,
@@ -108,7 +110,7 @@ internal class FileAclRemediator : IRemediator {
                 Sddl = info.GetSecurityDescriptorSddl()
             };
             if (before.Sddl.Equals(val.Sddl, compareActiveOnly:true)) {
-                return Logger.LogNoAction(
+                return logger.LogNoAction(
                     preAction,
                     TargetType.FileSystemAcl,
                     val.Target,
@@ -116,7 +118,7 @@ internal class FileAclRemediator : IRemediator {
                 );
             }
             if (whatIf) {
-                return Logger.LogWhatIf(
+                return logger.LogWhatIf(
                     preAction,
                     TargetType.FileSystemAcl,
                     val.Target,
@@ -130,7 +132,7 @@ internal class FileAclRemediator : IRemediator {
                 Target = val.Target,
                 Sddl = info.GetSecurityDescriptorSddl()
             };
-            return Logger.LogSuccess(
+            return logger.LogSuccess(
                 preAction,
                 TargetType.FileSystemAcl,
                 val.Target,
@@ -139,7 +141,7 @@ internal class FileAclRemediator : IRemediator {
                 after
             );
         } catch (Exception ex) {
-            return Logger.LogError(
+            return logger.LogError(
                 preAction,
                 TargetType.FileSystemAcl,
                 val.Target,

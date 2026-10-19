@@ -233,11 +233,17 @@ public partial class TestSled : Form {
             bool passed = true;
             foreach (TestCase testCase in test.TestSuite) {
                 foreach (string target in targets) {
-                    Setting clonedSetting = testCase.Setting.Clone();
-                    clonedSetting.Order = 0;
+                    Logger logger = new();
+                    List<RemediationAction> actions = [];
+                    void Logger_LogWritten (object? sender, LogEventArgs e) {
+                        actions.Add(e.RemediationAction);
+                    }
+                    logger.LogWritten += Logger_LogWritten;
+                    TestCase cloned = testCase.Clone();
+                    cloned.Setting.Order = 0;
                     string synthRuleId = $"T{test.TestId}P{test.Phase}O{test.Order}C{testCase.Order}";
                     string synthDesc = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, TestCase {testCase.Order}";
-                    RemediationActionResult res = Rem.ExecuteTestCase(testCase, batch, target, synthRuleId, synthDesc, test.Config.WhatIf);
+                    RemediationActionResult res = Rem.ExecuteTestCase(cloned, batch, target, synthRuleId, synthDesc, test.Config.WhatIf, logger);
                     passed &= (res.HasValue == testCase.ExpectedAfter is not null) &&
                         (!res.HasValue ||
                             (res.Value.Result == testCase.ExpectedResult)
@@ -247,18 +253,23 @@ public partial class TestSled : Form {
                         RemediationAction = res?.Value
                     };
                     passed &= testCase.Pass ?? false;
+                    logger.LogWritten -= Logger_LogWritten;
                     if (test.Config.AttemptRollback) {
-                        // Gonna have to think hard how to do this
+                        foreach (RemediationAction action in actions.OrderByDescending(a => a.ActionNumber)) {
+                            RemediationActionResult rollRes = Roll.Execute(batch, action, null);
+                            passed &= rollRes.HasValue && rollRes.Value.Result != ActionResult.ActionFailure;
+                        }
                     }
                 }
             }
+            Logger recoveryLogger = new();
             foreach (TestCase testCase in test.RecoverySuite) {
                 foreach (string target in targets) {
                     Setting clonedSetting = testCase.Setting.Clone();
                     clonedSetting.Order = 0;
                     string synthRuleId = $"T{test.TestId}P{test.Phase}O{test.Order}R{testCase.Order}";
                     string synthDesc = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, RecoveryCase {testCase.Order}";
-                    RemediationActionResult res = Rem.ExecuteTestCase(testCase, batch, target, synthRuleId, synthDesc, test.Config.WhatIf);
+                    RemediationActionResult res = Rem.ExecuteTestCase(testCase, batch, target, synthRuleId, synthDesc, false, recoveryLogger);
                     passed &= (res.HasValue == testCase.ExpectedAfter is not null) &&
                         (!res.HasValue ||
                             (res.Value.Result == testCase.ExpectedResult)

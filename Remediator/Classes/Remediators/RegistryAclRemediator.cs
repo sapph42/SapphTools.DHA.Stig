@@ -26,17 +26,18 @@ internal class RegistryAclRemediator : IRemediator {
             targetKey?.Dispose();
         }
     }
-    public static RemediationActionResult Remediate(RemediatorDto dto) {
+    public static RemediationActionResult Remediate(RemediatorDto dto, Logger? logger = null) {
         IValue data = dto.Setting.Data.Clone();
         if (data is not RegistryAclValue val) {
             return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type RegistryAclValue, was {data.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = dto.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
-        return SetAcl(pre, val, dto.WhatIf);
+        return SetAcl(pre, val, logger, dto.WhatIf);
     }
-    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger = null) {
         IValue? original = logEntry.Before;
         if (original is null) {
             return new ArgumentException("Cannot rollback an entry with null Before property");
@@ -44,6 +45,7 @@ internal class RegistryAclRemediator : IRemediator {
         if (original is not RegistryAclValue val) {
             return new ArgumentException($"Expected {nameof(logEntry)}.Before to be of type RegistryAclValue, was {original.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = logEntry.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
@@ -56,19 +58,19 @@ internal class RegistryAclRemediator : IRemediator {
             SettingIndex = logEntry.SettingIndex,
             Source = ActionSource.Rollback
         };
-        return SetAcl(pre, val, whatIf: false);
+        return SetAcl(pre, val, logger, whatIf: false);
     }
-    private static RemediationActionResult SetAcl(RemediationPreAction preAction, RegistryAclValue value, bool whatIf = true) {
+    private static RemediationActionResult SetAcl(RemediationPreAction preAction, RegistryAclValue value, Logger logger, bool whatIf = true) {
         RegKey target;
         try {
             target = new(value.Target, preAction.ComputerName);
         } catch (RegKeyException rkEx) {
-            return Logger.LogError(preAction, TargetType.RegistryKey, value.Target, rkEx.ReasonToString(), whatIf);
+            return logger.LogError(preAction, TargetType.RegistryKey, value.Target, rkEx.ReasonToString(), whatIf);
         }
         try {
             RegistryAclValue before = target.GetAclValue();
             if (whatIf) {
-                return Logger.LogWhatIf(
+                return logger.LogWhatIf(
                     preAction,
                     TargetType.RegistryAcl,
                     value.Target,
@@ -82,7 +84,7 @@ internal class RegistryAclRemediator : IRemediator {
                 target.SetSddl(value.Sddl);
                 after = target.GetAclValue();
             }
-            return Logger.LogSuccess(
+            return logger.LogSuccess(
                 preAction,
                 TargetType.RegistryAcl,
                 value.Target,
@@ -91,7 +93,7 @@ internal class RegistryAclRemediator : IRemediator {
                 after
             );
         } catch (Exception ex) {
-            return Logger.LogError(preAction, TargetType.RegistryAcl, value.Target, $"Exception thrown during ACL operation: {ex.Message}", whatIf);
+            return logger.LogError(preAction, TargetType.RegistryAcl, value.Target, $"Exception thrown during ACL operation: {ex.Message}", whatIf);
         }
     }
 }

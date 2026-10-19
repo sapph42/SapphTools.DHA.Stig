@@ -9,7 +9,7 @@ public partial class TestCaseEditor : Form {
     private Setting? ActiveSetting;
     private IValue? ActiveExpectedAfter;
     private TargetType? ActiveEaType => ActiveSetting?.Data.Action;
-    private readonly ActionResult ActiveExpectedResult;
+    private ActionResult? ActiveExpectedResult;
     public required string SimulatedRuleId { get; set; }
     public TestCase? TestCase;
     public TestCaseEditor() {
@@ -116,28 +116,31 @@ public partial class TestCaseEditor : Form {
         SettingsContainer.Controls.Add(ValueSetting);
         ResumeLayout();
     }
-
     private void Ok_Click(object sender, EventArgs e) {
         if (!ValueSetting.IsValid) {
             return;
         }
-        if (ValueSetting.Value is null || ActiveSetting is null) {
+        if (ValueSetting.Value is null || ActiveSetting is null || ActiveExpectedResult is null) {
             return;
         }
         ActiveExpectedAfter = ValueSetting.Value;
-        ActiveTestCase = new() {
+        TestCase = new() {
             Order = OriginalTestCase?.Order ?? -1,
             Setting = ActiveSetting.Clone(),
             ExpectedAfter = ActiveExpectedAfter.Clone(),
-            ExpectedResult = ActiveExpectedResult
+            ExpectedResult = ActiveExpectedResult.Value
         };
         Close();
     }
-
     private void Cancel_Click(object sender, EventArgs e) {
-        ActiveTestCase = null;
-        ActiveExpectedAfter = null;
-        ActiveSetting = null;
+        TestCase = null;
         Close();
+    }
+    private void ExpectedResult_SelectedIndexChanged(object sender, EventArgs e) {
+        if (ExpectedResult.SelectedItem is ActionResult res) {
+            ActiveExpectedResult = res;
+        } else {
+            ActiveExpectedResult = null;
+        }
     }
 }

@@ -66,6 +66,7 @@
             ExpectedResult.Name = "ExpectedResult";
             ExpectedResult.Size = new Size(237, 23);
             ExpectedResult.TabIndex = 12;
+            ExpectedResult.SelectedIndexChanged += ExpectedResult_SelectedIndexChanged;
             // 
             // label1
             // 
@@ -105,6 +106,7 @@
             // 
             // Ok
             // 
+            Ok.DialogResult = DialogResult.OK;
             Ok.Location = new Point(632, 490);
             Ok.Name = "Ok";
             Ok.Size = new Size(75, 23);
@@ -115,6 +117,7 @@
             // 
             // Cancel
             // 
+            Cancel.DialogResult = DialogResult.Cancel;
             Cancel.Location = new Point(713, 490);
             Cancel.Name = "Cancel";
             Cancel.Size = new Size(75, 23);
@@ -125,8 +128,10 @@
             // 
             // TestCaseEditor
             // 
+            AcceptButton = Ok;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = Cancel;
             ClientSize = new Size(801, 524);
             Controls.Add(Cancel);
             Controls.Add(Ok);

@@ -24,23 +24,24 @@ public class SamRemediator : IRemediator {
             return null;
         }
     }
-    public static RemediationActionResult Remediate(RemediatorDto dto) {
+    public static RemediationActionResult Remediate(RemediatorDto dto, Logger? logger = null) {
         IValue data = dto.Setting.Data.Clone();
         if (data is not SamValue val) {
             return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type SamValue, was {data.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = dto.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
         switch (val.Target) {
             case SamActionType.AccountLockoutPolicy:
                 LockoutValue lockoutValue = (LockoutValue)val;
-                return SetLockout(pre, lockoutValue, dto.WhatIf);
+                return SetLockout(pre, lockoutValue, dto.WhatIf, logger);
             default:
                 return new NotImplementedException();
         }
     }
-    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger = null) {
         if (logEntry.Before is null) {
             return new ArgumentException("Cannot rollback a log entry with a null Before property.");
         }
@@ -48,6 +49,7 @@ public class SamRemediator : IRemediator {
         if (original is not SamValue val) {
             return new ArgumentException($"Expected {nameof(logEntry)}.Before to be of type SamValue, was {original.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = logEntry.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
@@ -63,17 +65,17 @@ public class SamRemediator : IRemediator {
         switch (val.Target) {
             case SamActionType.AccountLockoutPolicy:
                 LockoutValue lockoutValue = (LockoutValue)original;
-                return SetLockout(pre, lockoutValue, whatIf: false);
+                return SetLockout(pre, lockoutValue, whatIf: false, logger);
             default:
                 return new NotImplementedException();
         }
     }
-    private static RemediationActionResult SetLockout(RemediationPreAction preAction, LockoutValue value, bool whatIf) {
+    private static RemediationActionResult SetLockout(RemediationPreAction preAction, LockoutValue value, bool whatIf, Logger logger) {
         SamUserModalInfo3 current;
         try {
             current = GetSamData(preAction.ComputerName, value);
         } catch {
-            return Logger.LogError(
+            return logger.LogError(
                 preAction,
                 TargetType.Sam,
                 value.Target.ToString(),
@@ -82,7 +84,7 @@ public class SamRemediator : IRemediator {
             );
         }
         if (value.SamStruct == current) {
-            return Logger.LogNoAction(
+            return logger.LogNoAction(
                 preAction,
                 TargetType.Sam,
                 value.Target.ToString(),
@@ -92,7 +94,7 @@ public class SamRemediator : IRemediator {
             );
         }
         if (whatIf) {
-            return Logger.LogWhatIf(
+            return logger.LogWhatIf(
                 preAction,
                 TargetType.Sam,
                 value.Target.ToString(),
@@ -105,7 +107,7 @@ public class SamRemediator : IRemediator {
         }
         try {
             if (SetSamData(preAction.ComputerName, value)) {
-                return Logger.LogSuccess(
+                return logger.LogSuccess(
                     preAction,
                     TargetType.Sam,
                     value.Target.ToString(),
@@ -116,7 +118,7 @@ public class SamRemediator : IRemediator {
                     value
                 );
             } else {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.Sam,
                     value.Target.ToString(),
@@ -125,7 +127,7 @@ public class SamRemediator : IRemediator {
                 );
             }
         } catch (Exception ex) {
-            return Logger.LogError(
+            return logger.LogError(
                 preAction,
                 TargetType.Sam,
                 value.Target.ToString(),

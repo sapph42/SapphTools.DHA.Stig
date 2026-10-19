@@ -3,7 +3,8 @@ internal class CertificateRemediator : IRemediator {
     public static IValue? GetActualState(IValue target, string computerName) {
         throw new NotImplementedException(); // Think about if this is even possible
     }
-    public static RemediationActionResult Remediate(RemediatorDto dto) {
+    public static RemediationActionResult Remediate(RemediatorDto dto, Logger? logger = null) {
+        logger ??= new();
         IValue data = dto.Setting.Data.Clone();
         if (data is not CertificatesValue val) {
             return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type CertificatesValue, was {data.GetType().Name}");
@@ -11,9 +12,9 @@ internal class CertificateRemediator : IRemediator {
         Guid settingBatch = Guid.NewGuid();
         string targetHost = dto.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
-        return ExecuteRule(pre, val, targetHost, dto.WhatIf);
+        return ExecuteRule(pre, val, targetHost, dto.WhatIf, logger);
     }
-    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) =>
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger = null) =>
         RemediationActionResult.GenerateWithoutLog(
             logEntry.ToPreAction(),
             logEntry.TargetType,
@@ -23,9 +24,9 @@ internal class CertificateRemediator : IRemediator {
             null,
             ActionResult.ActionFailure
         );
-    private static RemediationActionResult ExecuteRule(RemediationPreAction pre, CertificatesValue val, string hostName, bool whatIf) {
+    private static RemediationActionResult ExecuteRule(RemediationPreAction pre, CertificatesValue val, string hostName, bool whatIf, Logger logger) {
         if (!val.CatalogArtifact.Verify()) {
-            return Logger.LogError(
+            return logger.LogError(
                 pre,
                 TargetType.CertStore,
                 val.Target,
@@ -34,7 +35,7 @@ internal class CertificateRemediator : IRemediator {
             );
         } else {
             if (whatIf) {
-                return Logger.LogWhatIf(
+                return logger.LogWhatIf(
                     pre,
                     TargetType.CertStore,
                     val.Target,
@@ -45,7 +46,7 @@ internal class CertificateRemediator : IRemediator {
             }
             CryptoWinApi.AddCerts(hostName, val.Target, val.CatalogArtifact.FullPath, out int success, out int noAction, out int failed);
             if (success == 0 && failed == 0) {
-                return Logger.LogNoAction(
+                return logger.LogNoAction(
                     pre,
                     TargetType.CertStore,
                     val.Target,
@@ -53,7 +54,7 @@ internal class CertificateRemediator : IRemediator {
                 );
             }
             if (failed == 0) {
-                return Logger.LogSuccess(
+                return logger.LogSuccess(
                     pre,
                     TargetType.CertStore,
                     val.Target,
@@ -62,7 +63,7 @@ internal class CertificateRemediator : IRemediator {
                     val
                 );
             }
-            return Logger.LogError(
+            return logger.LogError(
                 pre,
                 TargetType.CertStore,
                 val.Target,

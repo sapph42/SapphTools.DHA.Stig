@@ -1,9 +1,18 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.Metrics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes;
-internal static class Logger {
+public class LogEventArgs : EventArgs {
+    public required RemediationAction RemediationAction { get; init; }
+
+    [SetsRequiredMembers]
+    public LogEventArgs(RemediationAction action) {
+        RemediationAction = action;
+    }
+    public static implicit operator LogEventArgs(RemediationAction action) => new(action);
+}
+public class Logger {
     private const string logDir = @"Remediator Logs";
     private static readonly Dictionary<string, bool> canFileLog = [];
     private static readonly Dictionary<string, string> fileLogPaths = [];
@@ -31,15 +40,20 @@ internal static class Logger {
         (byte)'\r',
         (byte)'\n'
     ];
-    public static void Log(RemediationAction action) {
+
+    public delegate void LogEventHandler(object? sender, LogEventArgs e);
+    public event LogEventHandler LogWritten = delegate { };
+
+    public void Log(RemediationAction action) {
         if (action.Result == ActionResult.WhatIf) {
             LogWhatIf(action);
             return;
         }
+        LogWritten(this, action);
         LogToEventLog(action);
         LogToFile(action);
     }
-    public static RemediationActionResult LogError(RemediationPreAction preAction, TargetType type, string target, string message, bool whatIf) {
+    public RemediationActionResult LogError(RemediationPreAction preAction, TargetType type, string target, string message, bool whatIf) {
         RemediationAction action = GenerateError(preAction, type, target, message);
         if (whatIf) {
             LogWhatIf(action);
@@ -48,12 +62,12 @@ internal static class Logger {
         }
         return action;
     }
-    public static RemediationActionResult LogNoAction(RemediationPreAction preAction, TargetType type, string target, IValue? current) {
+    public RemediationActionResult LogNoAction(RemediationPreAction preAction, TargetType type, string target, IValue? current) {
         RemediationAction action = GenerateNoAction(preAction, type, target, current);
         Log(action);
         return action;
     }
-    public static RemediationActionResult LogSuccess(
+    public RemediationActionResult LogSuccess(
             RemediationPreAction preAction,
             TargetType type,
             string target,
@@ -64,7 +78,7 @@ internal static class Logger {
         Log(action);
         return action;
     }
-    public static RemediationActionResult LogWhatIf(
+    public RemediationActionResult LogWhatIf(
             RemediationPreAction preAction,
             TargetType type,
             string target,
@@ -75,7 +89,8 @@ internal static class Logger {
         LogWhatIf(action);
         return action;
     }
-    private static void LogWhatIf(RemediationAction action) {
+    private void LogWhatIf(RemediationAction action) {
+        LogWritten(this, action);
         LogToFile(action, globalOnly: true);
     }
     private static RemediationAction GenerateError(RemediationPreAction preAction, TargetType type, string target, string message) {

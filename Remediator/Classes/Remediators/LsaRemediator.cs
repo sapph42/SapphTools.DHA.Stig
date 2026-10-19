@@ -20,17 +20,18 @@ internal class LsaRemediator : IRemediator {
             conn?.Dispose();
         }
     }
-    public static RemediationActionResult Remediate(RemediatorDto dto) {
+    public static RemediationActionResult Remediate(RemediatorDto dto, Logger? logger = null) {
         IValue data = dto.Setting.Data.Clone();
         if (data is not SeRightsValue val) {
             return new ArgumentException($"Expected {nameof(dto)}.Setting.Data to be of type SeRightsValue, was {data.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = dto.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
-        return SetRights(pre, val, dto.WhatIf);
+        return SetRights(pre, val, logger, dto.WhatIf);
     }
-    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry) {
+    public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger = null) {
         if (logEntry.Before is null) {
             return new ArgumentException("Cannot rollback a log entry with a null Before property.", nameof(logEntry));
         }
@@ -38,6 +39,7 @@ internal class LsaRemediator : IRemediator {
         if (data is not SeRightsValue val) {
             return new ArgumentException($"Expected {nameof(logEntry)}.Before to be of type SeRightsValue, was {data.GetType().Name}");
         }
+        logger ??= new();
         Guid settingBatch = Guid.NewGuid();
         string targetHost = logEntry.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
@@ -50,43 +52,43 @@ internal class LsaRemediator : IRemediator {
             SettingIndex = logEntry.SettingIndex,
             Source = ActionSource.Rollback
         };
-        return SetRights(pre, val, whatIf: false);
+        return SetRights(pre, val, logger, whatIf: false);
     }
-    private static RemediationActionResult SetRights(RemediationPreAction preAction, SeRightsValue value, bool whatIf = true) {
+    private static RemediationActionResult SetRights(RemediationPreAction preAction, SeRightsValue value, Logger logger, bool whatIf = true) {
         LsaConnection? conn = null;
         try {
             try {
                 conn = new(preAction.ComputerName, value);
             } catch (ArgumentOutOfRangeException privEx) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     value.Target,
                     $"Exception instantiating LsaConnection: {privEx.Message}",
                     whatIf);
             } catch (ArgumentException namesEx) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     string.Join(", ", value.AccountNames.Select(t => t.Sid)),
                     $"Argument Exception instantiating LsaConnection: {namesEx.Message}",
                     whatIf);
             } catch (Win32Exception winEx) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     string.Join(", ", value.AccountNames.Select(t => t.Sid)),
                     $"Win32 Exception instantiating LsaConnection: {winEx.Message}",
                     whatIf);
             } catch (LsaException lsaEx) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     string.Join(", ", value.AccountNames.Select(t => t.Sid)),
                     $"Lsa Exception instantiating LsaConnection ({lsaEx.Reason}): {lsaEx.Message}",
                     whatIf);
             } catch (Exception ex) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     string.Join(", ", value.AccountNames.Select(t => t.Sid)),
@@ -96,7 +98,7 @@ internal class LsaRemediator : IRemediator {
             try {
                 SeRightsValue before = conn.GetBeforeValue();
                 if (conn.RightMatchesList()) {
-                    return Logger.LogNoAction(
+                    return logger.LogNoAction(
                         preAction,
                         TargetType.SeRight,
                         value.Target,
@@ -108,7 +110,7 @@ internal class LsaRemediator : IRemediator {
                     accounts[i] = value.AccountNames[i].Clone();
                 }
                 if (whatIf) {
-                    return Logger.LogWhatIf(
+                    return logger.LogWhatIf(
                         preAction,
                         TargetType.SeRight,
                         value.Target,
@@ -122,7 +124,7 @@ internal class LsaRemediator : IRemediator {
                 }
                 try {
                     conn.SetAccountRights();
-                    return Logger.LogSuccess(
+                    return logger.LogSuccess(
                         preAction,
                         TargetType.SeRight,
                         value.Target,
@@ -134,9 +136,9 @@ internal class LsaRemediator : IRemediator {
                         }
                     );
                 } catch (LsaException lex) when (lex.Reason == LsaExceptionReason.ObjectNameNotFound) {
-                    return Logger.LogNoAction(preAction, TargetType.SeRight, value.Target, before);
+                    return logger.LogNoAction(preAction, TargetType.SeRight, value.Target, before);
                 } catch (Exception ex) {
-                    return Logger.LogError(
+                    return logger.LogError(
                         preAction,
                         TargetType.SeRight,
                         value.Target,
@@ -144,7 +146,7 @@ internal class LsaRemediator : IRemediator {
                         whatIf: false);
                 }
             } catch (Exception ex) {
-                return Logger.LogError(
+                return logger.LogError(
                     preAction,
                     TargetType.SeRight,
                     value.Target,
