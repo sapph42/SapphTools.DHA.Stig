@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Rem = SapphTools.DHA.Stig.Remediator.Classes.Remediators.Remediator;
 using Roll = SapphTools.DHA.Stig.Remediator.Classes.Remediators.Rollbacker;
-using Rule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestSled : Form {
@@ -27,7 +26,7 @@ public partial class TestSled : Form {
                 var x when x.HasFlag(TestSledState.ResultsFail) => Fail,
                 var x when x.HasFlag(TestSledState.NoCatalog) => Catalog,
                 var x when x.HasFlag(TestSledState.Unsigned) => Unsigned,
-                TestSledState.Valid => None,
+                _ => None,
             };
         }
     }
@@ -58,7 +57,7 @@ public partial class TestSled : Form {
     private int targetPhase = 0;
     private readonly DataTable ResultsTable;
     private readonly BindingSource source;
-    private StateNotify state = new();
+    private readonly StateNotify state = new();
 
     public TestSled() {
         InitializeComponent();
@@ -252,7 +251,7 @@ public partial class TestSled : Form {
                 foreach (string target in targets) {
                     Logger logger = new();
                     List<RemediationAction> actions = [];
-                    void Logger_LogWritten (object? sender, LogEventArgs e) {
+                    void Logger_LogWritten(object? sender, LogEventArgs e) {
                         actions.Add(e.RemediationAction);
                     }
                     logger.LogWritten += Logger_LogWritten;
@@ -277,10 +276,6 @@ public partial class TestSled : Form {
                                 continue;
                             }
                             RemediationActionResult rollRes = Roll.Execute(batch, action, null);
-                            testCase.Results[target] = new() {
-                                ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
-                                RemediationAction = rollRes.Value
-                            };
                             passed &= rollRes.IsSuccess && rollRes.HasValue && rollRes.Value.Result != ActionResult.ActionFailure;
                         }
                     }
