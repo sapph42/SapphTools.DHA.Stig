@@ -54,6 +54,8 @@ public partial class TestSled : Form {
     private FileInfo? testSledResultsFI;
     private TestArray? testArrayDefinition;
     private TestArray? testArrayResults;
+    private int maxPhase = 0;
+    private int targetPhase = 0;
     private readonly DataTable ResultsTable;
     private readonly BindingSource source;
     private StateNotify state = new();
@@ -186,6 +188,13 @@ public partial class TestSled : Form {
         Tests.DataSource = source;
         TestSledDefinitionPath.ReadOnly = true;
         TestSledResultsPath.ReadOnly = true;
+        if (testArrayDefinition is not null) {
+            maxPhase = testArrayDefinition.Tests.Max(t => t.Phase);
+            PhaseTarget.Items.Clear();
+            for (int i = 1; i <= maxPhase; i++) {
+                PhaseTarget.Items.Add(i);
+            }
+        }
     }
 
     private void TestSled_Load(object sender, EventArgs e) {
@@ -298,6 +307,13 @@ public partial class TestSled : Form {
         File.WriteAllText(TestSledResultsPath.Text, json);
         RefreshResults();
     }
+    private void PhaseTarget_SelectedIndexChanged(object sender, EventArgs e) {
+        if (int.TryParse(PhaseTarget.SelectedItem?.ToString(), out int target)) {
+            targetPhase = target;
+        } else {
+            targetPhase = 0;
+        }
+    }
     private void RefreshResults() {
         if (testArrayResults is null) {
             return;
@@ -374,6 +390,16 @@ public partial class TestSled : Form {
             }
         }
         state.Value = pendingState;
+        if (testArrayDefinition is not null) {
+            int currentMax = testArrayDefinition.Tests.Max(t => t.Phase);
+            if (currentMax != maxPhase) {
+                maxPhase = currentMax;
+                PhaseTarget.Items.Clear();
+                for (int i = 1; i <= maxPhase; i++) {
+                    PhaseTarget.Items.Add(i);
+                }
+            }
+        }
     }
     private static OpenFileDialog CreateJsonFileDialog(FileInfo? previous) => CreateJsonFileDialog(previous?.DirectoryName);
     private static OpenFileDialog CreateJsonFileDialog(string? previous) {

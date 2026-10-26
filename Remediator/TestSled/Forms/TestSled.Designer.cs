@@ -33,6 +33,8 @@
             ResultBrowse = new Button();
             Status = new Label();
             RunTests = new Button();
+            PhaseTarget = new ComboBox();
+            label4 = new Label();
             ((System.ComponentModel.ISupportInitialize)Tests).BeginInit();
             SuspendLayout();
             // 
@@ -74,7 +76,7 @@
             Tests.AllowUserToDeleteRows = false;
             Tests.AllowUserToResizeRows = false;
             Tests.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            Tests.Location = new Point(12, 113);
+            Tests.Location = new Point(12, 152);
             Tests.Name = "Tests";
             Tests.RowHeadersVisible = false;
             Tests.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -84,7 +86,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(12, 95);
+            label3.Location = new Point(12, 134);
             label3.Name = "label3";
             label3.Size = new Size(93, 15);
             label3.TabIndex = 8;
@@ -115,7 +117,7 @@
             Status.AutoSize = true;
             Status.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             Status.ForeColor = Color.Red;
-            Status.Location = new Point(173, 95);
+            Status.Location = new Point(173, 134);
             Status.Name = "Status";
             Status.Size = new Size(40, 15);
             Status.TabIndex = 11;
@@ -131,11 +133,31 @@
             RunTests.UseVisualStyleBackColor = true;
             RunTests.Click += RunTests_Click;
             // 
+            // PhaseTarget
+            // 
+            PhaseTarget.FormattingEnabled = true;
+            PhaseTarget.Location = new Point(173, 85);
+            PhaseTarget.Name = "PhaseTarget";
+            PhaseTarget.Size = new Size(121, 23);
+            PhaseTarget.TabIndex = 13;
+            PhaseTarget.SelectedIndexChanged += PhaseTarget_SelectedIndexChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(12, 88);
+            label4.Name = "label4";
+            label4.Size = new Size(95, 15);
+            label4.TabIndex = 14;
+            label4.Text = "Maximum Phase";
+            // 
             // TestSled
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(998, 563);
+            ClientSize = new Size(998, 602);
+            Controls.Add(label4);
+            Controls.Add(PhaseTarget);
             Controls.Add(RunTests);
             Controls.Add(Status);
             Controls.Add(ResultBrowse);
@@ -166,5 +188,7 @@
         private Button ResultBrowse;
         private Label Status;
         private Button RunTests;
+        private ComboBox PhaseTarget;
+        private Label label4;
     }
 }
