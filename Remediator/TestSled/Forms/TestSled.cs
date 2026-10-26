@@ -231,6 +231,14 @@ public partial class TestSled : Form {
             if (state.Value == TestSledState.ResultsFail && test.Pass) {
                 continue;
             }
+            if (!state.Value.HasFlag(TestSledState.DefinitionMismatch) &&
+                    !state.Value.HasFlag(TestSledState.VersionMismatch) &&
+                    test.Pass) {
+                continue;
+            }
+            if (test.Phase > targetPhase) {
+                continue;
+            }
             string[] targets = test.Config.Target switch {
                 TestTarget.Invalid => throw new NotImplementedException(),
                 TestTarget.Local => [results.LocalTarget],
