@@ -324,7 +324,13 @@ public partial class Main : Form {
                     StigCatalog = catalog;
                     CatalogTable.Rows.Clear();
                     foreach (StigRule rule in StigCatalog.Rules) {
-                        CatalogTable.Rows.Add(rule.RuleId, rule.Description, rule.Settings.Any(r => r.Dangerous), rule.Clone());
+                        CatalogTable.Rows.Add(
+                            rule.RuleId, 
+                            rule.Description, 
+                            rule.Settings.Any(r => r.Dangerous),
+                            rule.Settings.Max(r => r.RequiredContext),
+                            rule.Clone()
+                        );
                     }
                 }
             } catch (Exception ex) {
