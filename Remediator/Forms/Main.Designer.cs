@@ -48,6 +48,8 @@
             CurrentContext = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             label4 = new Label();
+            toolStripSeparator2 = new ToolStripSeparator();
+            TestSledMenu = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)Catalog).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Findings).BeginInit();
             Menu.SuspendLayout();
@@ -179,7 +181,7 @@
             // 
             // remediatorToolStripMenuItem
             // 
-            remediatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { SetCatalogPathMenu, EditCatalogMenu, LoadFindingsMenu, FilterFindingsMenu, SimulationModeMenu, toolStripSeparator1, RemediateMenu, LogsMenu });
+            remediatorToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { SetCatalogPathMenu, EditCatalogMenu, LoadFindingsMenu, FilterFindingsMenu, SimulationModeMenu, toolStripSeparator1, RemediateMenu, LogsMenu, toolStripSeparator2, TestSledMenu });
             remediatorToolStripMenuItem.Name = "remediatorToolStripMenuItem";
             remediatorToolStripMenuItem.Size = new Size(80, 20);
             remediatorToolStripMenuItem.Text = "Remediator";
@@ -286,6 +288,18 @@
             label4.TabIndex = 18;
             label4.Text = "Current Context:";
             // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(211, 6);
+            // 
+            // TestSledMenu
+            // 
+            TestSledMenu.Name = "TestSledMenu";
+            TestSledMenu.Size = new Size(214, 22);
+            TestSledMenu.Text = "Test Sled";
+            TestSledMenu.Click += TestSledMenu_Click;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -347,5 +361,7 @@
         private Label CurrentContext;
         private TableLayoutPanel tableLayoutPanel1;
         private Label label4;
+        private ToolStripSeparator toolStripSeparator2;
+        private ToolStripMenuItem TestSledMenu;
     }
 }

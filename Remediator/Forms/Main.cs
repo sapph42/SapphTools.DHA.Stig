@@ -345,6 +345,10 @@ public partial class Main : Form {
         WhatIf.Checked = SimulationModeMenu.Checked;
         _supressUiCascade = false;
     }
+    private void TestSledMenu_Click(object sender, EventArgs e) {
+        TestSled.Forms.TestSled testSled = new();
+        testSled.Show();
+    }
     private void WhatIf_CheckedChanged(object sender, EventArgs e) {
         if (_supressUiCascade) { return; }
         _supressUiCascade = true;
