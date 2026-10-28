@@ -252,7 +252,6 @@ public partial class TestEditor : Form {
         }
         CheckValidity();
     }
-
     private void EditTestCase_Click(object sender, EventArgs e) {
         if (GetSelectedRow(TestSuite) is not DataGridViewRow row || 
                 TestSuiteTable.Rows.Find(row.Cells["Order"].Value) is not DataRow dRow) {
@@ -269,7 +268,6 @@ public partial class TestEditor : Form {
         }
         CheckValidity();
     }
-
     private void RemoveTestCase_Click(object sender, EventArgs e) {
         if (GetSelectedRow(TestSuite) is not DataGridViewRow row) {
             return;
@@ -277,7 +275,6 @@ public partial class TestEditor : Form {
         RemoveCase(TestSuiteTable, row);
         CheckValidity();
     }
-
     private void AddRecoveryCase_Click(object sender, EventArgs e) {
         TestCaseEditor testCaseEditor = new() {
             SimulatedRuleId = SimulatedRuleId,
@@ -287,7 +284,6 @@ public partial class TestEditor : Form {
         }
         CheckValidity();
     }
-
     private void EditRecoveryCase_Click(object sender, EventArgs e) {
         if (GetSelectedRow(RecoverySuite) is not DataGridViewRow row ||
                 RecoverySuiteTable.Rows.Find(row.Cells["Order"].Value) is not DataRow dRow) {
@@ -304,7 +300,6 @@ public partial class TestEditor : Form {
         }
         CheckValidity();
     }
-
     private void RemoveRecoveryCase_Click(object sender, EventArgs e) {
         if (GetSelectedRow(RecoverySuite) is not DataGridViewRow row) {
             return;
@@ -312,15 +307,10 @@ public partial class TestEditor : Form {
         RemoveCase(RecoverySuiteTable, row);
         CheckValidity();
     }
-
     private void MoveTestUp_Click(object sender, EventArgs e) => MoveCase(TestSuite, TestSuiteTable, testSource, -1);
-
     private void MoveTestDown_Click(object sender, EventArgs e) => MoveCase(TestSuite, TestSuiteTable, testSource, 1);
-
     private void MoveRecoveryUp_Click(object sender, EventArgs e) => MoveCase(RecoverySuite, RecoverySuiteTable, recoverySource, -1);
-
     private void MoveRecoveryDown_Click(object sender, EventArgs e) => MoveCase(RecoverySuite, RecoverySuiteTable, recoverySource, 1);
-
     // Each DataRow owns its fixed sequence slot. Move the cases, not the row keys.
     // The editor deliberately leaves its SortedSets alone until OK reconstructs them.
     private static void SetCase(DataRow row, TestCase testCase) {
@@ -329,7 +319,6 @@ public partial class TestEditor : Form {
         row["ExpectedResult"] = testCase.ExpectedResult;
         row["TestCase"] = testCase;
     }
-
     private void MoveCase(DataGridView grid, DataTable table, BindingSource binding, int direction) {
         if (GetSelectedRow(grid) is not DataGridViewRow selection ||
                 selection.Cells["Order"].Value is not int order) {
@@ -361,7 +350,6 @@ public partial class TestEditor : Form {
         }
         UpdateSelectionButtons();
     }
-
     private static void RemoveCase(DataTable table, DataGridViewRow selection) {
         if (selection.Cells["Order"].Value is not int order ||
                 table.Rows.Find(order) is not DataRow selected) {
@@ -378,13 +366,11 @@ public partial class TestEditor : Form {
             nextOrder++;
         }
     }
-
     private void UpdateSelectionButtons() {
         UpdateSelectionButtons(TestSuite, TestSuiteTable, EditTestCase, RemoveTestCase, MoveTestUp, MoveTestDown);
         UpdateSelectionButtons(RecoverySuite, RecoverySuiteTable, EditRecoveryCase, RemoveRecoveryCase,
             MoveRecoveryUp, MoveRecoveryDown);
     }
-
     private static void UpdateSelectionButtons(DataGridView grid, DataTable table, Button edit, Button remove,
             Button up, Button down) {
         int? order = GetSelectedRow(grid)?.Cells["Order"].Value as int?;
@@ -394,7 +380,6 @@ public partial class TestEditor : Form {
         up.Enabled = index > 0;
         down.Enabled = index >= 0 && index < rows.Length - 1;
     }
-
     private void Ok_Click(object sender, EventArgs e) {
         if (!int.TryParse(Phase.Text, out int phase) || phase < 1 ||
                 !int.TryParse(Order.Text, out int order) || order < 1 ||
@@ -429,7 +414,6 @@ public partial class TestEditor : Form {
         }
         Close();
     }
-
     private void Cancel_Click(object sender, EventArgs e) {
         Test = null;
         Close();

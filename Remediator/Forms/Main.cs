@@ -94,9 +94,9 @@ public partial class Main : Form {
         if (StigCatalog is not null) {
             foreach (StigRule rule in StigCatalog.Rules) {
                 CatalogTable.Rows.Add(
-                    rule.RuleId, 
-                    rule.Description, 
-                    rule.Settings.Any(s => s.Dangerous), 
+                    rule.RuleId,
+                    rule.Description,
+                    rule.Settings.Any(s => s.Dangerous),
                     rule.Settings.Max(s => s.RequiredContext),
                     rule.Clone()
                 );
@@ -271,7 +271,7 @@ public partial class Main : Form {
                     CatalogTable.Rows.Find(plugin) is DataRow drRow &&
                     drRow["Rule"] is StigRule rule) {
                 Debug.WriteLine($"Calling Executefor rule {rule.RuleId} on {hostname} from row {row.Index}");
-                List<RemediationActionResult> res = 
+                List<RemediationActionResult> res =
                     Classes.Remediators.Remediator.Execute(rule, batch, hostname, WhatIf.Checked);
                 ActionResult agg = ActionResult.NoActionTaken;
                 string message = string.Empty;
