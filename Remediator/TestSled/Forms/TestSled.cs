@@ -187,13 +187,8 @@ public partial class TestSled : Form {
         Tests.DataSource = source;
         TestSledDefinitionPath.ReadOnly = true;
         TestSledResultsPath.ReadOnly = true;
-        if (testArrayDefinition is not null) {
-            maxPhase = testArrayDefinition.Tests.Max(t => t.Phase);
-            PhaseTarget.Items.Clear();
-            for (int i = 1; i <= maxPhase; i++) {
-                PhaseTarget.Items.Add(i);
-            }
-        }
+        PhaseTarget.DropDownStyle = ComboBoxStyle.DropDownList;
+        UpdatePhaseTargets();
     }
 
     private void TestSled_Load(object sender, EventArgs e) {
@@ -216,95 +211,114 @@ public partial class TestSled : Form {
         Verify(TestSledDefinitionPath.Text, dialog.FileName);
     }
     private void RunTests_Click(object sender, EventArgs e) {
-        if (!Verify()) {
+        if (!Verify() || targetPhase < 1) {
             return;
         }
-        bool newBuild = state.Value.HasFlag(TestSledState.VersionMismatch);
-        TestArray results = testArrayResults?.Clone(withoutResults:newBuild, updateBuilds:newBuild) ??
-            testArrayDefinition.Clone(withoutResults:true, updateBuilds:true);
+
+        // Results are evidence for exactly one signed definition and build.
+        // A changed definition must not execute stale TestCase objects.
+        bool resetResults = state.Value.HasFlag(TestSledState.DefinitionMismatch) ||
+            state.Value.HasFlag(TestSledState.VersionMismatch);
+        TestArray results = !resetResults && testArrayResults is not null
+            ? testArrayResults.Clone()
+            : testArrayDefinition.Clone(withoutResults: true);
         Guid batch = Guid.NewGuid();
+
         foreach (Test test in results.Tests) {
-            if (!test.Config.ContextMatch()) {
+            if (test.Phase > targetPhase || !test.Config.ContextMatch() || test.Pass) {
                 continue;
             }
-            if (state.Value == TestSledState.ResultsFail && test.Pass) {
-                continue;
-            }
-            if (!state.Value.HasFlag(TestSledState.DefinitionMismatch) &&
-                    !state.Value.HasFlag(TestSledState.VersionMismatch) &&
-                    test.Pass) {
-                continue;
-            }
-            if (test.Phase > targetPhase) {
-                continue;
-            }
+
             string[] targets = test.Config.Target switch {
                 TestTarget.Invalid => throw new NotImplementedException(),
                 TestTarget.Local => [results.LocalTarget],
                 TestTarget.SingleRemoteDev => [results.RemoteDevTarget.First()],
                 TestTarget.SingleRemoteProd => [results.RemoteProdTarget.First()],
-                TestTarget.FullRemoteDev => [..results.RemoteDevTarget],
-                TestTarget.FullRemoteProd => [..results.RemoteProdTarget],
+                TestTarget.FullRemoteDev => [.. results.RemoteDevTarget],
+                TestTarget.FullRemoteProd => [.. results.RemoteProdTarget],
             };
+            test.RunTargets = [.. targets.Distinct(StringComparer.OrdinalIgnoreCase)];
             bool passed = true;
+
             foreach (TestCase testCase in test.TestSuite) {
-                foreach (string target in targets) {
+                foreach (string target in test.RunTargets) {
                     Logger logger = new();
                     List<RemediationAction> actions = [];
-                    void Logger_LogWritten(object? sender, LogEventArgs e) {
-                        actions.Add(e.RemediationAction);
-                    }
+                    void Logger_LogWritten(object? sender, LogEventArgs e) => actions.Add(e.RemediationAction);
                     logger.LogWritten += Logger_LogWritten;
-                    TestCase cloned = testCase.Clone();
-                    cloned.Setting.Order = 0;
-                    string synthRuleId = $"T{test.TestId}P{test.Phase}O{test.Order}C{testCase.Order}";
-                    string synthDesc = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, TestCase {testCase.Order}";
-                    RemediationActionResult res = Rem.ExecuteTestCase(cloned, batch, target, synthRuleId, synthDesc, test.Config.WhatIf, logger);
-                    passed &= (res.HasValue == testCase.ExpectedAfter is not null) &&
-                        (!res.HasValue ||
-                            (res.Value.Result == testCase.ExpectedResult)
-                        );
-                    testCase.Results[target] = new() {
-                        ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
-                        RemediationAction = res?.Value
+                    TestResult result = new() {
+                        RollbackPass = test.Config.AttemptRollback ? true : null
                     };
-                    passed &= testCase.Pass ?? false;
-                    logger.LogWritten -= Logger_LogWritten;
-                    if (test.Config.AttemptRollback) {
-                        foreach (RemediationAction action in actions.OrderByDescending(a => a.ActionNumber)) {
-                            if (action.RollbackCapability != RollbackCapability.Automatic) {
-                                continue;
+                    try {
+                        TestCase cloned = testCase.Clone(withoutResults: true);
+                        cloned.Setting.Order = 0;
+                        string ruleId = $"T{test.TestId}P{test.Phase}O{test.Order}C{testCase.Order}";
+                        string description = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, TestCase {testCase.Order}";
+                        RemediationActionResult action = Rem.ExecuteTestCase(
+                            cloned, batch, target, ruleId, description, test.Config.WhatIf, logger);
+                        result.RemediationAction = action.HasValue ? action.Value : null;
+                        result.ActualAfter = Rem.GetActualState(testCase.Setting.Data, target);
+                    } catch (Exception ex) {
+                        // Keep the failure in the persisted result, even if state
+                        // observation throws (e.g. an unsupported target type).
+                        result.Error = $"{ex.GetType().Name}: {ex.Message}";
+                    } finally {
+                        logger.LogWritten -= Logger_LogWritten;
+                        if (test.Config.AttemptRollback) {
+                            foreach (RemediationAction action in actions.OrderByDescending(a => a.ActionNumber)) {
+                                // Only successful changes can have been applied.
+                                if (action.RollbackCapability != RollbackCapability.Automatic ||
+                                        action.Result != ActionResult.ActionSuccess) {
+                                    continue;
+                                }
+                                try {
+                                    RemediationActionResult rollback = Roll.Execute(batch, action);
+                                    if (!rollback.IsSuccess || !rollback.HasValue ||
+                                            rollback.Value.Result == ActionResult.ActionFailure) {
+                                        result.RollbackPass = false;
+                                        result.RollbackError = $"Rollback failed: {action.TargetType}, action {action.ActionNumber}.";
+                                    }
+                                } catch (Exception ex) {
+                                    result.RollbackPass = false;
+                                    result.RollbackError = $"{ex.GetType().Name}: {ex.Message}";
+                                }
                             }
-                            RemediationActionResult rollRes = Roll.Execute(batch, action, null);
-                            passed &= rollRes.IsSuccess && rollRes.HasValue && rollRes.Value.Result != ActionResult.ActionFailure;
                         }
+                        testCase.Results[target] = result;
                     }
+                    passed &= testCase.Pass == true;
                 }
             }
+
+            // Recovery is a separate, non-WhatIf operation. Each case is
+            // independently guarded so one failure cannot skip later cleanup.
             Logger recoveryLogger = new();
             foreach (TestCase testCase in test.RecoverySuite) {
-                foreach (string target in targets) {
-                    Setting clonedSetting = testCase.Setting.Clone();
-                    clonedSetting.Order = 0;
-                    string synthRuleId = $"T{test.TestId}P{test.Phase}O{test.Order}R{testCase.Order}";
-                    string synthDesc = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, RecoveryCase {testCase.Order}";
-                    RemediationActionResult res = Rem.ExecuteTestCase(testCase, batch, target, synthRuleId, synthDesc, false, recoveryLogger);
-                    passed &= (res.HasValue == testCase.ExpectedAfter is not null) &&
-                        (!res.HasValue ||
-                            (res.Value.Result == testCase.ExpectedResult)
-                        );
-                    testCase.Results[target] = new() {
-                        ActualAfter = Rem.GetActualState(testCase.Setting.Data, target),
-                        RemediationAction = res?.Value
-                    };
-                    passed &= testCase.Pass ?? false;
+                foreach (string target in test.RunTargets) {
+                    TestResult result = new();
+                    try {
+                        TestCase cloned = testCase.Clone(withoutResults: true);
+                        cloned.Setting.Order = 0;
+                        string ruleId = $"T{test.TestId}P{test.Phase}O{test.Order}R{testCase.Order}";
+                        string description = $"Test {test.TestId}, Phase {test.Phase}, Order {test.Order}, RecoveryCase {testCase.Order}";
+                        RemediationActionResult action = Rem.ExecuteTestCase(
+                            cloned, batch, target, ruleId, description, false, recoveryLogger);
+                        result.RemediationAction = action.HasValue ? action.Value : null;
+                        result.ActualAfter = Rem.GetActualState(testCase.Setting.Data, target);
+                    } catch (Exception ex) {
+                        result.Error = $"{ex.GetType().Name}: {ex.Message}";
+                    }
+                    testCase.Results[target] = result;
+                    passed &= testCase.Pass == true;
                 }
             }
             test.TestRun = true;
+            passed &= test.Pass;
             if (!passed) {
                 break;
             }
         }
+
         testArrayResults = results.Clone();
         string json = JsonSerializer.Serialize(testArrayResults, GlobalConstants.JsonSerializerOptions);
         File.WriteAllText(TestSledResultsPath.Text, json);
@@ -393,16 +407,25 @@ public partial class TestSled : Form {
             }
         }
         state.Value = pendingState;
-        if (testArrayDefinition is not null) {
-            int currentMax = testArrayDefinition.Tests.Max(t => t.Phase);
-            if (currentMax != maxPhase) {
-                maxPhase = currentMax;
-                PhaseTarget.Items.Clear();
-                for (int i = 1; i <= maxPhase; i++) {
-                    PhaseTarget.Items.Add(i);
-                }
-            }
+        UpdatePhaseTargets();
+    }
+
+    private void UpdatePhaseTargets() {
+        int currentMax = testArrayDefinition?.Tests.Count > 0
+            ? testArrayDefinition.Tests.Max(t => t.Phase)
+            : 0;
+        if (currentMax == maxPhase && PhaseTarget.Items.Count == currentMax) {
+            return;
         }
+        int selected = targetPhase;
+        maxPhase = currentMax;
+        PhaseTarget.Items.Clear();
+        for (int i = 1; i <= maxPhase; i++) {
+            PhaseTarget.Items.Add(i);
+        }
+        PhaseTarget.Enabled = maxPhase > 0;
+        // Default to phase one: increasing scope is an explicit user action.
+        PhaseTarget.SelectedItem = maxPhase == 0 ? null : Math.Clamp(selected, 1, maxPhase);
     }
     private static OpenFileDialog CreateJsonFileDialog(FileInfo? previous) => CreateJsonFileDialog(previous?.DirectoryName);
     private static OpenFileDialog CreateJsonFileDialog(string? previous) {

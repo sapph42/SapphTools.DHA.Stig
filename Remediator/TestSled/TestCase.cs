@@ -48,7 +48,12 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             _setting = value;
         }
     }
-    public Dictionary<string, TestResult?> Results { get; set; } = [];
+    private Dictionary<string, TestResult?> results = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, TestResult?> Results {
+        get => results;
+        set => results = value is null ? new(StringComparer.OrdinalIgnoreCase) :
+            new(value, StringComparer.OrdinalIgnoreCase);
+    }
     public required IValue ExpectedAfter {
         get => _expectedAfter!;
         init {
@@ -65,7 +70,8 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             if (Results.Count == 0) {
                 return null;
             }
-            if (Results.Values.Any(r => r is null || r.RemediationAction is null)) {
+            if (Results.Values.Any(r => r is null || r.RemediationAction is null ||
+                    r.Error is not null || r.RollbackPass == false)) {
                 return false;
             }
             if (Results.Values.Any(r => r!.RemediationAction!.Result != ExpectedResult)) {
@@ -86,9 +92,9 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
                 ExpectedResult = ExpectedResult
             };
         }
-        Dictionary<string, TestResult?> results = [];
+        Dictionary<string, TestResult?> results = new(StringComparer.OrdinalIgnoreCase);
         foreach (string key in Results.Keys) {
-            results[key] = Results[key];
+            results[key] = Results[key]?.Clone();
         }
         return new() {
             Order = Order,

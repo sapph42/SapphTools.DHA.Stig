@@ -232,7 +232,10 @@ public partial class TestEditor : Form {
             TestSuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         foreach (TestCase tc in ActiveTest.RecoverySuite) {
-            RecoverySuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
+            TestCase recovery = tc.Clone(withoutResults: true);
+            recovery.Order = NextCaseOrder(RecoverySuiteTable);
+            RecoverySuiteTable.Rows.Add(recovery.Order, recovery.Setting, recovery.ExpectedAfter,
+                recovery.ExpectedResult, recovery);
         }
         CheckValidity();
     }
@@ -243,11 +246,7 @@ public partial class TestEditor : Form {
         };
         if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase tc) {
             TestCase testCase = tc.Clone(withoutResults: true);
-            if (TestSuiteTable.Rows.Count == 0) {
-                testCase.Order = 0;
-            } else {
-                testCase.Order = (int)TestSuiteTable.Compute("MAX(Order)", "") + 1;
-            }
+            testCase.Order = NextCaseOrder(TestSuiteTable);
             TestSuiteTable.Rows.Add(testCase.Order, testCase.Setting, testCase.ExpectedAfter, testCase.ExpectedResult, testCase);
         }
         CheckValidity();
@@ -362,20 +361,25 @@ public partial class TestEditor : Form {
         UpdateSelectionButtons();
     }
 
+    private static int NextCaseOrder(DataTable table) =>
+        table.Rows.Cast<DataRow>().Select(row => (int)row["Order"]).DefaultIfEmpty(0).Max() + 1;
+
     private static void RemoveCase(DataTable table, DataGridViewRow selection) {
         if (selection.Cells["Order"].Value is not int order ||
                 table.Rows.Find(order) is not DataRow selected) {
             return;
         }
-        table.Rows.Remove(selected);
-        // Renumber in ascending order so every new primary key is currently vacant.
-        int nextOrder = 1;
-        foreach (DataRow row in table.Rows.Cast<DataRow>().OrderBy(row => (int)row["Order"])) {
-            TestCase testCase = ((TestCase)row["TestCase"]).Clone(withoutResults: true);
-            testCase.Order = nextOrder;
-            row["Order"] = nextOrder;
-            row["TestCase"] = testCase;
-            nextOrder++;
+        // Rebuild instead of changing primary keys in-place: legacy definitions
+        // may start at zero, and a renumber can otherwise collide with an old key.
+        TestCase[] remaining = [.. table.Rows.Cast<DataRow>()
+            .Where(row => !ReferenceEquals(row, selected))
+            .OrderBy(row => (int)row["Order"])
+            .Select(row => ((TestCase)row["TestCase"]).Clone(withoutResults: true))];
+        table.Rows.Clear();
+        for (int i = 0; i < remaining.Length; i++) {
+            TestCase tc = remaining[i];
+            tc.Order = i + 1;
+            table.Rows.Add(tc.Order, tc.Setting, tc.ExpectedAfter, tc.ExpectedResult, tc);
         }
     }
 
