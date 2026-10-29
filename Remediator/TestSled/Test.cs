@@ -55,15 +55,20 @@ public class Test : IComparable<Test> {
     public int Phase { get; set; }
     public int Order { get; set; }
     public required TestConfig Config { get; set; }
-    public bool TestRun { get; set; } = false; // maybe change to => TestSuite.Any(t => t.Result is not null) ???
+    public bool TestRun { get; set; } = false;
+    // Execution evidence, not part of the signed definition. A test passes only
+    // when every case (including recovery cases) has results for every target.
+    public List<string> RunTargets { get; set; } = [];
     public SortedSet<TestCase> TestSuite { get; init; } = new(TestCaseComparer.Ordinal);
     public SortedSet<TestCase> RecoverySuite { get; init; } = new(TestCaseComparer.Ordinal);
     public bool? TestPass {
         get {
-            if (TestSuite.Count == 0 || TestSuite.All(tc => !tc.Pass.HasValue || tc.Results.Count == 0)) {
+            if (!TestRun || TestSuite.Count == 0 || RunTargets.Count == 0) {
                 return null;
             }
-            return TestSuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
+            return TestSuite.All(tc =>
+                RunTargets.All(target => tc.Results.TryGetValue(target, out TestResult? result) && result is not null) &&
+                tc.Pass == true);
         }
     }
     public bool? RecoveryPass {
@@ -71,7 +76,9 @@ public class Test : IComparable<Test> {
             if (RecoverySuite.Count == 0) {
                 return true;
             }
-            return RecoverySuite.All(tc => tc.Pass.HasValue && tc.Pass.Value);
+            return TestRun && RunTargets.Count != 0 && RecoverySuite.All(tc =>
+                RunTargets.All(target => tc.Results.TryGetValue(target, out TestResult? result) && result is not null) &&
+                tc.Pass == true);
         }
     }
     public bool Pass => TestPass.HasValue && TestPass.Value && RecoveryPass.HasValue && RecoveryPass.Value;
@@ -82,6 +89,7 @@ public class Test : IComparable<Test> {
             Order = Order,
             Config = Config,
             TestRun = !withoutResults && TestRun,
+            RunTargets = withoutResults ? [] : [.. RunTargets],
         };
         foreach (TestCase tc in TestSuite) {
             t.TestSuite.Add(tc.Clone(withoutResults));
