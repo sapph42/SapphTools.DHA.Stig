@@ -37,7 +37,9 @@
     <Content Include="Artifacts\1069556\B500E2230656EEC.sst">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="catalog.json" />
+    <Content Include="catalog.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestSled\SledCatalog\TestSled.cdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -116,6 +118,9 @@
     <None Update="Properties\VersionAutoIncrement.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VersionAutoIncrement.cs</LastGenOutput>
+    </None>
+    <None Update="TestSled.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

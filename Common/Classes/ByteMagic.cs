@@ -27,5 +27,4 @@ public static class ByteMagic {
         }
         return new string(result[..^1]);
     }
-
 }
