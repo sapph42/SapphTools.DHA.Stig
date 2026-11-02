@@ -151,7 +151,7 @@ public partial class LsaConnection : IDisposable {
                             _policyHandle.Dispose();
                             _policyHandle = null;
                         } else {
-                            throw new System.ComponentModel.Win32Exception(LsaNtStatusToWinError(status));
+                            throw new Win32Exception(LsaNtStatusToWinError(status));
                         }
                     } catch (ObjectDisposedException) {
                         _policyHandle = null;
@@ -174,7 +174,7 @@ public partial class LsaConnection : IDisposable {
             ClosePolicy(false);
         }
         LsaObjectAttributes defaultAttributes = new();
-        if (computerName is not null) {
+        if (computerName is not null && !computerName.Equals(Environment.MachineName)) {
             using SafeHBuffer systemBuffer = SafeHBuffer.AllocFactory(computerName.Length + 2);
             systemBuffer.WriteArray(
                 0,
@@ -195,7 +195,7 @@ public partial class LsaConnection : IDisposable {
                     uint remoteResult = LsaOpenPolicy(ref systemName, ref defaultAttributes, (uint)ops, out IntPtr remoteHandle);
                     if (remoteResult != 0) {
                         _policyHandle = null;
-                        throw new System.ComponentModel.Win32Exception(LsaNtStatusToWinError(remoteResult));
+                        throw new Win32Exception(LsaNtStatusToWinError(remoteResult));
                     } else {
                         _policyHandle = new(remoteHandle, true);
                         _ops = ops;
@@ -212,7 +212,7 @@ public partial class LsaConnection : IDisposable {
         uint localResult = LsaOpenPolicyLocal(IntPtr.Zero, ref defaultAttributes, (uint)ops, out IntPtr localHandle);
         if (localResult != 0) {
             _policyHandle = null;
-            throw new System.ComponentModel.Win32Exception(LsaNtStatusToWinError(localResult));
+            throw new Win32Exception(LsaNtStatusToWinError(localResult));
         } else {
             _policyHandle = new(localHandle, true);
             _ops = ops;
@@ -369,7 +369,7 @@ public partial class LsaConnection : IDisposable {
         uint DesiredAccess,
         out IntPtr PolicyHandle
     );
-    [DllImport("advapi32.dll", SetLastError = true)]
+    [DllImport("advapi32.dll", SetLastError = true, EntryPoint = "LsaOpenPolicy")]
     private static extern uint LsaOpenPolicyLocal(
         IntPtr SystemName,
         ref LsaObjectAttributes ObjectAttributes,
