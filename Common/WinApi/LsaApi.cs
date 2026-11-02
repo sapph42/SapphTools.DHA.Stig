@@ -292,6 +292,7 @@ public partial class LsaConnection : IDisposable {
         SafeHBuffer sidBuffer = new();
         try {
             byte[] sidBytes = new byte[sid.BinaryLength];
+            sid.GetBinaryForm(sidBytes, 0);
             sidBuffer = SafeHBuffer.AllocFactory(sidBytes.Length);
             sidBuffer.WriteArray(0, sidBytes, 0, sidBytes.Length);
             return sidBuffer;
@@ -308,6 +309,7 @@ public partial class LsaConnection : IDisposable {
             NTAccount account = new(accountName);
             SecurityIdentifier sid = (SecurityIdentifier)account.Translate(typeof(SecurityIdentifier));
             byte[] sidBytes = new byte[sid.BinaryLength];
+            sid.GetBinaryForm(sidBytes, 0);
             sidBuffer = SafeHBuffer.AllocFactory(sidBytes.Length);
             sidBuffer.WriteArray(0, sidBytes, 0, sidBytes.Length);
             return sidBuffer;
@@ -356,7 +358,7 @@ public partial class LsaConnection : IDisposable {
     [DllImport("advapi32.dll", SetLastError = true)]
     private static extern uint LsaEnumerateAccountsWithUserRight(
         IntPtr PolicyHandle,
-        LsaUnicodeString UserRight,
+        ref LsaUnicodeString UserRight,
         out IntPtr Enumeration,
         out uint CountReturned
     );
