@@ -132,38 +132,10 @@ public partial class LsaConnection : IDisposable {
     private void ClosePolicy(bool dispose) {
         if (dispose) {
             Dispose();
+            return;
         } else {
-            if (_policyHandle is null) {
-                return;
-            } else {
-                bool success = false;
-                try {
-                    _policyHandle.DangerousAddRef(ref success);
-                } catch (ObjectDisposedException) {
-                    _policyHandle = null;
-                    return;
-                }
-                if (success) {
-                    try {
-                        uint status = LsaClose(_policyHandle.DangerousGetHandle());
-                        if (status == 0) {
-                            _policyHandle.DangerousRelease();
-                            _policyHandle.Dispose();
-                            _policyHandle = null;
-                        } else {
-                            throw new Win32Exception(LsaNtStatusToWinError(status));
-                        }
-                    } catch (ObjectDisposedException) {
-                        _policyHandle = null;
-                        return;
-                    } catch {
-                        _policyHandle?.DangerousRelease();
-                        throw;
-                    }
-                }
-                // DangerousAddReg should only ever throw or set success = true, this is unreachable code
-                return;
-            }
+            _policyHandle?.Dispose();
+            _policyHandle = null;
         }
     }
     private void OpenPolicy(string? computerName, IntendedOperations ops) {
