@@ -74,7 +74,7 @@ public class Test : IComparable<Test> {
     public bool? RecoveryPass {
         get {
             if (RecoverySuite.Count == 0) {
-                return true;
+                return TestPass;
             }
             return TestRun && RunTargets.Count != 0 && RecoverySuite.All(tc =>
                 RunTargets.All(target => tc.Results.TryGetValue(target, out TestResult? result) && result is not null) &&

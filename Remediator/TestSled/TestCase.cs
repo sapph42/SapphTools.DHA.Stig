@@ -54,11 +54,10 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
         set => results = value is null ? new(StringComparer.OrdinalIgnoreCase) :
             new(value, StringComparer.OrdinalIgnoreCase);
     }
-    public required IValue ExpectedAfter {
-        get => _expectedAfter!;
+    public required IValue? ExpectedAfter {
+        get => _expectedAfter;
         init {
-            ArgumentNullException.ThrowIfNull(value);
-            if (_setting is not null) {
+            if (_setting is not null && value is not null) {
                 Validate(_setting, value);
             }
             _expectedAfter = value;
@@ -77,6 +76,9 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             if (Results.Values.Any(r => r!.RemediationAction!.Result != ExpectedResult)) {
                 return false;
             }
+            if (Results.Values.All(r => r!.RemediationAction!.Result == ActionResult.WhatIf)) {
+                return Results.Values.All(r => IValue.Equals(r!.ActualAfter, r.RemediationAction!.Before));
+            }
             if (Results.Values.Any(r => !IValue.Equals(ExpectedAfter, r?.ActualAfter))) { 
                 return false;
             }
@@ -88,7 +90,7 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             return new() {
                 Order = Order,
                 Setting = Setting.Clone(),
-                ExpectedAfter = ExpectedAfter.Clone(),
+                ExpectedAfter = ExpectedAfter?.Clone(),
                 ExpectedResult = ExpectedResult
             };
         }
@@ -99,7 +101,7 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
         return new() {
             Order = Order,
             Setting = Setting.Clone(),
-            ExpectedAfter = ExpectedAfter.Clone(),
+            ExpectedAfter = ExpectedAfter?.Clone(),
             ExpectedResult = ExpectedResult,
             Results = results
         };

@@ -336,6 +336,7 @@ public partial class Main : Form {
                             rule.Clone()
                         );
                     }
+                    RuleCount.Text = $"Catalog loaded. {CatalogTable.Rows.Count} plugins available for remediation.";
                 }
             } catch (Exception ex) {
                 MessageBox.Show(
