@@ -35,6 +35,7 @@
             RunTests = new Button();
             PhaseTarget = new ComboBox();
             label4 = new Label();
+            SignCatalog = new Button();
             ((System.ComponentModel.ISupportInitialize)Tests).BeginInit();
             SuspendLayout();
             // 
@@ -151,11 +152,22 @@
             label4.TabIndex = 14;
             label4.Text = "Maximum Phase";
             // 
+            // SignCatalog
+            // 
+            SignCatalog.Location = new Point(910, 12);
+            SignCatalog.Name = "SignCatalog";
+            SignCatalog.Size = new Size(75, 23);
+            SignCatalog.TabIndex = 15;
+            SignCatalog.Text = "Sign";
+            SignCatalog.UseVisualStyleBackColor = true;
+            SignCatalog.Click += SignCatalog_Click;
+            // 
             // TestSled
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(998, 602);
+            Controls.Add(SignCatalog);
             Controls.Add(label4);
             Controls.Add(PhaseTarget);
             Controls.Add(RunTests);
@@ -190,5 +202,6 @@
         private Button RunTests;
         private ComboBox PhaseTarget;
         private Label label4;
+        private Button SignCatalog;
     }
 }

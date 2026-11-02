@@ -1,8 +1,10 @@
 ﻿using SapphTools.DHA.Stig.Remediator.TestSled.SledCatalog;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Rem = SapphTools.DHA.Stig.Remediator.Classes.Remediators.Remediator;
 using Roll = SapphTools.DHA.Stig.Remediator.Classes.Remediators.Rollbacker;
 
@@ -20,12 +22,12 @@ public partial class TestSled : Form {
         public static string GetMessage(TestSledState state) {
             return state switch {
                 var x when x.HasFlag(TestSledState.NoDefinition) => NoDefinition,
-                var x when x.HasFlag(TestSledState.NoResults) => NoResults,
                 var x when x.HasFlag(TestSledState.DefinitionMismatch) => Mismatch,
                 var x when x.HasFlag(TestSledState.VersionMismatch) => Version,
                 var x when x.HasFlag(TestSledState.ResultsFail) => Fail,
                 var x when x.HasFlag(TestSledState.NoCatalog) => Catalog,
                 var x when x.HasFlag(TestSledState.Unsigned) => Unsigned,
+                var x when x.HasFlag(TestSledState.NoResults) => NoResults,
                 _ => None,
             };
         }
@@ -348,6 +350,19 @@ public partial class TestSled : Form {
 
         testArrayResults = results.Clone();
         string json = JsonSerializer.Serialize(testArrayResults, GlobalConstants.JsonSerializerOptions);
+        if (string.IsNullOrWhiteSpace(Settings.Default.TestSledResultsPath) && string.IsNullOrWhiteSpace(TestSledResultsPath.Text)) {
+            Settings.Default.TestSledResultsPath = Path.Combine(
+                Directory.GetParent(Settings.Default.TestSledDefinitionPath)!.FullName,
+                "TestSledResults.json"
+            );
+            Settings.Default.Save();
+            TestSledResultsPath.Text = Settings.Default.TestSledResultsPath;
+        } else if (string.IsNullOrWhiteSpace(Settings.Default.TestSledResultsPath)) {
+            Settings.Default.TestSledResultsPath = TestSledResultsPath.Text;
+            Settings.Default.Save();
+        } else if (string.IsNullOrWhiteSpace(TestSledResultsPath.Text)) {
+            TestSledResultsPath.Text = Settings.Default.TestSledResultsPath;
+        }
         File.WriteAllText(TestSledResultsPath.Text, json);
         RefreshResults();
     }
@@ -356,6 +371,69 @@ public partial class TestSled : Form {
             targetPhase = target;
         } else {
             targetPhase = 0;
+        }
+        defSource.Filter = $"Phase <= {targetPhase}";
+        defSource.ResetBindings(false);
+        resSource.Filter = $"Phase <= {targetPhase}";
+        resSource.ResetBindings(false);
+    }
+    private void SignCatalog_Click(object sender, EventArgs e) {
+        if (testArrayDefinition is null || testSledDefinitionFI is null) {
+            return;
+        }
+        string cdfPath = Path.Combine(AppContext.BaseDirectory, "TestSled", "SledCatalog", "TestSled.cdf");
+        if (!File.Exists(cdfPath)) {
+            return;
+        }
+        Cursor = Cursors.WaitCursor;
+        string cdfData = File.ReadAllText(cdfPath);
+        if (CdfResult().IsMatch(cdfData)) {
+            cdfData = CdfResult().Replace(cdfData, testSledDefinitionFI.DirectoryName!);
+        }
+        string catPath = Path.Combine(testSledDefinitionFI.DirectoryName!, "TestSled.cat");
+        cdfPath = Path.Combine(Path.GetTempPath(), "TestSled.cdf");
+        File.WriteAllText(cdfPath, cdfData);
+        using FileStream fs = new(testSledDefinitionFI.FullName, FileMode.Create);
+        JsonSerializer.Serialize(fs, testArrayDefinition, GlobalConstants.JsonSerializerOptions);
+        fs.Flush(true);
+        fs.Close();
+        byte[] sledBytes = File.ReadAllBytes(testSledDefinitionFI.FullName);
+        string sha1 = Convert.ToHexString(System.Security.Cryptography.SHA1.HashData(sledBytes));
+        string sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(sledBytes));
+        Debug.WriteLine($"JSON:    {testSledDefinitionFI.FullName}");
+        Debug.WriteLine($"SHA-1    {sha1}");
+        Debug.WriteLine($"SHA-256  {sha256}");
+        CatalogApi.CreateAndSignCatalogFile(cdfPath, catPath, this);
+        TestSledState pendingState = state.Value;
+        if (!File.Exists(catPath)) {
+            pendingState |= TestSledState.NoCatalog | TestSledState.Unsigned;
+        } else {
+            pendingState &= ~TestSledState.NoCatalog;
+        }
+        if (!CatalogApi.VerifyCatalogFile(catPath, testSledDefinitionFI.FullName)) {
+            pendingState |= TestSledState.Unsigned;
+        } else {
+            pendingState &= ~TestSledState.Unsigned;
+        }
+        state.Value = pendingState;
+        Cursor = Cursors.Default;
+    }
+    private void RefreshDefinition() {
+        if (testArrayDefinition is null) {
+            return;
+        }
+        DefTable.Rows.Clear();
+        foreach (Test test in testArrayDefinition.Tests) {
+            DefTable.Rows.Add(
+                test.TestId,
+                test.Phase,
+                test.Order,
+                test.TestSuite.Count,
+                test.RecoverySuite.Count,
+                test.TestPass,
+                test.RecoveryPass,
+                test.Clone()
+            );
         }
     }
     private void RefreshResults() {
@@ -379,7 +457,7 @@ public partial class TestSled : Form {
                     test);
             }
         }
-        source.ResetBindings(false);
+        resSource.ResetBindings(false);
     }
 
     [MemberNotNullWhen(true, nameof(testArrayDefinition))]
@@ -406,11 +484,14 @@ public partial class TestSled : Form {
             Settings.Default.TestSledDefinitionPath = defPath;
             Settings.Default.Save();
             string catPath = Path.Combine(testSledDefinitionFI.DirectoryName!, "TestSled.cat");
+            RefreshDefinition();
+            Debug.WriteLine($"RefreshDefinition : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
             if (!File.Exists(catPath)) {
                 pendingState |= TestSledState.NoCatalog | TestSledState.Unsigned;
             } else if (!CatalogApi.VerifyCatalogFile(catPath, testSledDefinitionFI.FullName)) {
                 pendingState |= TestSledState.Unsigned;
             }
+            Tests.DataSource = defSource;
         }
         if (string.IsNullOrWhiteSpace(resPath) ||
                 !File.Exists(resPath) ||
@@ -423,6 +504,7 @@ public partial class TestSled : Form {
             Settings.Default.TestSledResultsPath = resPath;
             Settings.Default.Save();
             RefreshResults();
+            Debug.WriteLine($"RefreshResults : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
             if (!res.BuildsMatchCurrent) {
                 pendingState |= TestSledState.VersionMismatch;
             }
@@ -432,9 +514,11 @@ public partial class TestSled : Form {
             if (!res.Success) {
                 pendingState |= TestSledState.ResultsFail;
             }
+            Tests.DataSource = resSource;
         }
         state.Value = pendingState;
         UpdatePhaseTargets();
+        Debug.WriteLine($"UpdatePhaseTargets : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
     }
 
     private void UpdatePhaseTargets() {
@@ -493,4 +577,7 @@ public partial class TestSled : Form {
         };
         return dialog;
     }
+
+    [GeneratedRegex(@"(?<=ResultDir=|File1=)(?<placeholder>\|\|\|target\|\|\|)")]
+    private static partial Regex CdfResult();
 }
