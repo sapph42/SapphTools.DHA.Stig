@@ -142,6 +142,29 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
             throw;
         }
     }
+    private static DisposableList<RegKey> OpenSubkeys(IEnumerable<RegKey>? keys, string? subPath) {
+        DisposableList<RegKey> returnList = [];
+        try {
+            if (keys is null) {
+                return returnList;
+            }
+            if (string.IsNullOrWhiteSpace(subPath)) {
+                foreach (RegKey key in keys) {
+                    returnList.Add(key);
+                }
+                return returnList;
+            }
+            foreach (RegKey key in keys) {
+                if (key.OpenSubKey(subPath) is RegKey subKey) {
+                    returnList.Add(subKey);
+                }
+            }
+            return returnList;
+        } catch {
+            returnList.Dispose();
+            throw;
+        }
+    }
     private static RegistryValueValue ResolveBefore(RegKey key, RegistryValuePatternValue val) {
         object? currentVal = key.GetValue(val.Name);
         RegistryValueKind currKind = key.GetValueKind(val.Name);
