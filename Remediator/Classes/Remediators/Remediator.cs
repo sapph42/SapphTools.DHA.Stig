@@ -70,7 +70,7 @@ internal static class Remediator {
         Func<IValue, string, IValue?> dispatch = target.Action switch {
             TargetType.RegistryKey => RegistryKeyRemediator.GetActualState,
             TargetType.RegistryValue => RegistryValueRemediator.GetActualState,
-            TargetType.RegistryValuePattern => throw new NotImplementedException(),
+            TargetType.RegistryValuePattern => RegistryValuePatternRemediator.GetActualState,
             TargetType.RegistryAcl => RegistryAclRemediator.GetActualState,
             TargetType.FileSystemAcl => FileAclRemediator.GetActualState,
             TargetType.SeRight => LsaRemediator.GetActualState,

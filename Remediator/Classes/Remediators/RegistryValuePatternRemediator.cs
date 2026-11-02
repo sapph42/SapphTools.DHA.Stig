@@ -5,7 +5,35 @@ namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;
 internal partial class RegistryValuePatternRemediator : IRemediator {
     private RegistryValuePatternRemediator() { }
     public static IValue? GetActualState(IValue target, string computerName) {
-        throw new NotImplementedException(); // Think about if this is even possible
+        if (target is not RegistryValuePatternValue val) {
+            throw new ArgumentException($"Expected {nameof(target)} to be of type RegistryValuePatternValue, was {target.GetType().Name}.");
+        }
+        RegistryValueSetValue state = new(val);
+        RegKey? baseKey;
+        try {
+            try {
+                baseKey = new(val.Target, computerName);
+                if (baseKey is null) {
+                    return state;
+                }
+            } catch {
+                return state;
+            }
+            try {
+                using DisposableList<RegKey>? keys = [baseKey];
+                using DisposableList<RegKey>? firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
+                using DisposableList<RegKey>? secondRoundKeys = OpenSubkeys(firstRoundKeys, val.SubPath);
+                using DisposableList<RegKey>? thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
+                foreach (RegKey key in thirdRoundKeys) {
+                    state.Values.Add(ResolveBefore(key, val));
+                }
+                return state;
+            } catch {
+                return state;
+            }
+        } catch {
+            return state;
+        }
     }
     public static RemediationActionResult Remediate(RemediatorDto dto, Logger? logger = null) {
         logger ??= new();
@@ -34,8 +62,6 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
             thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
             RemediationActionResult? res = null;
             foreach (RegKey key in thirdRoundKeys) {
-                object? currentVal = key.GetValue(val.Name, val.Kind);
-                RegistryValueKind currKind = key.GetValueKind(val.Name);
                 RegistryValueValue resolvedBefore = ResolveBefore(key, val);
                 RegistryValueValue resolvedTarget = ResolveTarget(key, val);
                 RegistryValuePatternValue before = new() {
