@@ -38,7 +38,7 @@ public static partial class SamApi {
             _ = NetApiBufferFree(structPtr);
         }
     }
-    [LibraryImport("netapi32.dll", EntryPoint = "NetUserModalsSetW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport("netapi32.dll", EntryPoint = "NetUserModalsSet", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
     [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
     private static partial uint NetUserModalsSet(
         string? server,
@@ -46,7 +46,7 @@ public static partial class SamApi {
         IntPtr BufPtr,
         out uint ErrPtr);
 
-    [LibraryImport("netapi32.dll", EntryPoint = "NetUserModalsGetW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport("netapi32.dll", EntryPoint = "NetUserModalsGet", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
     [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
     private static partial uint NetUserModalsGet(
         string? server,
