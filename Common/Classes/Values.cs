@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using SapphTools.SecurityDescriptor;
 using SapphTools.SecurityDescriptor.Classes;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace SapphTools.DHA.Stig.Common.Classes;
@@ -270,6 +271,66 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
         return false;
     }
     public override string ToString() => TargetString;
+    IValue IValue.Clone() => Clone();
+}
+public class RegistryValueSetValue : RegistryValuePatternValue, IValue<RegistryValueSetValue> {
+    public List<RegistryValueValue> Values { get; set; } = [];
+    public RegistryValueSetValue() { }
+
+    [SetsRequiredMembers]
+    public RegistryValueSetValue(RegistryValuePatternValue patternVal) {
+        object? dataClone;
+        if (patternVal.Data is null) {
+            dataClone = null;
+        } else {
+            dataClone = Kind switch {
+                RegistryValueKind.String => new string((string)patternVal.Data),
+                RegistryValueKind.ExpandString => new string((string)patternVal.Data),
+                RegistryValueKind.Binary => ((byte[])patternVal.Data).Clone(),
+                RegistryValueKind.DWord => patternVal.Data,
+                RegistryValueKind.MultiString => ((string[])patternVal.Data).Clone(),
+                RegistryValueKind.QWord => patternVal.Data,
+                _ => patternVal.Data.GetType().GetInterface("ICloneable") is not null ?
+                    patternVal.Data.GetType().GetMethod("Clone")?.Invoke(patternVal.Data, null) :
+                    patternVal.Data
+            };
+        }
+        Target = patternVal.Target;
+        TargetPattern = patternVal.TargetPattern;
+        SubPath = patternVal.SubPath;
+        PathPattern = patternVal.PathPattern;
+        Name = patternVal.Name;
+        Data = dataClone;
+        Kind = patternVal.Kind;
+        Overwrite = patternVal.Overwrite;
+        ResolvedTarget = patternVal.ResolvedTarget?.Clone();
+    }
+    public override RegistryValueSetValue Clone() {
+        RegistryValueSetValue clone = new(this);
+        foreach (RegistryValueValue val in Values) {
+            clone.Values.Add(val.Clone());
+        }
+        return clone;
+    }
+
+    public override bool Equals(IValue? other) {
+        if (other is not RegistryValueSetValue otherRvsv) {
+            return false;
+        }
+        if (!base.Equals(otherRvsv)) {
+            return false;
+        }
+        if (Values.Count != otherRvsv.Values.Count) {
+            return false;
+        }
+        foreach (RegistryValueValue val in Values) {
+            if (!otherRvsv.Values.Contains(val)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     IValue IValue.Clone() => Clone();
 }
 public class CertificatesValue : IValue<CertificatesValue> {
