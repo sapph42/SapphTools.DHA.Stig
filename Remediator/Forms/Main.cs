@@ -1,4 +1,5 @@
 ﻿using ExcelDataReader;
+using SapphTools.DHA.Stig.Remediator.TestSled;
 using System.Data;
 using System.Diagnostics;
 using System.Security.Principal;
@@ -9,6 +10,8 @@ using StigRule = SapphTools.DHA.Stig.Common.Classes.Rule;
 
 namespace SapphTools.DHA.Stig.Remediator.Forms;
 public partial class Main : Form {
+    private TestArray? testArrayDefinition;
+    private TestArray? testArrayResults;
     private bool _supressUiCascade = false;
     private static readonly string localPath = Path.GetDirectoryName(Environment.ProcessPath!)!;
     private readonly BindingSource catalogSource = [];
@@ -22,6 +25,7 @@ public partial class Main : Form {
     protected Catalog? StigCatalog;
     public Main() {
         InitializeComponent();
+        _ = LazyInitTestSled();
         AppContext = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator) ?
             SettingContext.Administrator :
             SettingContext.None;
@@ -352,7 +356,7 @@ public partial class Main : Form {
         _supressUiCascade = false;
     }
     private void TestSledMenu_Click(object sender, EventArgs e) {
-        TestSled.Forms.TestSled testSled = new();
+        TestSled.Forms.TestSled testSled = new(testArrayDefinition, testArrayResults);
         testSled.Show();
     }
     private void WhatIf_CheckedChanged(object sender, EventArgs e) {
@@ -599,6 +603,22 @@ public partial class Main : Form {
         ]);
         Findings.DataSource = resultsSource;
         resultsSource.ResetBindings(false);
+    }
+
+    private async Task LazyInitTestSled() {
+        string? procPath = Environment.ProcessPath;
+        string? procDir = Settings.Default.TestSledDefinitionPath;
+        if (procPath is not null) {
+            procDir ??= Path.GetDirectoryName(procPath);
+        }
+        try {
+            await Task.Run(() => {
+                testArrayDefinition = TestArray.LoadFromJson(procDir);
+                Debug.WriteLine($"testArrayDefinition set: {testArrayDefinition is not null}");
+                testArrayResults = TestArray.LoadFromJson(procDir);
+                Debug.WriteLine($"testArrayResults set: {testArrayResults is not null}");
+            });
+        } catch (Exception ex) { Debug.WriteLine($"Exception preloading testsled: {ex.Message}");  }
     }
 
     [GeneratedRegex(@"((.(?!:SV-))*\.?)(?::SV-[^:]+)(?::)(?:[^:]+)(?::)(?:.*)")]

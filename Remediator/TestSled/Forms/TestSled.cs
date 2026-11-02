@@ -56,11 +56,17 @@ public partial class TestSled : Form {
     private int maxPhase = 0;
     private int targetPhase = 0;
     private readonly DataTable ResultsTable;
-    private readonly BindingSource source;
+    private readonly DataTable DefTable;
+    private readonly BindingSource resSource;
+    private readonly BindingSource defSource;
     private readonly StateNotify state = new();
+    private Stopwatch perfWatch = new();
 
-    public TestSled() {
+    public TestSled() : this(null, null) { }
+    public TestSled(TestArray? def, TestArray? res) {
+        perfWatch.Start();
         InitializeComponent();
+        Debug.WriteLine($"InitializeComponent : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
         state.PropertyChanged += (_, __) => {
             Status.Text = Messages.GetMessage(state.Value);
             RunTests.Enabled = state.Value switch {
@@ -75,6 +81,7 @@ public partial class TestSled : Form {
         if (procPath is not null) {
             procDir = Path.GetDirectoryName(procPath);
         }
+        Debug.WriteLine($"procDir set : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
         Settings.Default.TestSledDefinitionPath ??= procDir;
         Settings.Default.TestSledResultsPath ??= procDir;
         Settings.Default.Save();
@@ -84,9 +91,22 @@ public partial class TestSled : Form {
         if (!string.IsNullOrWhiteSpace(Settings.Default.TestSledResultsPath)) {
             testSledResultsFI = new(Settings.Default.TestSledResultsPath);
         }
-
-        testArrayDefinition = TestArray.LoadFromJson(Settings.Default.TestSledDefinitionPath);
-        testArrayResults = TestArray.LoadFromJson(Settings.Default.TestSledResultsPath);
+        Debug.WriteLine($"FI init : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
+        testArrayDefinition = def?.Clone(true, false) ?? TestArray.LoadFromJson(Settings.Default.TestSledDefinitionPath);
+        Debug.WriteLine($"Def Json load ({def is not null}) : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
+        testArrayResults = res?.Clone(false, false) ?? TestArray.LoadFromJson(Settings.Default.TestSledResultsPath);
+        Debug.WriteLine($"Res Json load ({res is not null}) : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
+        DefTable = new();
+        DefTable.Columns.AddRange([
+            new("TestId", typeof(int)),
+            new("Phase", typeof(int)),
+            new("Order", typeof(int)),
+            new("TestSuiteCount", typeof(int)),
+            new("RecoverySuiteCount", typeof(int)),
+            new("TestSuitePass", typeof(bool)),
+            new("RecoverySuitePass", typeof(bool)),
+            new("Test", typeof(Test))
+        ]);
         Tests.AutoGenerateColumns = false;
         Tests.Columns.AddRange([
             new DataGridViewTextBoxColumn() {
@@ -181,18 +201,25 @@ public partial class TestSled : Form {
             new("RecoverySuitePass", typeof(bool)),
             new("Test", typeof(Test))
         ]);
-        source = new() {
+        defSource = new() {
+            DataSource = DefTable,
+            Filter = $"Phase >= {targetPhase}"
+        };
+        resSource = new() {
             DataSource = ResultsTable
         };
-        Tests.DataSource = source;
+        Tests.DataSource = defSource;
         TestSledDefinitionPath.ReadOnly = true;
         TestSledResultsPath.ReadOnly = true;
         PhaseTarget.DropDownStyle = ComboBoxStyle.DropDownList;
         UpdatePhaseTargets();
+        Debug.WriteLine($"UpdatePhaseTargets : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
     }
 
     private void TestSled_Load(object sender, EventArgs e) {
         Verify(testSledDefinitionFI?.FullName, testSledResultsFI?.FullName);
+        Debug.WriteLine($"Verify : {perfWatch.Elapsed.GetTotalValueStringAtLayer(5, 2)}");
+        perfWatch.Stop();
     }
     private void DefBrowse_Click(object sender, EventArgs e) {
         using OpenFileDialog dialog = CreateJsonFileDialog(testSledDefinitionFI);
@@ -221,7 +248,7 @@ public partial class TestSled : Form {
             state.Value.HasFlag(TestSledState.VersionMismatch);
         TestArray results = !resetResults && testArrayResults is not null
             ? testArrayResults.Clone()
-            : testArrayDefinition.Clone(withoutResults: true);
+            : testArrayDefinition.Clone(withoutResults: true, updateBuilds: true);
         Guid batch = Guid.NewGuid();
 
         foreach (Test test in results.Tests) {
