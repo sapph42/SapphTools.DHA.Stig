@@ -199,17 +199,18 @@ public partial class LsaConnection : IDisposable {
         LsaUnicodeStringWrapper rightWrapper = new(right);
         bool policySuccess = false;
         bool wrapperSuccess = false;
+        nint buffer = IntPtr.Zero;
         try {
             _policyHandle.DangerousAddRef(ref policySuccess);
             LsaUnicodeString priv = rightWrapper.DangerousGetStruct(ref wrapperSuccess);
             uint status = LsaEnumerateAccountsWithUserRight(
                 _policyHandle.DangerousGetHandle(),
-                priv,
-                out nint buffer,
+                ref priv,
+                out buffer,
                 out uint count
             );
             if (status != 0) {
-                throw new System.ComponentModel.Win32Exception(LsaNtStatusToWinError(status));
+                throw new Win32Exception(LsaNtStatusToWinError(status));
             }
             nint offset = buffer;
             for (int i = 0; i < count; i++) {
@@ -225,6 +226,9 @@ public partial class LsaConnection : IDisposable {
             }
             if (wrapperSuccess) {
                 rightWrapper.DangerousReleaseStructBuffer();
+            }
+            if (buffer != IntPtr.Zero) {
+                _ = LsaFreeMemory(buffer);
             }
         }
         return sids;
