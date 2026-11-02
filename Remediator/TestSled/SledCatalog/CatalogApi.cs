@@ -1,5 +1,7 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -74,8 +76,13 @@ public static partial class CatalogApi {
         X509Certificate2 certificate = SelectSigningCertificate(ownerWindow)
             ?? throw new OperationCanceledException("Code Signing certificate selection was cancelled.");
         CreateCatalogFile(cdfPath);
+        foreach (string tag in ReadCatalogFile(catalogPath)) {
+            Debug.WriteLine($"CAT:     {tag} ({tag.Length} characters)");
+        }
         SignCatalogFile(catalogPath, certificate);
     }
+    public static void CreateAndSignCatalogFile(string cdfPath, string catalogPath, Form ownerForm)
+        => CreateAndSignCatalogFile(cdfPath, catalogPath, ownerForm.Handle);
 
     /// <summary>
     /// Creates an Authenticode signature on the .cat file using the selected certificate's
@@ -110,13 +117,14 @@ public static partial class CatalogApi {
 
         IntPtr signerContext = IntPtr.Zero;
         fixed (char* fileName = fullPath) {
+            uint signerIndex = 0;
             SignerFileInfo file = new() {
                 cbSize = (uint)sizeof(SignerFileInfo),
                 pwszFileName = fileName
             };
             SignerSubjectInfo subject = new() {
                 cbSize = (uint)sizeof(SignerSubjectInfo),
-                pdwIndex = null,
+                pdwIndex = &signerIndex,
                 dwSubjectChoice = SIGNER_SUBJECT_FILE,
                 pSignerFileInfo = &file
             };
@@ -173,7 +181,7 @@ public static partial class CatalogApi {
         try {
             VerifyCatalogMember(catalogPath, memberPath);
             return true;
-        } catch {
+        } catch (Exception ex) {
             return false;
         }
     }
