@@ -97,16 +97,16 @@ public static partial class CatalogApi {
         // Explicit proof of possession: request a real private-key signature. For a CAC,
         // the CSP/KSP handles PIN entry using its own secure UI. Authentication may already
         // be cached, in which case no prompt is necessary. Never accept a PIN as a string.
-        byte[] challenge = SHA256.HashData(RandomNumberGenerator.GetBytes(32));
-        using (RSA? rsa = certificate.GetRSAPrivateKey()) {
-            if (rsa is not null) {
-                _ = rsa.SignHash(challenge, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-            } else {
-                using ECDsa? ecdsa = certificate.GetECDsaPrivateKey() ?? 
-                    throw new NotSupportedException("The signing key must support RSA or ECDSA.");
-                _ = ecdsa.SignHash(challenge);
-            }
-        }
+        //byte[] challenge = SHA256.HashData(RandomNumberGenerator.GetBytes(32));
+        //using (RSA? rsa = certificate.GetRSAPrivateKey()) {
+        //    if (rsa is not null) {
+        //        _ = rsa.SignHash(challenge, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        //    } else {
+        //        using ECDsa? ecdsa = certificate.GetECDsaPrivateKey() ?? 
+        //            throw new NotSupportedException("The signing key must support RSA or ECDSA.");
+        //        _ = ecdsa.SignHash(challenge);
+        //    }
+        //}
 
         IntPtr signerContext = IntPtr.Zero;
         fixed (char* fileName = fullPath) {
