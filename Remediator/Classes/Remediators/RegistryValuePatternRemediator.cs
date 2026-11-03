@@ -175,6 +175,9 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
                 return returnList;
             }
             if (string.IsNullOrWhiteSpace(subPath)) {
+                if (keys is DisposableList<RegKey> list) {
+                    return list;
+                }
                 foreach (RegKey key in keys) {
                     returnList.Add(key);
                 }
