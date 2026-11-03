@@ -283,7 +283,7 @@ public class RegistryValueSetValue : RegistryValuePatternValue, IValue<RegistryV
         if (patternVal.Data is null) {
             dataClone = null;
         } else {
-            dataClone = Kind switch {
+            dataClone = patternVal.Kind switch {
                 RegistryValueKind.String => new string((string)patternVal.Data),
                 RegistryValueKind.ExpandString => new string((string)patternVal.Data),
                 RegistryValueKind.Binary => ((byte[])patternVal.Data).Clone(),
