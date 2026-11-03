@@ -386,37 +386,40 @@ public partial class TestSled : Form {
             return;
         }
         Cursor = Cursors.WaitCursor;
-        string cdfData = File.ReadAllText(cdfPath);
-        if (CdfResult().IsMatch(cdfData)) {
-            cdfData = CdfResult().Replace(cdfData, testSledDefinitionFI.DirectoryName!);
+        try {
+            string cdfData = File.ReadAllText(cdfPath);
+            if (CdfResult().IsMatch(cdfData)) {
+                cdfData = CdfResult().Replace(cdfData, testSledDefinitionFI.DirectoryName!);
+            }
+            string catPath = Path.Combine(testSledDefinitionFI.DirectoryName!, "TestSled.cat");
+            cdfPath = Path.Combine(Path.GetTempPath(), "TestSled.cdf");
+            File.WriteAllText(cdfPath, cdfData);
+            using FileStream fs = new(testSledDefinitionFI.FullName, FileMode.Create);
+            JsonSerializer.Serialize(fs, testArrayDefinition, GlobalConstants.JsonSerializerOptions);
+            fs.Flush(true);
+            fs.Close();
+            byte[] sledBytes = File.ReadAllBytes(testSledDefinitionFI.FullName);
+            string sha1 = Convert.ToHexString(System.Security.Cryptography.SHA1.HashData(sledBytes));
+            string sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(sledBytes));
+            Debug.WriteLine($"JSON:    {testSledDefinitionFI.FullName}");
+            Debug.WriteLine($"SHA-1    {sha1}");
+            Debug.WriteLine($"SHA-256  {sha256}");
+            CatalogApi.CreateAndSignCatalogFile(cdfPath, catPath, this);
+            TestSledState pendingState = state.Value;
+            if (!File.Exists(catPath)) {
+                pendingState |= TestSledState.NoCatalog | TestSledState.Unsigned;
+            } else {
+                pendingState &= ~TestSledState.NoCatalog;
+            }
+            if (!CatalogApi.VerifyCatalogFile(catPath, testSledDefinitionFI.FullName)) {
+                pendingState |= TestSledState.Unsigned;
+            } else {
+                pendingState &= ~TestSledState.Unsigned;
+            }
+            state.Value = pendingState;
+        } finally {
+            Cursor = Cursors.Default;
         }
-        string catPath = Path.Combine(testSledDefinitionFI.DirectoryName!, "TestSled.cat");
-        cdfPath = Path.Combine(Path.GetTempPath(), "TestSled.cdf");
-        File.WriteAllText(cdfPath, cdfData);
-        using FileStream fs = new(testSledDefinitionFI.FullName, FileMode.Create);
-        JsonSerializer.Serialize(fs, testArrayDefinition, GlobalConstants.JsonSerializerOptions);
-        fs.Flush(true);
-        fs.Close();
-        byte[] sledBytes = File.ReadAllBytes(testSledDefinitionFI.FullName);
-        string sha1 = Convert.ToHexString(System.Security.Cryptography.SHA1.HashData(sledBytes));
-        string sha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(sledBytes));
-        Debug.WriteLine($"JSON:    {testSledDefinitionFI.FullName}");
-        Debug.WriteLine($"SHA-1    {sha1}");
-        Debug.WriteLine($"SHA-256  {sha256}");
-        CatalogApi.CreateAndSignCatalogFile(cdfPath, catPath, this);
-        TestSledState pendingState = state.Value;
-        if (!File.Exists(catPath)) {
-            pendingState |= TestSledState.NoCatalog | TestSledState.Unsigned;
-        } else {
-            pendingState &= ~TestSledState.NoCatalog;
-        }
-        if (!CatalogApi.VerifyCatalogFile(catPath, testSledDefinitionFI.FullName)) {
-            pendingState |= TestSledState.Unsigned;
-        } else {
-            pendingState &= ~TestSledState.Unsigned;
-        }
-        state.Value = pendingState;
-        Cursor = Cursors.Default;
     }
     private void RefreshDefinition() {
         if (testArrayDefinition is null) {
