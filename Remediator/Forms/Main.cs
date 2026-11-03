@@ -12,6 +12,7 @@ namespace SapphTools.DHA.Stig.Remediator.Forms;
 public partial class Main : Form {
     private TestArray? testArrayDefinition;
     private TestArray? testArrayResults;
+    private Task preLoadTask;
     private bool _supressUiCascade = false;
     private static readonly string localPath = Path.GetDirectoryName(Environment.ProcessPath!)!;
     private readonly BindingSource catalogSource = [];
@@ -25,7 +26,7 @@ public partial class Main : Form {
     protected Catalog? StigCatalog;
     public Main() {
         InitializeComponent();
-        _ = LazyInitTestSled();
+        preLoadTask = LazyInitTestSled();
         AppContext = new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator) ?
             SettingContext.Administrator :
             SettingContext.None;
@@ -356,7 +357,8 @@ public partial class Main : Form {
         WhatIf.Checked = SimulationModeMenu.Checked;
         _supressUiCascade = false;
     }
-    private void TestSledMenu_Click(object sender, EventArgs e) {
+    private async void TestSledMenu_Click(object sender, EventArgs e) {
+        await preLoadTask;
         TestSled.Forms.TestSled testSled = new(testArrayDefinition, testArrayResults);
         testSled.Show();
     }
