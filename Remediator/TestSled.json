@@ -35,14 +35,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1000",
-						"Name": "DWORD",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -60,14 +53,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1000",
-						"Name": "Text",
-						"Data": "old",
-						"Kind": "String",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -85,14 +71,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1000",
-						"Name": "QWORD",
-						"Data": 33,
-						"Kind": "QWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -110,14 +89,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1000",
-						"Name": "Expanded",
-						"Data": "%TEMP%",
-						"Kind": "ExpandString",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -149,14 +121,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1001",
-						"Name": "Binary",
-						"Data": "AAEC",
-						"Kind": "Binary",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -178,17 +143,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1001",
-						"Name": "Multi",
-						"Data": [
-							"old",
-							"two"
-						],
-						"Kind": "MultiString",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -206,14 +161,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1001",
-						"Name": "Unicode",
-						"Data": "before",
-						"Kind": "String",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -245,14 +193,7 @@
 							"Overwrite": false
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1002",
-						"Name": "Protected",
-						"Data": "protected",
-						"Kind": "String",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -277,21 +218,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P02\\T1003",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P02\\T1003",
 							"Name": "DWORD",
 							"Data": 2,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P02\\T1003",
-						"Name": "DWORD",
-						"Data": 1,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -302,21 +236,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P02\\T1003",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P02\\T1003",
 							"Name": "String",
 							"Data": "bravo",
 							"Kind": "String",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P02\\T1003",
-						"Name": "String",
-						"Data": "alpha",
-						"Kind": "String",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -327,21 +254,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P02\\T1003",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P02\\T1003",
 							"Name": "QWORD",
 							"Data": 123456789,
 							"Kind": "QWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P02\\T1003",
-						"Name": "QWORD",
-						"Data": 99,
-						"Kind": "QWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -368,19 +288,12 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "C:\\AdminTools\\PowerShell",
-						"Sddl": {
-							"SddlString": "O:SYG:SYD:PAI(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
-							"SddlType": "File"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -405,21 +318,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryAcl",
-							"Target": "HKLM:\\SOFTWARE\\EAMC",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC",
 							"Sddl": {
-								"SddlString": "O:BAG:DUD:AI(A;CIID;KA;;;BA)(A;CIIOID;KA;;;CO)(A;CIID;KR;;;AC)(A;CIID;KR;;;S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681)(A;CIID;KA;;;SY)(A;CIID;KR;;;BU)",
+								"SddlString": "O:BAG:DUD:AI(A;;KR;;;LS)(A;CIID;KA;;;BA)(A;CIIOID;KA;;;CO)(A;CIID;KR;;;AC)(A;CIID;KR;;;S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681)(A;CIID;KA;;;SY)(A;CIID;KR;;;BU)",
 								"SddlType": "RegistryKey"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "HKLM:\\SOFTWARE\\EAMC",
-						"Sddl": {
-							"SddlString": "O:BAG:DUD:AI(A;CIID;KA;;;BA)(A;CIIOID;KA;;;CO)(A;CIID;KR;;;AC)(A;CIID;KR;;;S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681)(A;CIID;KA;;;SY)(A;CIID;KR;;;BU)",
-							"SddlType": "RegistryKey"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -444,23 +350,15 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "SeRight",
-							"Target": "SeSystemProfilePrivilege",
+							"Target": "SeIncreaseWorkingSetPrivilege",
 							"AccountNames": [
 								{
-									"Sid": "BU"
+									"Sid": "S-1-5-32-544"
 								}
 							]
 						}
 					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "SeSystemProfilePrivilege",
-						"AccountNames": [
-							{
-								"Sid": "BA, BU"
-							}
-						]
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -487,21 +385,49 @@
 							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
-								"Duration": "5",
-								"Window": "10",
-								"Threshold": "3"
+								"Duration": 901,
+								"Window": 901,
+								"Threshold": 3
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "Sam",
-						"Target": "AccountLockoutPolicy",
-						"SamStruct": {
-							"Duration": "900",
-							"Window": "900",
-							"Threshold": "3"
+					"expectedAfter": null,
+					"expectedResult": "WhatIf"
+				}
+			],
+			"recoverySuite": []
+		},
+		{
+			"testId": 1066,
+			"phase": 2,
+			"order": 6,
+			"config": {
+				"target": "Local",
+				"elevated": true,
+				"whatIf": true,
+				"attemptRollback": false
+			},
+			"testSuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": false,
+						"Data": {
+							"Action": "RegistryValuePattern",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled",
+							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"SubPath": "Settings",
+							"PathPattern": "^Fixture$",
+							"Name": "PatternProbe",
+							"Data": 1,
+							"Kind": "DWord",
+							"ResolvedTarget": null,
+							"Overwrite": true
 						}
 					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -533,974 +459,7 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-						"Name": "DWORD",
-						"Data": 100,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-							"Name": "String",
-							"Data": "mutated",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-						"Name": "String",
-						"Data": "mutated",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 2,
-					"setting": {
-						"Order": 2,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-							"Name": "QWORD",
-							"Data": 1000,
-							"Kind": "QWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-						"Name": "QWORD",
-						"Data": 1000,
-						"Kind": "QWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-							"Name": "DWORD",
-							"Data": 0,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-						"Name": "DWORD",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-							"Name": "String",
-							"Data": "baseline",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-						"Name": "String",
-						"Data": "baseline",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 2,
-					"setting": {
-						"Order": 2,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-							"Name": "QWORD",
-							"Data": 100,
-							"Kind": "QWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1008",
-						"Name": "QWORD",
-						"Data": 100,
-						"Kind": "QWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1009,
-			"phase": 3,
-			"order": 2,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-							"Name": "Binary",
-							"Data": "AQIDBA==",
-							"Kind": "Binary",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-						"Name": "Binary",
-						"Data": "AQIDBA==",
-						"Kind": "Binary",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-							"Name": "Multi",
-							"Data": [
-								"next",
-								"state"
-							],
-							"Kind": "MultiString",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-						"Name": "Multi",
-						"Data": [
-							"next",
-							"state"
-						],
-						"Kind": "MultiString",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-							"Name": "Binary",
-							"Data": "AAECAw==",
-							"Kind": "Binary",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-						"Name": "Binary",
-						"Data": "AAECAw==",
-						"Kind": "Binary",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-							"Name": "Multi",
-							"Data": [
-								"initial",
-								"state"
-							],
-							"Kind": "MultiString",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1009",
-						"Name": "Multi",
-						"Data": [
-							"initial",
-							"state"
-						],
-						"Kind": "MultiString",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1010,
-			"phase": 3,
-			"order": 3,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1010",
-							"Name": "Protected",
-							"Data": "suppressed",
-							"Kind": "String",
-							"Overwrite": false
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1010",
-						"Name": "Protected",
-						"Data": "baseline",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "NoActionTaken"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1011,
-			"phase": 3,
-			"order": 4,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1011",
-							"Name": "TypeShift",
-							"Data": "retyped",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1011",
-						"Name": "TypeShift",
-						"Data": "retyped",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1011",
-							"Name": "TypeShift",
-							"Data": 0,
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1011",
-						"Name": "TypeShift",
-						"Data": 0,
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1012,
-			"phase": 3,
-			"order": 5,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": false,
-				"attemptRollback": true
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "None",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1012",
-							"Name": "AutoRollback",
-							"Data": 11,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P03\\T1012",
-						"Name": "AutoRollback",
-						"Data": 11,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1013,
-			"phase": 4,
-			"order": 1,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-							"Name": "AdminDword",
-							"Data": 11,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-						"Name": "AdminDword",
-						"Data": 11,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-							"Name": "AdminString",
-							"Data": "admin_changed",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-						"Name": "AdminString",
-						"Data": "admin_changed",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-							"Name": "AdminDword",
-							"Data": 10,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-						"Name": "AdminDword",
-						"Data": 10,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-							"Name": "AdminString",
-							"Data": "initial",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1013",
-						"Name": "AdminString",
-						"Data": "initial",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1014,
-			"phase": 4,
-			"order": 2,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": true
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1014",
-							"Name": "HKLMAuto",
-							"Data": 20,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P04\\T1014",
-						"Name": "HKLMAuto",
-						"Data": 20,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1015,
-			"phase": 4,
-			"order": 3,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "FileSystemAcl",
-							"Target": "***NTFS_LOCAL_TARGET_PATH_P4***",
-							"Sddl": {
-								"SddlString": "***NTFS_LOCAL_EXACT_DESIRED_SDDL_P4***",
-								"SddlType": "File"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_LOCAL_TARGET_PATH_P4***",
-						"Sddl": {
-							"SddlString": "***NTFS_LOCAL_EXACT_DESIRED_SDDL_P4***",
-							"SddlType": "File"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "FileSystemAcl",
-							"Target": "***NTFS_LOCAL_TARGET_PATH_P4***",
-							"Sddl": {
-								"SddlString": "***NTFS_LOCAL_EXACT_BEFORE_SDDL_P4***",
-								"SddlType": "File"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_LOCAL_TARGET_PATH_P4***",
-						"Sddl": {
-							"SddlString": "***NTFS_LOCAL_EXACT_BEFORE_SDDL_P4***",
-							"SddlType": "File"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1016,
-			"phase": 4,
-			"order": 4,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_LOCAL_KEY_PATH_P4***",
-							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_LOCAL_EXACT_DESIRED_SDDL_P4***",
-								"SddlType": "RegistryKey"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_LOCAL_KEY_PATH_P4***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_LOCAL_EXACT_DESIRED_SDDL_P4***",
-							"SddlType": "RegistryKey"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_LOCAL_KEY_PATH_P4***",
-							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_LOCAL_EXACT_BEFORE_SDDL_P4***",
-								"SddlType": "RegistryKey"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_LOCAL_KEY_PATH_P4***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_LOCAL_EXACT_BEFORE_SDDL_P4***",
-							"SddlType": "RegistryKey"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1017,
-			"phase": 4,
-			"order": 5,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "SeRight",
-							"Target": "***SERIGHT_LOCAL_PRIVILEGE_P4***",
-							"AccountNames": [
-								{
-									"Sid": "***SERIGHT_LOCAL_DESIRED_SID_P4_1***"
-								}
-							]
-						}
-					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_LOCAL_PRIVILEGE_P4***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_LOCAL_DESIRED_SID_P4_1***"
-							}
-						]
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "SeRight",
-							"Target": "***SERIGHT_LOCAL_PRIVILEGE_P4***",
-							"AccountNames": [
-								{
-									"Sid": "***SERIGHT_LOCAL_BEFORE_SID_P4_1***"
-								}
-							]
-						}
-					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_LOCAL_PRIVILEGE_P4***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_LOCAL_BEFORE_SID_P4_1***"
-							}
-						]
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1018,
-			"phase": 4,
-			"order": 6,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "Sam",
-							"Target": "AccountLockoutPolicy",
-							"SamStruct": {
-								"Duration": "***SAM_LOCAL_P4_DESIRED_DURATION_SECONDS***",
-								"Window": "***SAM_LOCAL_P4_DESIRED_WINDOW_SECONDS***",
-								"Threshold": "***SAM_LOCAL_P4_DESIRED_THRESHOLD***"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "Sam",
-						"Target": "AccountLockoutPolicy",
-						"SamStruct": {
-							"Duration": "***SAM_LOCAL_P4_DESIRED_DURATION_SECONDS***",
-							"Window": "***SAM_LOCAL_P4_DESIRED_WINDOW_SECONDS***",
-							"Threshold": "***SAM_LOCAL_P4_DESIRED_THRESHOLD***"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "Sam",
-							"Target": "AccountLockoutPolicy",
-							"SamStruct": {
-								"Duration": "***SAM_LOCAL_P4_BEFORE_DURATION_SECONDS***",
-								"Window": "***SAM_LOCAL_P4_BEFORE_WINDOW_SECONDS***",
-								"Threshold": "***SAM_LOCAL_P4_BEFORE_THRESHOLD***"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "Sam",
-						"Target": "AccountLockoutPolicy",
-						"SamStruct": {
-							"Duration": "***SAM_LOCAL_P4_BEFORE_DURATION_SECONDS***",
-							"Window": "***SAM_LOCAL_P4_BEFORE_WINDOW_SECONDS***",
-							"Threshold": "***SAM_LOCAL_P4_BEFORE_THRESHOLD***"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1019,
-			"phase": 5,
-			"order": 1,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P05\\T1019",
-							"Name": "PermanentDword",
-							"Data": 77,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P05\\T1019",
-						"Name": "PermanentDword",
-						"Data": 77,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P05\\T1019",
-							"Name": "PermanentText",
-							"Data": "after",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P05\\T1019",
-						"Name": "PermanentText",
-						"Data": "after",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1020,
-			"phase": 5,
-			"order": 2,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P05\\T1020",
-							"Name": "Stable",
-							"Data": 1,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026\\P05\\T1020",
-						"Name": "Stable",
-						"Data": 1,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "NoActionTaken"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1021,
-			"phase": 6,
-			"order": 1,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P06_T1021***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P06_T1021***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1525,21 +484,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P06_T1022***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P06\\T1022",
+							"Name": "TestSled",
+							"Data": 0,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P06_T1022***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1564,21 +516,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "FileSystemAcl",
-							"Target": "***NTFS_LOCAL_TARGET_PATH_P6***",
+							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "***NTFS_LOCAL_EXACT_DESIRED_SDDL_P6***",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_LOCAL_TARGET_PATH_P6***",
-						"Sddl": {
-							"SddlString": "***NTFS_LOCAL_EXACT_BEFORE_SDDL_P6***",
-							"SddlType": "File"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1603,23 +548,15 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "SeRight",
-							"Target": "***SERIGHT_LOCAL_PRIVILEGE_P6***",
+							"Target": "SeIncreaseWorkingSetPrivilege",
 							"AccountNames": [
 								{
-									"Sid": "***SERIGHT_LOCAL_DESIRED_SID_P6_1***"
+									"Sid": "S-1-5-32-544"
 								}
 							]
 						}
 					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_LOCAL_PRIVILEGE_P6***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_LOCAL_BEFORE_SID_P6_1***"
-							}
-						]
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1644,21 +581,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P07\\T1025",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P07\\T1025",
 							"Name": "RemoteProbe",
 							"Data": 1,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P07\\T1025",
-						"Name": "RemoteProbe",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1683,21 +613,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P07\\T1026",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P07\\T1026",
 							"Name": "RemoteProbe",
 							"Data": 1,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P07\\T1026",
-						"Name": "RemoteProbe",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				},
 				{
@@ -1708,21 +631,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P07\\T1026",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P07\\T1026",
 							"Name": "RemoteText",
 							"Data": "changed",
 							"Kind": "String",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P07\\T1026",
-						"Name": "RemoteText",
-						"Data": "baseline",
-						"Kind": "String",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1747,21 +663,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P07_T1027***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P07\\T1027",
+							"Name": "TestSled",
+							"Data": 0,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P07_T1027***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1786,21 +695,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P7***",
+							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_DEV_EXACT_DESIRED_SDDL_P7***",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P7***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_DEV_EXACT_BEFORE_SDDL_P7***",
-							"SddlType": "File"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1825,21 +727,50 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_REMOTE_DEV_KEY_PATH_P7***",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC",
 							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_REMOTE_DEV_EXACT_DESIRED_SDDL_P7***",
+								"SddlString": "O:BAG:DUD:AI(A;;KR;;;LS)(A;CIID;KA;;;BA)(A;CIIOID;KA;;;CO)(A;CIID;KR;;;AC)(A;CIID;KR;;;S-1-15-3-1024-1065365936-1281604716-3511738428-1654721687-432734479-3232135806-4053264122-3456934681)(A;CIID;KA;;;SY)(A;CIID;KR;;;BU)",
 								"SddlType": "RegistryKey"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_REMOTE_DEV_KEY_PATH_P7***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_REMOTE_DEV_EXACT_BEFORE_SDDL_P7***",
-							"SddlType": "RegistryKey"
+					"expectedAfter": null,
+					"expectedResult": "WhatIf"
+				}
+			],
+			"recoverySuite": []
+		},
+		{
+			"testId": 1067,
+			"phase": 7,
+			"order": 6,
+			"config": {
+				"target": "SingleRemoteDev",
+				"elevated": true,
+				"whatIf": true,
+				"attemptRollback": false
+			},
+			"testSuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": false,
+						"Data": {
+							"Action": "RegistryValuePattern",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
+							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"SubPath": "Settings",
+							"PathPattern": "^Fixture$",
+							"Name": "PatternProbe",
+							"Data": 1,
+							"Kind": "DWord",
+							"ResolvedTarget": null,
+							"Overwrite": true
 						}
 					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -1864,491 +795,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1030",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P08\\T1030",
 							"Name": "RemoteAuto",
 							"Data": 1,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1030",
-						"Name": "RemoteAuto",
-						"Data": 1,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1031,
-			"phase": 8,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-							"Name": "RemoteExplicit",
-							"Data": 1,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-						"Name": "RemoteExplicit",
-						"Data": 1,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-							"Name": "RemoteText",
-							"Data": "after",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-						"Name": "RemoteText",
-						"Data": "after",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-							"Name": "RemoteExplicit",
-							"Data": 0,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-						"Name": "RemoteExplicit",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				},
-				{
-					"order": 1,
-					"setting": {
-						"Order": 1,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-							"Name": "RemoteText",
-							"Data": "before",
-							"Kind": "String",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P08\\T1031",
-						"Name": "RemoteText",
-						"Data": "before",
-						"Kind": "String",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1032,
-			"phase": 8,
-			"order": 3,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P8***",
-							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_DEV_EXACT_DESIRED_SDDL_P8***",
-								"SddlType": "File"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P8***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_DEV_EXACT_DESIRED_SDDL_P8***",
-							"SddlType": "File"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P8***",
-							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_DEV_EXACT_BEFORE_SDDL_P8***",
-								"SddlType": "File"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P8***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_DEV_EXACT_BEFORE_SDDL_P8***",
-							"SddlType": "File"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1033,
-			"phase": 9,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P09\\T1033",
-							"Name": "RemotePersistent",
-							"Data": 99,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P09\\T1033",
-						"Name": "RemotePersistent",
-						"Data": 99,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1034,
-			"phase": 9,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P09\\T1034",
-							"Name": "Stable",
-							"Data": 11,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P09\\T1034",
-						"Name": "Stable",
-						"Data": 11,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "NoActionTaken"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1035,
-			"phase": 10,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P10_T1035***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P10_T1035***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P10_T1035***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": 0,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P10_T1035***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1036,
-			"phase": 10,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P10_T1036***",
-							"Name": "***PROD_RULE_NO_ROLLBACK_VALUE_NAME***",
-							"Data": "***PROD_RULE_NO_ROLLBACK_DWORD_DESIRED***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P10_T1036***",
-						"Name": "***PROD_RULE_NO_ROLLBACK_VALUE_NAME***",
-						"Data": "***PROD_RULE_NO_ROLLBACK_DWORD_DESIRED***",
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1037,
-			"phase": 10,
-			"order": 3,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P10***",
-							"AccountNames": [
-								{
-									"Sid": "***SERIGHT_REMOTE_DEV_DESIRED_SID_P10_1***"
-								}
-							]
-						}
-					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P10***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_DEV_DESIRED_SID_P10_1***"
-							}
-						]
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P10***",
-							"AccountNames": [
-								{
-									"Sid": "***SERIGHT_REMOTE_DEV_BEFORE_SID_P10_1***"
-								}
-							]
-						}
-					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P10***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_DEV_BEFORE_SID_P10_1***"
-							}
-						]
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1038,
-			"phase": 11,
-			"order": 1,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P11\\T1038",
-							"Name": "FleetWhatIf",
-							"Data": 20,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P11\\T1038",
-						"Name": "FleetWhatIf",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2373,21 +827,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P11_T1039***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P11\\T1039",
+							"Name": "TestSled",
+							"Data": 0,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P11_T1039***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2412,21 +859,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P11***",
+							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_DEV_EXACT_DESIRED_SDDL_P11***",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_DEV_TARGET_PATH_P11***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_DEV_EXACT_BEFORE_SDDL_P11***",
-							"SddlType": "File"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2451,23 +891,51 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P11***",
+							"Target": "SeIncreaseWorkingSetPrivilege",
 							"AccountNames": [
 								{
-									"Sid": "***SERIGHT_REMOTE_DEV_DESIRED_SID_P11_1***"
+									"Sid": "S-1-5-32-544"
 								}
 							]
 						}
 					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P11***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_DEV_BEFORE_SID_P11_1***"
-							}
-						]
+					"expectedAfter": null,
+					"expectedResult": "WhatIf"
+				}
+			],
+			"recoverySuite": []
+		},
+		{
+			"testId": 1068,
+			"phase": 11,
+			"order": 5,
+			"config": {
+				"target": "FullRemoteDev",
+				"elevated": true,
+				"whatIf": true,
+				"attemptRollback": false
+			},
+			"testSuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": false,
+						"Data": {
+							"Action": "RegistryValuePattern",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
+							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"SubPath": "Settings",
+							"PathPattern": "^Fixture$",
+							"Name": "PatternProbe",
+							"Data": 1,
+							"Kind": "DWord",
+							"ResolvedTarget": null,
+							"Overwrite": true
+						}
 					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2492,363 +960,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P12\\T1042",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P12\\T1042",
 							"Name": "FleetRun",
 							"Data": 50,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P12\\T1042",
-						"Name": "FleetRun",
-						"Data": 50,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P12\\T1042",
-							"Name": "FleetRun",
-							"Data": 0,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P12\\T1042",
-						"Name": "FleetRun",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1043,
-			"phase": 12,
-			"order": 2,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": true
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P12\\T1043",
-							"Name": "FleetAuto",
-							"Data": 50,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P12\\T1043",
-						"Name": "FleetAuto",
-						"Data": 50,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1044,
-			"phase": 12,
-			"order": 3,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_REMOTE_DEV_KEY_PATH_P12***",
-							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_REMOTE_DEV_EXACT_DESIRED_SDDL_P12***",
-								"SddlType": "RegistryKey"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_REMOTE_DEV_KEY_PATH_P12***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_REMOTE_DEV_EXACT_DESIRED_SDDL_P12***",
-							"SddlType": "RegistryKey"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_REMOTE_DEV_KEY_PATH_P12***",
-							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_REMOTE_DEV_EXACT_BEFORE_SDDL_P12***",
-								"SddlType": "RegistryKey"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_REMOTE_DEV_KEY_PATH_P12***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_REMOTE_DEV_EXACT_BEFORE_SDDL_P12***",
-							"SddlType": "RegistryKey"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1045,
-			"phase": 13,
-			"order": 1,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P13_T1045***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P13_T1045***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P13_T1045***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": 0,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P13_T1045***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1046,
-			"phase": 13,
-			"order": 2,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P13_T1046***",
-							"Name": "***PROD_RULE_NO_ROLLBACK_VALUE_NAME***",
-							"Data": "***PROD_RULE_NO_ROLLBACK_DWORD_DESIRED***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P13_T1046***",
-						"Name": "***PROD_RULE_NO_ROLLBACK_VALUE_NAME***",
-						"Data": "***PROD_RULE_NO_ROLLBACK_DWORD_DESIRED***",
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1047,
-			"phase": 13,
-			"order": 3,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P13***",
-							"AccountNames": [
-								{
-									"Sid": "***SERIGHT_REMOTE_DEV_DESIRED_SID_P13_1***"
-								}
-							]
-						}
-					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P13***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_DEV_DESIRED_SID_P13_1***"
-							}
-						]
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P13***",
-							"AccountNames": [
-								{
-									"Sid": "***SERIGHT_REMOTE_DEV_BEFORE_SID_P13_1***"
-								}
-							]
-						}
-					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_DEV_PRIVILEGE_P13***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_DEV_BEFORE_SID_P13_1***"
-							}
-						]
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1048,
-			"phase": 14,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": false,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P14\\T1048",
-							"Name": "CanaryDry",
-							"Data": 1,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P14\\T1048",
-						"Name": "CanaryDry",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2873,21 +992,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P14\\T1049",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P14\\T1049",
 							"Name": "CanaryDry",
 							"Data": 1,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P14\\T1049",
-						"Name": "CanaryDry",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2912,21 +1024,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P14_T1050***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P14\\T1050",
+							"Name": "TestSled",
+							"Data": 0,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P14_T1050***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2951,21 +1056,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P14***",
+							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_PROD_EXACT_DESIRED_SDDL_P14***",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P14***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_PROD_EXACT_BEFORE_SDDL_P14***",
-							"SddlType": "File"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -2990,23 +1088,51 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_PROD_PRIVILEGE_P14***",
+							"Target": "SeIncreaseWorkingSetPrivilege",
 							"AccountNames": [
 								{
-									"Sid": "***SERIGHT_REMOTE_PROD_DESIRED_SID_P14_1***"
+									"Sid": "S-1-5-32-544"
 								}
 							]
 						}
 					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_PROD_PRIVILEGE_P14***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_PROD_BEFORE_SID_P14_1***"
-							}
-						]
+					"expectedAfter": null,
+					"expectedResult": "WhatIf"
+				}
+			],
+			"recoverySuite": []
+		},
+		{
+			"testId": 1069,
+			"phase": 14,
+			"order": 6,
+			"config": {
+				"target": "SingleRemoteProd",
+				"elevated": true,
+				"whatIf": true,
+				"attemptRollback": false
+			},
+			"testSuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": false,
+						"Data": {
+							"Action": "RegistryValuePattern",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
+							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"SubPath": "Settings",
+							"PathPattern": "^Fixture$",
+							"Name": "PatternProbe",
+							"Data": 1,
+							"Kind": "DWord",
+							"ResolvedTarget": null,
+							"Overwrite": true
+						}
 					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -3031,268 +1157,14 @@
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P15\\T1053",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote\\P15\\T1053",
 							"Name": "CanaryFixture",
 							"Data": 1,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P15\\T1053",
-						"Name": "CanaryFixture",
-						"Data": 1,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P15\\T1053",
-							"Name": "CanaryFixture",
-							"Data": 0,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P15\\T1053",
-						"Name": "CanaryFixture",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1054,
-			"phase": 15,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": true
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P15\\T1054",
-							"Name": "CanaryAuto",
-							"Data": 1,
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote\\P15\\T1054",
-						"Name": "CanaryAuto",
-						"Data": 1,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1055,
-			"phase": 15,
-			"order": 3,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_REMOTE_PROD_KEY_PATH_P15***",
-							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_REMOTE_PROD_EXACT_DESIRED_SDDL_P15***",
-								"SddlType": "RegistryKey"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_REMOTE_PROD_KEY_PATH_P15***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_REMOTE_PROD_EXACT_DESIRED_SDDL_P15***",
-							"SddlType": "RegistryKey"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryAcl",
-							"Target": "***REGISTRY_ACL_REMOTE_PROD_KEY_PATH_P15***",
-							"Sddl": {
-								"SddlString": "***REGISTRY_ACL_REMOTE_PROD_EXACT_BEFORE_SDDL_P15***",
-								"SddlType": "RegistryKey"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryAcl",
-						"Target": "***REGISTRY_ACL_REMOTE_PROD_KEY_PATH_P15***",
-						"Sddl": {
-							"SddlString": "***REGISTRY_ACL_REMOTE_PROD_EXACT_BEFORE_SDDL_P15***",
-							"SddlType": "RegistryKey"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			]
-		},
-		{
-			"testId": 1056,
-			"phase": 16,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P16_T1056***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P16_T1056***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-						"Kind": "DWord",
-						"Overwrite": false
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1057,
-			"phase": 16,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P16***",
-							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_PROD_EXACT_DESIRED_SDDL_P16***",
-								"SddlType": "File"
-							}
-						}
-					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P16***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_PROD_EXACT_DESIRED_SDDL_P16***",
-							"SddlType": "File"
-						}
-					},
-					"expectedResult": "ActionSuccess"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1058,
-			"phase": 17,
-			"order": 1,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": true,
-						"Data": {
-							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P17_T1058***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
-							"Kind": "DWord",
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P17_T1058***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": 0,
-						"Kind": "DWord",
-						"Overwrite": false
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -3317,21 +1189,14 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P17***",
+							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_PROD_EXACT_DESIRED_SDDL_P17***",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P17***",
-						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_PROD_EXACT_BEFORE_SDDL_P17***",
-							"SddlType": "File"
-						}
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -3356,23 +1221,15 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_PROD_PRIVILEGE_P17***",
+							"Target": "SeIncreaseWorkingSetPrivilege",
 							"AccountNames": [
 								{
-									"Sid": "***SERIGHT_REMOTE_PROD_DESIRED_SID_P17_1***"
+									"Sid": "S-1-5-32-544"
 								}
 							]
 						}
 					},
-					"expectedAfter": {
-						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_PROD_PRIVILEGE_P17***",
-						"AccountNames": [
-							{
-								"Sid": "***SERIGHT_REMOTE_PROD_BEFORE_SID_P17_1***"
-							}
-						]
-					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -3399,21 +1256,49 @@
 							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
-								"Duration": "***SAM_REMOTE_PROD_P17_DESIRED_DURATION_SECONDS***",
-								"Window": "***SAM_REMOTE_PROD_P17_DESIRED_WINDOW_SECONDS***",
-								"Threshold": "***SAM_REMOTE_PROD_P17_DESIRED_THRESHOLD***"
+								"Duration": 901,
+								"Window": 901,
+								"Threshold": 3
 							}
 						}
 					},
-					"expectedAfter": {
-						"Action": "Sam",
-						"Target": "AccountLockoutPolicy",
-						"SamStruct": {
-							"Duration": "***SAM_REMOTE_PROD_P17_BEFORE_DURATION_SECONDS***",
-							"Window": "***SAM_REMOTE_PROD_P17_BEFORE_WINDOW_SECONDS***",
-							"Threshold": "***SAM_REMOTE_PROD_P17_BEFORE_THRESHOLD***"
+					"expectedAfter": null,
+					"expectedResult": "WhatIf"
+				}
+			],
+			"recoverySuite": []
+		},
+		{
+			"testId": 1070,
+			"phase": 17,
+			"order": 5,
+			"config": {
+				"target": "FullRemoteProd",
+				"elevated": true,
+				"whatIf": true,
+				"attemptRollback": false
+			},
+			"testSuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": false,
+						"Data": {
+							"Action": "RegistryValuePattern",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
+							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"SubPath": "Settings",
+							"PathPattern": "^Fixture$",
+							"Name": "PatternProbe",
+							"Data": 1,
+							"Kind": "DWord",
+							"ResolvedTarget": null,
+							"Overwrite": true
 						}
 					},
+					"expectedAfter": null,
 					"expectedResult": "WhatIf"
 				}
 			],
@@ -3438,18 +1323,18 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "RegistryValue",
-							"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P18_T1062***",
-							"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-							"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
+							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P18\\T1062",
+							"Name": "TestSled",
+							"Data": 0,
 							"Kind": "DWord",
 							"Overwrite": true
 						}
 					},
 					"expectedAfter": {
 						"Action": "RegistryValue",
-						"Target": "***PROD_RULE_REGISTRY_KEY_PATH***\\***PROD_RULE_FIXTURE_SUBKEY_P18_T1062***",
-						"Name": "***PROD_RULE_DWORD_VALUE_NAME***",
-						"Data": "***PROD_RULE_DWORD_DESIRED_NUMBER***",
+						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P18\\T1062",
+						"Name": "TestSled",
+						"Data": 0,
 						"Kind": "DWord",
 						"Overwrite": false
 					},
@@ -3477,25 +1362,51 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "FileSystemAcl",
-							"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P18***",
+							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "***NTFS_REMOTE_PROD_EXACT_DESIRED_SDDL_P18***",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
 					"expectedAfter": {
 						"Action": "FileSystemAcl",
-						"Target": "***NTFS_REMOTE_PROD_TARGET_PATH_P18***",
+						"Target": "C:\\AdminTools\\PowerShell",
 						"Sddl": {
-							"SddlString": "***NTFS_REMOTE_PROD_EXACT_DESIRED_SDDL_P18***",
+							"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
 							"SddlType": "File"
 						}
 					},
 					"expectedResult": "ActionSuccess"
 				}
 			],
-			"recoverySuite": []
+			"recoverySuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": true,
+						"Data": {
+							"Action": "FileSystemAcl",
+							"Target": "C:\\AdminTools\\PowerShell",
+							"Sddl": {
+								"SddlString": "O:SYG:SYD:PAI(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlType": "File"
+							}
+						}
+					},
+					"expectedAfter": {
+						"Action": "FileSystemAcl",
+						"Target": "C:\\AdminTools\\PowerShell",
+						"Sddl": {
+							"SddlString": "O:SYG:SYD:PAI(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+							"SddlType": "File"
+						}
+					},
+					"expectedResult": "ActionSuccess"
+				}
+			]
 		},
 		{
 			"testId": 1064,
@@ -3516,27 +1427,55 @@
 						"Dangerous": true,
 						"Data": {
 							"Action": "SeRight",
-							"Target": "***SERIGHT_REMOTE_PROD_PRIVILEGE_P18***",
+							"Target": "SeIncreaseWorkingSetPrivilege",
 							"AccountNames": [
 								{
-									"Sid": "***SERIGHT_REMOTE_PROD_DESIRED_SID_P18_1***"
+									"Sid": "S-1-5-32-544"
 								}
 							]
 						}
 					},
 					"expectedAfter": {
 						"Action": "SeRight",
-						"Target": "***SERIGHT_REMOTE_PROD_PRIVILEGE_P18***",
+						"Target": "SeIncreaseWorkingSetPrivilege",
 						"AccountNames": [
 							{
-								"Sid": "***SERIGHT_REMOTE_PROD_DESIRED_SID_P18_1***"
+								"Sid": "S-1-5-32-544"
 							}
 						]
 					},
 					"expectedResult": "ActionSuccess"
 				}
 			],
-			"recoverySuite": []
+			"recoverySuite": [
+				{
+					"order": 0,
+					"setting": {
+						"Order": 0,
+						"RequiredContext": "Administrator",
+						"Dangerous": true,
+						"Data": {
+							"Action": "SeRight",
+							"Target": "SeIncreaseWorkingSetPrivilege",
+							"AccountNames": [
+								{
+									"Sid": "S-1-5-32-545"
+								}
+							]
+						}
+					},
+					"expectedAfter": {
+						"Action": "SeRight",
+						"Target": "SeIncreaseWorkingSetPrivilege",
+						"AccountNames": [
+							{
+								"Sid": "S-1-5-32-545"
+							}
+						]
+					},
+					"expectedResult": "ActionSuccess"
+				}
+			]
 		},
 		{
 			"testId": 1065,
@@ -3559,9 +1498,9 @@
 							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
-								"Duration": "***SAM_REMOTE_PROD_P18_DESIRED_DURATION_SECONDS***",
-								"Window": "***SAM_REMOTE_PROD_P18_DESIRED_WINDOW_SECONDS***",
-								"Threshold": "***SAM_REMOTE_PROD_P18_DESIRED_THRESHOLD***"
+								"Duration": 901,
+								"Window": 901,
+								"Threshold": 3
 							}
 						}
 					},
@@ -3569,250 +1508,43 @@
 						"Action": "Sam",
 						"Target": "AccountLockoutPolicy",
 						"SamStruct": {
-							"Duration": "***SAM_REMOTE_PROD_P18_DESIRED_DURATION_SECONDS***",
-							"Window": "***SAM_REMOTE_PROD_P18_DESIRED_WINDOW_SECONDS***",
-							"Threshold": "***SAM_REMOTE_PROD_P18_DESIRED_THRESHOLD***"
+							"Duration": 901,
+							"Window": 901,
+							"Threshold": 3
 						}
 					},
 					"expectedResult": "ActionSuccess"
 				}
 			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1066,
-			"phase": 2,
-			"order": 6,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
+			"recoverySuite": [
 				{
 					"order": 0,
 					"setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
-						"Dangerous": false,
+						"Dangerous": true,
 						"Data": {
-							"Action": "RegistryValuePattern",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
-							"SubPath": "Settings",
-							"PathPattern": "^Fixture$",
-							"Name": "PatternProbe",
-							"Data": 1,
-							"Kind": "DWord",
-							"ResolvedTarget": null,
-							"Overwrite": true
+							"Action": "Sam",
+							"Target": "AccountLockoutPolicy",
+							"SamStruct": {
+								"Duration": 900,
+								"Window": 900,
+								"Threshold": 3
+							}
 						}
 					},
 					"expectedAfter": {
-						"Action": "RegistryValuePattern",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026",
-						"TargetPattern": "^TestSledPattern_[0-9]+$",
-						"SubPath": "Settings",
-						"PathPattern": "^Fixture$",
-						"Name": "PatternProbe",
-						"Data": 1,
-						"Kind": "DWord",
-						"ResolvedTarget": null,
-						"Overwrite": true
-					},
-					"expectedResult": "WhatIf"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1067,
-			"phase": 7,
-			"order": 6,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValuePattern",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
-							"SubPath": "Settings",
-							"PathPattern": "^Fixture$",
-							"Name": "PatternProbe",
-							"Data": 1,
-							"Kind": "DWord",
-							"ResolvedTarget": null,
-							"Overwrite": true
+						"Action": "Sam",
+						"Target": "AccountLockoutPolicy",
+						"SamStruct": {
+							"Duration": 900,
+							"Window": 900,
+							"Threshold": 3
 						}
 					},
-					"expectedAfter": {
-						"Action": "RegistryValuePattern",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-						"TargetPattern": "^TestSledPattern_[0-9]+$",
-						"SubPath": "Settings",
-						"PathPattern": "^Fixture$",
-						"Name": "PatternProbe",
-						"Data": 1,
-						"Kind": "DWord",
-						"ResolvedTarget": null,
-						"Overwrite": true
-					},
-					"expectedResult": "WhatIf"
+					"expectedResult": "ActionSuccess"
 				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1068,
-			"phase": 11,
-			"order": 5,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValuePattern",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
-							"SubPath": "Settings",
-							"PathPattern": "^Fixture$",
-							"Name": "PatternProbe",
-							"Data": 1,
-							"Kind": "DWord",
-							"ResolvedTarget": null,
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValuePattern",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-						"TargetPattern": "^TestSledPattern_[0-9]+$",
-						"SubPath": "Settings",
-						"PathPattern": "^Fixture$",
-						"Name": "PatternProbe",
-						"Data": 1,
-						"Kind": "DWord",
-						"ResolvedTarget": null,
-						"Overwrite": true
-					},
-					"expectedResult": "WhatIf"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1069,
-			"phase": 14,
-			"order": 6,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValuePattern",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
-							"SubPath": "Settings",
-							"PathPattern": "^Fixture$",
-							"Name": "PatternProbe",
-							"Data": 1,
-							"Kind": "DWord",
-							"ResolvedTarget": null,
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValuePattern",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-						"TargetPattern": "^TestSledPattern_[0-9]+$",
-						"SubPath": "Settings",
-						"PathPattern": "^Fixture$",
-						"Name": "PatternProbe",
-						"Data": 1,
-						"Kind": "DWord",
-						"ResolvedTarget": null,
-						"Overwrite": true
-					},
-					"expectedResult": "WhatIf"
-				}
-			],
-			"recoverySuite": []
-		},
-		{
-			"testId": 1070,
-			"phase": 17,
-			"order": 5,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
-			},
-			"testSuite": [
-				{
-					"order": 0,
-					"setting": {
-						"Order": 0,
-						"RequiredContext": "Administrator",
-						"Dangerous": false,
-						"Data": {
-							"Action": "RegistryValuePattern",
-							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
-							"SubPath": "Settings",
-							"PathPattern": "^Fixture$",
-							"Name": "PatternProbe",
-							"Data": 1,
-							"Kind": "DWord",
-							"ResolvedTarget": null,
-							"Overwrite": true
-						}
-					},
-					"expectedAfter": {
-						"Action": "RegistryValuePattern",
-						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\SapphTools.DHA.Stig.TestSled.Full20261026.Remote",
-						"TargetPattern": "^TestSledPattern_[0-9]+$",
-						"SubPath": "Settings",
-						"PathPattern": "^Fixture$",
-						"Name": "PatternProbe",
-						"Data": 1,
-						"Kind": "DWord",
-						"ResolvedTarget": null,
-						"Overwrite": true
-					},
-					"expectedResult": "WhatIf"
-				}
-			],
-			"recoverySuite": []
+			]
 		}
 	]
 }
