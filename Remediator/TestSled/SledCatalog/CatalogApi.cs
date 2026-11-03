@@ -181,6 +181,7 @@ public static partial class CatalogApi {
             VerifyCatalogMember(catalogPath, memberPath);
             return true;
         } catch (Exception ex) {
+            Debug.WriteLine(ex.Message);
             return false;
         }
     }
@@ -374,6 +375,7 @@ public static partial class CatalogApi {
 
     // These two CDF APIs take a managed delegate callback; retain runtime delegate
     // marshalling rather than introducing a function-pointer trampoline.
+#pragma warning disable IDE0079 // Incorrect identification of below supression as unneccessary
 #pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
     [DllImport("wintrust.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr CryptCATCDFOpen(
@@ -384,6 +386,7 @@ public static partial class CatalogApi {
         IntPtr cdf, IntPtr previousTag, CdfParseErrorCallback callback, ref IntPtr member,
         [MarshalAs(UnmanagedType.Bool)] bool continueOnError, IntPtr reserved);
 #pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+#pragma warning restore IDE0079 
 
     [LibraryImport("wintrust.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
     private static partial IntPtr CryptCATOpen(

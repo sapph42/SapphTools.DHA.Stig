@@ -62,7 +62,7 @@ public partial class TestSled : Form {
     private readonly BindingSource resSource;
     private readonly BindingSource defSource;
     private readonly StateNotify state = new();
-    private Stopwatch perfWatch = new();
+    private readonly Stopwatch perfWatch = new();
 
     public TestSled() : this(null, null) { }
     public TestSled(TestArray? def, TestArray? res) {

@@ -12,13 +12,13 @@ namespace SapphTools.DHA.Stig.Remediator.Forms;
 public partial class Main : Form {
     private TestArray? testArrayDefinition;
     private TestArray? testArrayResults;
-    private Task preLoadTask;
     private bool _supressUiCascade = false;
     private static readonly string localPath = Path.GetDirectoryName(Environment.ProcessPath!)!;
     private readonly BindingSource catalogSource = [];
     private readonly BindingSource findingSource = [];
     private readonly BindingSource resultsSource = [];
     private readonly SettingContext AppContext;
+    private readonly Task preLoadTask;
     protected DataTable CatalogTable = new();
     protected DataTable FindingsTable = new();
     protected DataTable ResultsTable = new();

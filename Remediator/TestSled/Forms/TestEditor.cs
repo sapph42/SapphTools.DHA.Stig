@@ -229,7 +229,7 @@ public partial class TestEditor : Form {
         ConfigWhatIf.Checked = ActiveTest.Config.WhatIf;
         ConfigTarget.SelectedItem = ActiveTest.Config.Target;
         foreach (TestCase tc in ActiveTest.TestSuite) {
-            TestSuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
+            TestSuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter?.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         foreach (TestCase tc in ActiveTest.RecoverySuite) {
             TestCase recovery = tc.Clone(withoutResults: true);
@@ -279,7 +279,7 @@ public partial class TestEditor : Form {
             SimulatedRuleId = SimulatedRuleId,
         };
         if (testCaseEditor.ShowDialog() == DialogResult.OK && testCaseEditor.TestCase is TestCase tc) {
-            RecoverySuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
+            RecoverySuiteTable.Rows.Add(tc.Order, tc.Setting.Clone(), tc.ExpectedAfter?.Clone(), tc.ExpectedResult, tc.Clone(withoutResults: true));
         }
         CheckValidity();
     }
