@@ -357,3 +357,67 @@ public class CertificatesValue : IValue<CertificatesValue> {
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
 }
+public class ServiceValue : IValue<ServiceValue> {
+    [JsonInclude]
+    public TargetType Action => TargetType.Service;
+    [JsonInclude]
+    public required ServiceType ActionSubtype { get; set; }
+    public string? Name { get; set; }
+    public string TargetString => ToString();
+    public virtual ServiceValue Clone() {
+        return new() {
+            ActionSubtype = ActionSubtype,
+            Name = Name
+        };
+    }
+    public virtual bool Equals(IValue? other) {
+        if (other is null) {
+            return false;
+        }
+        if (other is ServiceValue val) {
+            return ActionSubtype == val.ActionSubtype &&
+                string.Equals(Name, val.Name, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
+    }
+    public override string ToString() => $"{ActionSubtype} :: <{Name}>";
+    IValue IValue.Clone() => Clone();
+}
+public class ServiceSetValue : ServiceValue, IValue<ServiceSetValue> {
+    public List<ServiceValue> Values { get; set; } = [];
+    public ServiceSetValue() { }
+    [SetsRequiredMembers]
+    public ServiceSetValue(ServiceValue val) {
+        ActionSubtype = val.ActionSubtype;
+        Name = val.Name;
+        foreach (ServiceValue value in Values) {
+            Values.Add(value.Clone());
+        }
+    }
+    public override ServiceSetValue Clone() {
+        ServiceSetValue clone = new(this);
+        foreach (ServiceSetValue val in Values.OfType<ServiceSetValue>()) {
+            clone.Values.Add(val.Clone());
+        }
+        return clone;
+    }
+
+    public override bool Equals(IValue? other) {
+        if (other is not ServiceSetValue otherRvsv) {
+            return false;
+        }
+        if (!base.Equals(otherRvsv)) {
+            return false;
+        }
+        if (Values.Count != otherRvsv.Values.Count) {
+            return false;
+        }
+        foreach (ServiceValue val in Values) {
+            if (!otherRvsv.Values.Contains(val)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    IValue IValue.Clone() => Clone();
+}
