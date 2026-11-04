@@ -1,4 +1,5 @@
 using SapphTools.DHA.Stig.Remediator.TestSled;
+using TestResult = SapphTools.DHA.Stig.Remediator.TestSled.TestResult;
 
 namespace UnitTests;
 

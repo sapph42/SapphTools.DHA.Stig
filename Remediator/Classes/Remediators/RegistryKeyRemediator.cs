@@ -141,7 +141,7 @@ internal class RegistryKeyRemediator : IRemediator {
         };
         RegistryKeyValue after;
         key = null;
-        if (existingParent.FullName.Equals(targetPath, StringComparison.OrdinalIgnoreCase)) {
+        if (existingParent.FullName.TrimEnd('\\').Equals(targetPath.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) {
             key = existingParent;
             try {
                 return logger.LogNoAction(preAction, TargetType.RegistryKey, targetPath, before);

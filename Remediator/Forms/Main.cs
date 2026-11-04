@@ -229,7 +229,9 @@ public partial class Main : Form {
                                 count ??= 0;
                             }
                             bool autoRem = ruleAvail && !drakeMallard && context;
-                            _ = FindingsTable.Rows.Add(autoRem, ruleid, desc, host, drakeMallard, ruleAvail, context);
+                            try {
+                                _ = FindingsTable.Rows.Add(autoRem, ruleid, desc, host, drakeMallard, ruleAvail, context);
+                            } catch { }
                             if (ruleAvail && context) {
                                 count++;
                             }
@@ -364,6 +366,10 @@ public partial class Main : Form {
     }
     private void WhatIf_CheckedChanged(object sender, EventArgs e) {
         if (_supressUiCascade) { return; }
+        foreach (DataGridViewRow row in Findings.Rows.OfType<DataGridViewRow>()) {
+            ((DataGridViewCheckBoxCell)row.Cells["Remediate"]).Value = false;
+        }
+
         _supressUiCascade = true;
         SimulationModeMenu.Checked = WhatIf.Checked;
         _supressUiCascade = false;
