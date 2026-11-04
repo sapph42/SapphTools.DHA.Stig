@@ -25,5 +25,8 @@ public enum TargetType {
     LocalUserAccount,
 
     [UiDisplay("Certificate Store Baseline")]
-    CertStore
+    CertStore,
+
+    [UiDisplay("Service Remediation")]
+    Service
 }
