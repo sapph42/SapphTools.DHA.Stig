@@ -1,8 +1,11 @@
 ﻿using Microsoft.Win32;
+using SapphTools.DHA.Stig.Common.Interfaces;
 using SapphTools.SecurityDescriptor;
 using SapphTools.SecurityDescriptor.Classes;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SapphTools.DHA.Stig.Common.Classes;
 public abstract class AclValue<T> : IValue<T> {
@@ -24,6 +27,8 @@ public abstract class AclValue<T> : IValue<T> {
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => (IValue)Clone()!;
+    object ICloneable.Clone() => getClone();
+    protected abstract object getClone();
 }
 public class FileSystemAclValue : AclValue<FileSystemAclValue> {
     [JsonInclude]
@@ -34,6 +39,7 @@ public class FileSystemAclValue : AclValue<FileSystemAclValue> {
             Target = Target
         };
     }
+    protected override object getClone() => Clone();
 }
 public class RegistryAclValue : AclValue<RegistryAclValue> {
     [JsonInclude]
@@ -44,6 +50,7 @@ public class RegistryAclValue : AclValue<RegistryAclValue> {
             Target = Target
         };
     }
+    protected override object getClone() => Clone();
 }
 [JsonConverter(typeof(SeRightsValueConverter))]
 public class SeRightsValue : IValue<SeRightsValue> {
@@ -73,6 +80,7 @@ public class SeRightsValue : IValue<SeRightsValue> {
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
+    object ICloneable.Clone() => Clone();
 }
 public abstract class SamValue : IValue {
     [JsonInclude]
@@ -87,6 +95,8 @@ public abstract class SamValue<T> : SamValue, IValue<T> {
     public abstract T Clone();
     public override string ToString() => TargetString;
     IValue IValue.Clone() => (IValue)Clone()!;
+    object ICloneable.Clone() => getClone();
+    protected abstract object getClone();
 }
 public abstract class SamValue<T, TSub> : SamValue<TSub> where T : struct  {
     public abstract T SamStruct { get; set; }
@@ -106,6 +116,7 @@ public class LockoutValue : SamValue<SamUserModalInfo3, LockoutValue> {
             SamStruct = SamStruct,
         };
     }
+    protected override object getClone() => Clone();
 }
 public class RegistryKeyValue : IValue<RegistryKeyValue> {
     [JsonInclude]
@@ -131,6 +142,7 @@ public class RegistryKeyValue : IValue<RegistryKeyValue> {
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
+    object ICloneable.Clone() => Clone();
 }
 [JsonConverter(typeof(RegistryValueValueConverter))]
 public class RegistryValueValue : IValue<RegistryValueValue> {
@@ -200,6 +212,7 @@ public class RegistryValueValue : IValue<RegistryValueValue> {
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
+    object ICloneable.Clone() => Clone();
 }
 [JsonConverter(typeof(RegistryValuePatternValueConverter))]
 public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValuePatternValue> {
@@ -272,8 +285,26 @@ public class RegistryValuePatternValue : RegistryValueValue, IValue<RegistryValu
     }
     public override string ToString() => TargetString;
     IValue IValue.Clone() => Clone();
+    object ICloneable.Clone() => Clone();
 }
-public class RegistryValueSetValue : RegistryValuePatternValue, IValue<RegistryValueSetValue> {
+public interface IValueSet<TThis, TVal, TBase> where TThis : TBase where TVal : ICloneable {
+    public List<TVal> Values { get; set; }
+    public IValueSet<TThis, TVal, TBase> Clone() {
+        IValueSet<TThis, TVal, TBase> clone = FromValue(ToValue());
+        foreach (TVal val in Values) {
+            if (val is not null) { 
+                clone.Values.Add((TVal)val.Clone());
+            }
+        }
+        return clone;
+    }
+    public abstract IValueSet<TThis, TVal, TBase> FromValue(TBase val);
+    public abstract TBase ToValue();
+}
+public class RegistryValueSetValue : 
+        RegistryValuePatternValue, 
+        IValue<RegistryValueSetValue>, 
+        IValueSet<RegistryValueSetValue, RegistryValueValue, RegistryValuePatternValue> {
     public List<RegistryValueValue> Values { get; set; } = [];
     public RegistryValueSetValue() { }
 
@@ -305,14 +336,8 @@ public class RegistryValueSetValue : RegistryValuePatternValue, IValue<RegistryV
         Overwrite = patternVal.Overwrite;
         ResolvedTarget = patternVal.ResolvedTarget?.Clone();
     }
-    public override RegistryValueSetValue Clone() {
-        RegistryValueSetValue clone = new(this);
-        foreach (RegistryValueValue val in Values) {
-            clone.Values.Add(val.Clone());
-        }
-        return clone;
-    }
-
+    public override RegistryValueSetValue Clone() =>
+        (RegistryValueSetValue)(IValueSet<RegistryValueSetValue, RegistryValueValue, RegistryValuePatternValue>)Clone();
     public override bool Equals(IValue? other) {
         if (other is not RegistryValueSetValue otherRvsv) {
             return false;
@@ -330,7 +355,37 @@ public class RegistryValueSetValue : RegistryValuePatternValue, IValue<RegistryV
         }
         return true;
     }
-
+    public IValueSet<RegistryValueSetValue, RegistryValueValue, RegistryValuePatternValue> FromValue(RegistryValuePatternValue val) =>
+        new RegistryValueSetValue(val);
+    public RegistryValuePatternValue ToValue() {
+        object? dataClone;
+        if (Data is null) {
+            dataClone = null;
+        } else {
+            dataClone = Kind switch {
+                RegistryValueKind.String => new string((string)Data),
+                RegistryValueKind.ExpandString => new string((string)Data),
+                RegistryValueKind.Binary => ((byte[])Data).Clone(),
+                RegistryValueKind.DWord => Data,
+                RegistryValueKind.MultiString => ((string[])Data).Clone(),
+                RegistryValueKind.QWord => Data,
+                _ => Data.GetType().GetInterface("ICloneable") is not null ?
+                    Data.GetType().GetMethod("Clone")?.Invoke(Data, null) :
+                    Data
+            };
+        }
+        return new() {
+            Target = Target,
+            TargetPattern = TargetPattern,
+            SubPath = SubPath,
+            PathPattern = PathPattern,
+            Name = Name,
+            Data = dataClone,
+            Kind = Kind,
+            Overwrite = Overwrite,
+            ResolvedTarget = ResolvedTarget
+        };
+    }
     IValue IValue.Clone() => Clone();
 }
 public class CertificatesValue : IValue<CertificatesValue> {
@@ -355,5 +410,77 @@ public class CertificatesValue : IValue<CertificatesValue> {
         return false;
     }
     public override string ToString() => TargetString;
+    IValue IValue.Clone() => Clone();
+    object ICloneable.Clone() => Clone();
+}
+public class ServiceValue : IValue<ServiceValue> {
+    [JsonInclude]
+    public TargetType Action => TargetType.Service;
+    [JsonInclude]
+    public required ServiceType ActionSubtype { get; set; }
+    public string? Name { get; set; }
+    public string TargetString => ToString();
+    public virtual ServiceValue Clone() {
+        return new() {
+            ActionSubtype = ActionSubtype,
+            Name = Name
+        };
+    }
+    public virtual bool Equals(IValue? other) {
+        if (other is null) {
+            return false;
+        }
+        if (other is ServiceValue val) {
+            return ActionSubtype == val.ActionSubtype &&
+                string.Equals(Name, val.Name, StringComparison.OrdinalIgnoreCase);
+        }
+        return false;
+    }
+    public override string ToString() => $"{ActionSubtype} :: <{Name}>";
+    IValue IValue.Clone() => Clone();
+    object ICloneable.Clone() => Clone();
+}
+public class ServiceSetValue : 
+        ServiceValue, 
+        IValue<ServiceSetValue>, 
+        IValueSet<ServiceSetValue, ServiceValue, ServiceValue> {
+    public List<ServiceValue> Values { get; set; } = [];
+    public ServiceSetValue() { }
+    [SetsRequiredMembers]
+    public ServiceSetValue(ServiceValue val) {
+        ActionSubtype = val.ActionSubtype;
+        Name = val.Name;
+        foreach (ServiceValue value in Values) {
+            Values.Add(value.Clone());
+        }
+    }
+    public override ServiceSetValue Clone() =>
+        (ServiceSetValue)(IValueSet<ServiceSetValue, ServiceValue, ServiceValue>)Clone();
+
+    public override bool Equals(IValue? other) {
+        if (other is not ServiceSetValue otherRvsv) {
+            return false;
+        }
+        if (!base.Equals(otherRvsv)) {
+            return false;
+        }
+        if (Values.Count != otherRvsv.Values.Count) {
+            return false;
+        }
+        foreach (ServiceValue val in Values) {
+            if (!otherRvsv.Values.Contains(val)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public IValueSet<ServiceSetValue, ServiceValue, ServiceValue> FromValue(ServiceValue val) =>
+        new ServiceSetValue(val);
+    public ServiceValue ToValue() {
+        return new() {
+            ActionSubtype = ActionSubtype,
+            Name = Name
+        };
+    }
     IValue IValue.Clone() => Clone();
 }

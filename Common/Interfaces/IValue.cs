@@ -18,6 +18,6 @@ public interface IValue : IEquatable<IValue> {
 }
 
 [JsonConverter(typeof(ValueConverter))]
-public interface IValue<T> : IValue {
+public interface IValue<T> : IValue, ICloneable {
     public new T Clone();
 }
