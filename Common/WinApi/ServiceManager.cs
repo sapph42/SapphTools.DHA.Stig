@@ -39,7 +39,7 @@ public partial class ServiceManager : IDisposable {
             }
             IntPtr current = buffer;
             int structSize = Marshal.SizeOf<ENUM_SERVICE_STATUS_PROCESS>();
-            for (int i = 0; i < servicesReturned; i++) {
+            for (int i = 0; i < servicesReturned; i++, current += structSize) {
                 ENUM_SERVICE_STATUS_PROCESS ssp = Marshal.PtrToStructure<ENUM_SERVICE_STATUS_PROCESS>(current);
                 Service service = new(this, ssp.lpServiceName);
                 service.SetState((ServiceState)ssp.ServiceStatusProcess.dwCurrentState);
@@ -80,7 +80,7 @@ public partial class ServiceManager : IDisposable {
     public void GetServiceHandle(Service service) {
         OpenServiceManager(false);
         service.CloseService(false);
-        IntPtr? localHandle = OpenService(_scmHandle, service.Name, SC_MODIFY_SERVICE);
+        IntPtr? localHandle = OpenService(_scmHandle, service.Name, SERVICE_REMEDIATE_CONFIG);
         if (localHandle is null || localHandle == IntPtr.Zero) {
             throw new Win32Exception(Marshal.GetLastPInvokeError());
         }
