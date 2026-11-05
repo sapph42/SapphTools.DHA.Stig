@@ -1,3 +1,5 @@
+using SapphTools.IDisposableEnumerable;
+
 namespace UnitTests;
 
 [TestClass, TestCategory("Pure")]

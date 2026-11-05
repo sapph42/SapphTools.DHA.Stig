@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using SapphTools.IDisposableEnumerable;
 using System.Text.RegularExpressions;
 
 namespace SapphTools.DHA.Stig.Remediator.Classes.Remediators;

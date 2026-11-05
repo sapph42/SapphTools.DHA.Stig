@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using SapphTools.IDisposableEnumerable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using static SapphTools.DHA.Stig.Common.WinApi.ScmApi;

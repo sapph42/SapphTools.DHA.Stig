@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\IDisposableEnumerable\SapphTools.IDisposableEnumerable.csproj" />
     <ProjectReference Include="..\..\..\SecurityDescriptor\SecurityDescriptor.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Remediator\Remediator.csproj" />
