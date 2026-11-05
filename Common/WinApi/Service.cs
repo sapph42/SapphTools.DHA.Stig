@@ -16,7 +16,6 @@ public class Service : IDisposable {
 
     public Service(ServiceManager manager, string name) {
         _manager = manager;
-        manager.Disposing += Manager_Disposing;
         _name = name;
         GetBinPath();
     }
@@ -54,9 +53,7 @@ public class Service : IDisposable {
             Marshal.FreeHGlobal(buffer);
         }
     }
-    private void Manager_Disposing(object? sender, DisposingEventArgs e) {
-        Dispose();
-    }
+
     [MemberNotNull(nameof(_serviceHandle))]
     private void OpenService(bool force = false) {
         if (!force) {

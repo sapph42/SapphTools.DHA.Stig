@@ -12,8 +12,6 @@ public partial class ServiceManager : IDisposable {
     private DisposableDictionary<string, Service> Services = [];
     private string? _computerName;
 
-    public event DisposingEventHandler Disposing = delegate { };
-
     public ServiceManager(string? computerName) {
         _computerName = computerName;
         OpenServiceManager();
@@ -95,7 +93,6 @@ public partial class ServiceManager : IDisposable {
 
             }
             lock (_lock) {
-                Disposing(this, DisposingEventArgs.Empty);
                 Services.Dispose();
                 _scmHandle?.Dispose();
                 _scmHandle = null;
@@ -111,7 +108,3 @@ public partial class ServiceManager : IDisposable {
         GC.SuppressFinalize(this);
     }
 }
-public class DisposingEventArgs : EventArgs {
-    public new static DisposingEventArgs Empty => (DisposingEventArgs)EventArgs.Empty;
-}
-public delegate void DisposingEventHandler(object? sender, DisposingEventArgs e);
