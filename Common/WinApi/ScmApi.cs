@@ -5,31 +5,37 @@ internal static partial class ScmApi {
     internal const int ERROR_ACCESS_DENIED = 0x5;
     internal const int ERROR_INVALID_HANDLE = 0x6;
 
-    public const int SERVICE_WIN32 = 0x0030;
-    public const int SERVICE_STATE_ALL = 0x00000003;
-    public const string SERVICES_ACTIVE_DATABASE = "ServicesActive";
+    internal const int SERVICE_WIN32 = 0x0030;
+    internal const int SERVICE_STATE_ALL = 0x00000003;
+    internal const string SERVICES_ACTIVE_DATABASE = "ServicesActive";
 
-    internal const int READ_CONTROL = 0x00020000;
-    internal const int STANDARD_RIGHTS_WRITE = READ_CONTROL;
-    internal const int STANDARD_RIGHTS_EXECUTE = READ_CONTROL;
-    internal const int STANDARD_RIGHTS_READ = READ_CONTROL;
+    public const int READ_CONTROL = 0x00020000;
+    public const int STANDARD_RIGHTS_WRITE = READ_CONTROL;
+    public const int STANDARD_RIGHTS_EXECUTE = READ_CONTROL;
+    public const int STANDARD_RIGHTS_READ = READ_CONTROL;
 
-    internal const int SC_MANAGER_CONNECT = 0x0001;
-    internal const int SC_MANAGER_ENUMERATE_SERVICES = 0x0004;
-    internal const int SC_MANAGER_LOCK = 0x0008;
-    internal const int SCM_GENERIC_EXECUTE = STANDARD_RIGHTS_EXECUTE |
+    public const int SC_MANAGER_CONNECT = 0x0001;
+    public const int SC_MANAGER_ENUMERATE_SERVICES = 0x0004;
+    public const int SC_MANAGER_LOCK = 0x0008;
+    public const int SCM_GENERIC_EXECUTE = STANDARD_RIGHTS_EXECUTE |
         SC_MANAGER_CONNECT | SC_MANAGER_ENUMERATE_SERVICES | SC_MANAGER_LOCK;
 
-    internal const int SERVICE_CHANGE_CONFIG = 0x0002;
-    internal const int SERVICE_START = 0x0010;
-    internal const int SERVICE_STOP = 0x0020;
-    internal const int SERVICE_PAUSE = 0x0040;
-    internal const int SERVICE_USER_DEFINED = 0x0100;
-    internal const int SERVICE_GENERIC_EXECUTE = STANDARD_RIGHTS_EXECUTE | SERVICE_START |
+    public const int SERVICE_QUERY_CONFIG = 0x0001;
+    public const int SERVICE_CHANGE_CONFIG = 0x0002;
+    public const int SERVICE_QUERY_STATUS = 0x0004;
+    public const int SERVICE_ENUMERATE_DEPENDENTS = 0x0008;
+    public const int SERVICE_START = 0x0010;
+    public const int SERVICE_STOP = 0x0020;
+    public const int SERVICE_PAUSE = 0x0040;
+    public const int SERVICE_INTERROGATE = 0x0080;
+    public const int SERVICE_USER_DEFINED = 0x0100;
+    public const int SERVICE_GENERIC_READ = STANDARD_RIGHTS_READ | SERVICE_QUERY_CONFIG | 
+        SERVICE_QUERY_STATUS | SERVICE_INTERROGATE | SERVICE_ENUMERATE_DEPENDENTS;
+    public const int SERVICE_GENERIC_EXECUTE = STANDARD_RIGHTS_EXECUTE | SERVICE_START |
         SERVICE_STOP | SERVICE_PAUSE | SERVICE_USER_DEFINED;
 
     internal const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
-    internal const int SC_MODIFY_SERVICE = SERVICE_CHANGE_CONFIG | SERVICE_GENERIC_EXECUTE;
+    internal const int SERVICE_REMEDIATE_CONFIG = SERVICE_QUERY_CONFIG | SERVICE_CHANGE_CONFIG;
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct ENUM_SERVICE_STATUS_PROCESS {
