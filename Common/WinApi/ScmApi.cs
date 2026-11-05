@@ -68,7 +68,7 @@ internal static partial class ScmApi {
         public int dwWaitHint;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct QUERY_SERVICE_CONFIG {
         public uint dwServiceType;
         public uint dwStartType;
@@ -132,6 +132,7 @@ internal static partial class ScmApi {
     public static partial bool ChangeServiceConfig(
         SafeScmHandle hService,
         uint dwServiceType,
+        uint dwStartType,
         uint dwErrorControl,
         string? lpBinaryPathName,
         string? lpLoadORderGroup,
