@@ -10,7 +10,7 @@ public class Service : IDisposable {
     private ServiceState _originalState;
     private string _name;
     private string? _binPath;
-    private ServiceManager _manager;
+    private readonly ServiceManager _manager;
 
     public string BinPath {
         get {
@@ -58,13 +58,12 @@ public class Service : IDisposable {
     internal void SetHandle(SafeScmHandle handle) {
         _serviceHandle = handle;
     }
-    public void SetState(ServiceState state) {
+    internal void SetState(ServiceState state) {
         _originalState = state;
     }
     private void GetBinPath() {
         OpenService();
-        int bytesNeeded = 0;
-        QueryServiceConfig(_serviceHandle, IntPtr.Zero, 0, out bytesNeeded);
+        QueryServiceConfig(_serviceHandle, IntPtr.Zero, 0, out int bytesNeeded);
         int lastError = Marshal.GetLastPInvokeError();
         if (lastError != 0 && lastError != 122 && lastError != 234) {
             OpenService(true);
