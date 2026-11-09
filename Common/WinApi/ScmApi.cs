@@ -34,7 +34,7 @@ internal static partial class ScmApi {
     public const int SERVICE_GENERIC_EXECUTE = STANDARD_RIGHTS_EXECUTE | SERVICE_START |
         SERVICE_STOP | SERVICE_PAUSE | SERVICE_USER_DEFINED;
 
-    internal const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
+    public const uint SERVICE_NO_CHANGE = 0xFFFFFFFF;
     internal const int SERVICE_REMEDIATE_CONFIG = SERVICE_QUERY_CONFIG | SERVICE_CHANGE_CONFIG;
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -135,8 +135,8 @@ internal static partial class ScmApi {
         uint dwStartType,
         uint dwErrorControl,
         string? lpBinaryPathName,
-        string? lpLoadORderGroup,
-        out uint lpdwTagId,
+        string? lpLoadOrderGroup,
+        out IntPtr lpdwTagId,
         string? lpDependencies,
         string? lpServiceStartName,
         string? lpPassword,
