@@ -60,6 +60,7 @@ internal static class Remediator {
             TargetType.Sam => SamRemediator.Remediate,
             TargetType.CertStore => CertificateRemediator.Remediate,
             TargetType.RegistryKey => RegistryKeyRemediator.Remediate,
+            TargetType.Service => ServiceRemediator.Remediate,
             TargetType.LocalUserAccount => throw new NotImplementedException(),
             _ => throw new NotImplementedException()
         };
@@ -75,6 +76,7 @@ internal static class Remediator {
             TargetType.FileSystemAcl => FileAclRemediator.GetActualState,
             TargetType.SeRight => LsaRemediator.GetActualState,
             TargetType.Sam => SamRemediator.GetActualState,
+            TargetType.Service => ServiceRemediator.GetActualState,
             TargetType.LocalUserAccount => throw new NotImplementedException(),
             TargetType.CertStore => throw new NotImplementedException(),
         };
