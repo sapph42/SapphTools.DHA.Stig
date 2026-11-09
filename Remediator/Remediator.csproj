@@ -80,6 +80,9 @@
     <Compile Update="Editor\Controls\RegistryAclSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Editor\Controls\ServiceValueSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="Editor\Forms\File\FileAceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
