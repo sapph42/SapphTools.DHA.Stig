@@ -5,12 +5,12 @@ using static SapphTools.DHA.Stig.Common.WinApi.ScmApi;
 
 namespace SapphTools.DHA.Stig.Common.WinApi;
 public class Service : IDisposable {
-    private bool disposedValue;
-    internal SafeScmHandle? _serviceHandle;
-    private ServiceState _originalState;
-    private string _name;
-    private string? _binPath;
+    private readonly string _name;
     private readonly ServiceManager _manager;
+    private bool disposedValue;
+    private ServiceState _originalState;
+    private string? _binPath;
+    internal SafeScmHandle? _serviceHandle;
 
     public string BinPath {
         get {
