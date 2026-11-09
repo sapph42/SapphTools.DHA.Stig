@@ -29,6 +29,7 @@ internal static class Remediator {
                 TargetType.Sam => SamRemediator.Remediate,
                 TargetType.CertStore => CertificateRemediator.Remediate,
                 TargetType.RegistryKey => RegistryKeyRemediator.Remediate,
+                TargetType.Service => ServiceRemediator.Remediate,
                 TargetType.LocalUserAccount => throw new NotImplementedException(),
                 _ => throw new NotImplementedException()
             };
