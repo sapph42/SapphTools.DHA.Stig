@@ -60,6 +60,21 @@ public partial class ServiceManager : IDisposable {
         }
         return values;
     }
+    public Dictionary<string, T> ServiceDispatch<T>(Func<Service, T> dispatcher) {
+        Dictionary<string, T> ret = [];
+        foreach (Service service in Services.Values) {
+            ret.Add(service.Name, dispatcher(service));
+        }
+        return ret;
+    }
+    public T? ServiceDispatch<T>(Func<Service, T> dispatcher, string serviceName) {
+        foreach (Service service in Services.Values) {
+            if (service.Name != serviceName) {
+                continue;
+            }
+            return dispatcher(service);
+        }
+        return default;
     }
     private void CloseServiceManager(bool dispose) {
         if (dispose) {
@@ -87,7 +102,7 @@ public partial class ServiceManager : IDisposable {
         }
         _scmHandle = new(localHandle.Value, true);
     }
-    public void GetServiceHandle(Service service) {
+    internal void GetServiceHandle(Service service) {
         OpenServiceManager(false);
         service.CloseService(false);
         IntPtr? localHandle = OpenService(_scmHandle, service.Name, SERVICE_REMEDIATE_CONFIG);
