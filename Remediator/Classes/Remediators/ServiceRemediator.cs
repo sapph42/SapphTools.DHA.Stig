@@ -54,7 +54,8 @@ internal partial class ServiceRemediator : IRemediator {
         foreach (string serviceName in serviceBinPaths.Keys) {
             string path = ExtractPath(serviceBinPaths[serviceName]);
             if (FlagPath(path)) {
-                string arguments = serviceBinPaths[serviceName][(path.Length)..];
+                int startIndex = serviceBinPaths[serviceName].IndexOf(path);
+                string arguments = serviceBinPaths[serviceName][(startIndex + path.Length)..];
                 string newPath = $"\"{path}\"{arguments}";
                 flaggedServices.Add(serviceName, newPath);
             }
