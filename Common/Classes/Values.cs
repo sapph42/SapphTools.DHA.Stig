@@ -399,7 +399,7 @@ public class ServiceSetValue : ServiceValue, IValue<ServiceSetValue> {
     }
     public override ServiceSetValue Clone() {
         ServiceSetValue clone = new(this);
-        foreach (ServiceSetValue val in Values.OfType<ServiceSetValue>()) {
+        foreach (ServiceValue val in Values.OfType<ServiceValue>()) {
             clone.Values.Add(val.Clone());
         }
         return clone;
