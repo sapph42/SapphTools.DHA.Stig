@@ -38,6 +38,7 @@ public partial class SettingEditor : Form {
             TargetType.RegistryValuePattern => new RegistryValuePatternSettings(Setting),
             TargetType.SeRight => new SeRightsSettings(Setting),
             TargetType.CertStore => new CertificatesValueSettings(Setting, ruleId),
+            TargetType.Service => new ServiceValueSettings(Setting),
             _ => new ValueSettings()
         };
         Dangerous.Checked = setting.Dangerous;
