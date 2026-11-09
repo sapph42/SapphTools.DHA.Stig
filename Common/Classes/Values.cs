@@ -368,6 +368,7 @@ public class ServiceValue : IValue<ServiceValue> {
     public virtual ServiceValue Clone() {
         return new() {
             ActionSubtype = ActionSubtype,
+            BinPath = BinPath,
             Name = Name
         };
     }
@@ -377,6 +378,7 @@ public class ServiceValue : IValue<ServiceValue> {
         }
         if (other is ServiceValue val) {
             return ActionSubtype == val.ActionSubtype &&
+                string.Equals(BinPath, val.BinPath, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(Name, val.Name, StringComparison.OrdinalIgnoreCase);
         }
         return false;
