@@ -8253,7 +8253,39 @@
         }
       ]
     },
+    {
+      "RuleId": "132101",
+      "Description": "Windows Speculative Execution Configuration Check",
+      "Settings": [
+        {
+          "Order": 0,
+          "RequiredContext": "Administrator",
+          "Dangerous": false,
+          "Data": {
+            "Action": "RegistryValue",
+            "Target": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+            "Name": "FeatureSettingsOverrideMask",
+            "Data": 3,
+            "Kind": "DWord",
+            "Overwrite": true
+          }
+        },
+        {
+          "Order": 1,
+          "RequiredContext": "Administrator",
+          "Dangerous": false,
+          "Data": {
+            "Action": "RegistryValue",
+            "Target": "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management",
+            "Name": "FeatureSettingsOverride",
+            "Data": 8396872,
+            "Kind": "DWord",
+            "Overwrite": true
+          }
+        }
+      ]
     },
+    {
       "RuleId": "00042000",
       "Description": "Test Rule Only",
       "Settings": [
