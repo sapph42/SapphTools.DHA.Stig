@@ -38,7 +38,36 @@ internal partial class ServiceRemediator : IRemediator {
     }
 
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger) {
-        throw new NotImplementedException();
+        logger ??= new();
+        if (logEntry.After is null) {
+            return new ArgumentException("Cannot rollback a log entry with a null After property.");
+        }
+        if (logEntry.Before is not ServiceValue oldVal) {
+            return new ArgumentException(
+                $"Expected {nameof(logEntry)}.Before to be of type RegistryValuePatternValue, was {logEntry.Before?.GetType().Name}"
+            );
+        }
+        if (logEntry.After is not ServiceValue newVal) {
+            return new ArgumentException(
+                $"Expected {nameof(logEntry)}.After to be of type ServiceValue, was {logEntry.After?.GetType().Name}"
+            );
+        }
+        Guid settingBatch = Guid.NewGuid();
+        string targetHost = logEntry.ComputerName ?? Environment.MachineName;
+        RemediationPreAction pre = new() {
+            RemediationBatch = remBatch,
+            RuleBatch = ruleBatch,
+            SettingBatch = settingBatch,
+            RuleId = logEntry.RuleId,
+            Description = logEntry.Description,
+            ComputerName = targetHost,
+            SettingIndex = logEntry.SettingIndex,
+            Source = ActionSource.Rollback
+        };
+        using ServiceManager scm = new(targetHost);
+        scm.FetchServiceData(newVal.Name);
+        return SetBinPath(pre, newVal, oldVal, scm, logger);
+    }
     private static RemediationActionResult SetBinPath(RemediationPreAction preAction, ServiceValue before, ServiceValue target, ServiceManager scm, Logger logger) {
         ArgumentNullException.ThrowIfNull(target.Name, nameof(target.Name));
         ArgumentNullException.ThrowIfNull(target.BinPath, nameof(target.BinPath));
