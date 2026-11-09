@@ -39,6 +39,21 @@ internal partial class ServiceRemediator : IRemediator {
 
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger) {
         throw new NotImplementedException();
+    private static RemediationActionResult SetBinPath(RemediationPreAction preAction, ServiceValue before, ServiceValue target, ServiceManager scm, Logger logger) {
+        ArgumentNullException.ThrowIfNull(target.Name, nameof(target.Name));
+        ArgumentNullException.ThrowIfNull(target.BinPath, nameof(target.BinPath));
+        try {
+            bool changeRes = scm.ServiceDispatch((service) => {
+                return service.SetBinPath(target.BinPath);
+            }, target.Name);
+            if (changeRes) {
+                return logger.LogSuccess(preAction, TargetType.Service, target.BinPath, RollbackCapability.Automatic, before, target);
+            } else {
+                return logger.LogError(preAction, TargetType.Service, target.BinPath, "Unknown failure", false);
+            }
+        } catch (Exception ex) {
+            return logger.LogError(preAction, TargetType.Service, target.BinPath, ex.Message, false);
+        }
     }
 
     private static RemediationActionResult RemediateNoAction(RemediationPreAction preAction, Logger logger) {
@@ -81,18 +96,7 @@ internal partial class ServiceRemediator : IRemediator {
                 res ??= thisRes;
                 continue;
             }
-            try {
-                bool changeRes = scm.ServiceDispatch((service) => {
-                    return service.SetBinPath(flaggedServices[serviceName]);
-                }, serviceName);
-                if (changeRes) {
-                    thisRes = logger.LogSuccess(preAction, TargetType.Service, serviceName, RollbackCapability.Automatic, before, after);
-                } else {
-                    thisRes = logger.LogError(preAction, TargetType.Service, serviceName, "Unknown failure", false);
-                }
-            } catch (Exception ex) {
-                thisRes = logger.LogError(preAction, TargetType.Service, serviceName, ex.Message, false);
-            }
+            thisRes = SetBinPath(preAction, before, after, scm, logger);
             if (!thisRes.IsSuccess) {
                 res = thisRes;
             }
