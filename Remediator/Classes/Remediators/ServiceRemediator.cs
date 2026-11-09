@@ -33,7 +33,7 @@ internal partial class ServiceRemediator : IRemediator {
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
         return val.ActionSubtype switch {
             ServiceType.NoAction => RemediateNoAction(pre, logger),
-            ServiceType.UnquotedPath => RemediateUnquotedPath(dto, pre, val, logger),
+            ServiceType.UnquotedPath => RemediateUnquotedPath(pre, val, logger, dto.WhatIf),
         };
     }
 
@@ -44,7 +44,7 @@ internal partial class ServiceRemediator : IRemediator {
     private static RemediationActionResult RemediateNoAction(RemediationPreAction preAction, Logger logger) {
         return logger.LogNoAction(preAction, TargetType.Service, preAction.ComputerName, null);
     }
-    private static RemediationActionResult RemediateUnquotedPath(RemediatorDto dto, RemediationPreAction preAction, ServiceValue data, Logger logger) {
+    private static RemediationActionResult RemediateUnquotedPath(RemediationPreAction preAction, ServiceValue data, Logger logger, bool whatIf = true) {
         using ServiceManager scm = new(preAction.ComputerName);
         scm.FetchServiceData();
         Dictionary<string, string> serviceBinPaths = scm.ServiceDispatch((service) => {
@@ -75,7 +75,7 @@ internal partial class ServiceRemediator : IRemediator {
                 Name = serviceName,
                 BinPath = flaggedServices[serviceName]
             };
-            if (dto.WhatIf) {
+            if (whatIf) {
                 thisRes = logger.LogWhatIf(preAction, TargetType.Service, serviceName, RollbackCapability.NotApplicable, before, null);
                 res ??= thisRes;
                 continue;
