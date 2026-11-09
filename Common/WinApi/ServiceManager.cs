@@ -18,9 +18,9 @@ public partial class ServiceManager : IDisposable {
     }
     public void FetchServiceData(string? serviceName = null) {
         OpenServiceManager();
-        int resumeHandle = 0, bytesNeeded = 0, servicesReturned = 0;
+        int resumeHandle = 0;
         EnumServicesStatusEx(_scmHandle, 0, SERVICE_WIN32, SERVICE_STATE_ALL,
-            IntPtr.Zero, 0, out bytesNeeded, out servicesReturned, ref resumeHandle, null);
+            IntPtr.Zero, 0, out int bytesNeeded, out int servicesReturned, ref resumeHandle, null);
         int lastError = Marshal.GetLastPInvokeError();
         if (lastError != 0 && lastError != 122 && lastError != 234) {
             OpenServiceManager(true);
