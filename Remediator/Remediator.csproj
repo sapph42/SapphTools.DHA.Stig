@@ -11,6 +11,7 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <TargetFramework>net8.0-windows8.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<TargetName>JOSHUA</TargetName>
   </PropertyGroup>
 
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets" />

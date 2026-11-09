@@ -44,12 +44,12 @@
             toolStripSeparator1 = new ToolStripSeparator();
             RemediateMenu = new ToolStripMenuItem();
             LogsMenu = new ToolStripMenuItem();
+            toolStripSeparator2 = new ToolStripSeparator();
+            TestSledMenu = new ToolStripMenuItem();
             CatalogPath = new Label();
             CurrentContext = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             label4 = new Label();
-            toolStripSeparator2 = new ToolStripSeparator();
-            TestSledMenu = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)Catalog).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Findings).BeginInit();
             Menu.SuspendLayout();
@@ -244,6 +244,18 @@
             LogsMenu.Text = "Logs and Rollback";
             LogsMenu.Click += LogsMenu_Click;
             // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new Size(211, 6);
+            // 
+            // TestSledMenu
+            // 
+            TestSledMenu.Name = "TestSledMenu";
+            TestSledMenu.Size = new Size(214, 22);
+            TestSledMenu.Text = "Test Sled";
+            TestSledMenu.Click += TestSledMenu_Click;
+            // 
             // CatalogPath
             // 
             CatalogPath.AutoSize = true;
@@ -288,18 +300,6 @@
             label4.TabIndex = 18;
             label4.Text = "Current Context:";
             // 
-            // toolStripSeparator2
-            // 
-            toolStripSeparator2.Name = "toolStripSeparator2";
-            toolStripSeparator2.Size = new Size(211, 6);
-            // 
-            // TestSledMenu
-            // 
-            TestSledMenu.Name = "TestSledMenu";
-            TestSledMenu.Size = new Size(214, 22);
-            TestSledMenu.Text = "Test Sled";
-            TestSledMenu.Click += TestSledMenu_Click;
-            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -321,7 +321,7 @@
             Controls.Add(Menu);
             MainMenuStrip = Menu;
             Name = "Main";
-            Text = "STIG Remediator";
+            Text = "Joint Operational STIG Heuristic Update/Analysis";
             FormClosing += Main_FormClosing;
             Load += Main_Load;
             ((System.ComponentModel.ISupportInitialize)Catalog).EndInit();
