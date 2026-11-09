@@ -41,7 +41,7 @@ public partial class ServiceManager : IDisposable {
             int structSize = Marshal.SizeOf<ENUM_SERVICE_STATUS_PROCESS>();
             for (int i = 0; i < servicesReturned; i++, current += structSize) {
                 ENUM_SERVICE_STATUS_PROCESS ssp = Marshal.PtrToStructure<ENUM_SERVICE_STATUS_PROCESS>(current);
-                if (serviceName is not null && serviceName.Equals(ssp.lpServiceName, StringComparison.OrdinalIgnoreCase)) {
+                if (serviceName is null || serviceName.Equals(ssp.lpServiceName, StringComparison.OrdinalIgnoreCase)) {
                     Service service = new(this, ssp.lpServiceName);
                     service.SetState((ServiceState)ssp.ServiceStatusProcess.dwCurrentState);
                     Services.Add(service.Name, service);
