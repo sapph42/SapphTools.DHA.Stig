@@ -8237,6 +8237,23 @@
       ]
     },
     {
+      "RuleId": "63155",
+      "Description": "Microsoft Windows Unquoted Service Path Enumeration",
+      "Settings": [
+        {
+          "Order": 0,
+          "RequiredContext": "Administrator",
+          "Dangerous": true,
+          "Data": {
+            "Action": "Service",
+            "ActionSubtype": "UnquotedPath",
+            "Name": null,
+            "BinPath": null
+          }
+        }
+      ]
+    },
+    },
       "RuleId": "00042000",
       "Description": "Test Rule Only",
       "Settings": [
