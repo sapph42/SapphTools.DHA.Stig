@@ -84,13 +84,12 @@ internal partial class ServiceRemediator : IRemediator {
             return logger.LogError(preAction, TargetType.Service, target.BinPath, ex.Message, false);
         }
     }
-
     private static RemediationActionResult RemediateNoAction(RemediationPreAction preAction, Logger logger) {
         return logger.LogNoAction(preAction, TargetType.Service, preAction.ComputerName, null);
     }
     private static RemediationActionResult RemediateUnquotedPath(RemediationPreAction preAction, ServiceValue data, Logger logger, bool whatIf = true) {
         using ServiceManager scm = new(preAction.ComputerName);
-        scm.FetchServiceData();
+        scm.FetchServiceData(data.Name);
         Dictionary<string, string> serviceBinPaths = scm.ServiceDispatch((service) => {
             return service.BinPath;
         });
