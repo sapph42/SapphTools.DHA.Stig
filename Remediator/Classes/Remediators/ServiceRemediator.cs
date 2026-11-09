@@ -166,7 +166,7 @@ internal partial class ServiceRemediator : IRemediator {
             }
         }
         
-        exeIdx = path.IndexOf(".exe");
+        exeIdx = path.IndexOf(".exe", StringComparison.OrdinalIgnoreCase);
         return path[..(exeIdx + 4)];
     }
     private static bool IsAmbiguous(string? binPath) {
