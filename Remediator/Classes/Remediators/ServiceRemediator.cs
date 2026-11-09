@@ -134,8 +134,9 @@ internal partial class ServiceRemediator : IRemediator {
             }
             if (IsAmbiguous(serviceBinPaths[serviceName])) {
                 thisRes = logger.LogError(preAction, TargetType.Service, serviceName, "binPath was sufficiently ambiguous that it could not be automatically resolved.", false);
+            } else {
+                thisRes = SetBinPath(preAction, before, after, scm, logger);
             }
-            thisRes = SetBinPath(preAction, before, after, scm, logger);
             if (!thisRes.IsSuccess) {
                 res = thisRes;
             }
