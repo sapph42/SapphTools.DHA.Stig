@@ -52,6 +52,8 @@ internal partial class ServiceRemediator : IRemediator {
                 $"Expected {nameof(logEntry)}.After to be of type ServiceValue, was {logEntry.After?.GetType().Name}"
             );
         }
+        ArgumentNullException.ThrowIfNull(newVal.Name, nameof(newVal.Name));
+        ArgumentNullException.ThrowIfNull(newVal.BinPath, nameof(newVal.BinPath));
         Guid settingBatch = Guid.NewGuid();
         string targetHost = logEntry.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new() {
@@ -66,6 +68,12 @@ internal partial class ServiceRemediator : IRemediator {
         };
         using ServiceManager scm = new(targetHost);
         scm.FetchServiceData(newVal.Name);
+        string? currentBinPath = scm.ServiceDispatch((service) => {
+            return service.BinPath;
+        }, newVal.Name);
+        if (!newVal.BinPath.Equals(currentBinPath)) {
+            return logger.LogError(pre, TargetType.Service, newVal.Name, "Current binPath does not match remediated value", false);
+        }
         return SetBinPath(pre, newVal, oldVal, scm, logger);
     }
     private static RemediationActionResult SetBinPath(RemediationPreAction preAction, ServiceValue before, ServiceValue target, ServiceManager scm, Logger logger) {
