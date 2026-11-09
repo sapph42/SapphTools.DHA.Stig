@@ -136,7 +136,7 @@ internal static partial class ScmApi {
         uint dwErrorControl,
         string? lpBinaryPathName,
         string? lpLoadOrderGroup,
-        out IntPtr lpdwTagId,
+        IntPtr lpdwTagId,
         string? lpDependencies,
         string? lpServiceStartName,
         string? lpPassword,
