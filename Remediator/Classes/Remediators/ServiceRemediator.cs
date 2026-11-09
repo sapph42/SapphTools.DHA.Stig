@@ -132,6 +132,9 @@ internal partial class ServiceRemediator : IRemediator {
                 res ??= thisRes;
                 continue;
             }
+            if (IsAmbiguous(serviceBinPaths[serviceName])) {
+                thisRes = logger.LogError(preAction, TargetType.Service, serviceName, "binPath was sufficiently ambiguous that it could not be automatically resolved.", false);
+            }
             thisRes = SetBinPath(preAction, before, after, scm, logger);
             if (!thisRes.IsSuccess) {
                 res = thisRes;
@@ -142,9 +145,11 @@ internal partial class ServiceRemediator : IRemediator {
     }
     private static string ExtractPath(string binPath) {
         string path = new(binPath);
+        int exeIdx;
         if (path.StartsWith('"')) {
             int secondQuote = path.IndexOf('"', 1);
             path = path[0..(secondQuote + 1)];
+            return path;
         } else if (ExtractorStep1().IsMatch(path)) {
             Match match = ExtractorStep1().Match(path);
             path = match.Groups[2].Value;
@@ -159,7 +164,44 @@ internal partial class ServiceRemediator : IRemediator {
                 path = match.Groups[1].Value;
             }
         }
-        return path;
+        
+        exeIdx = path.IndexOf(".exe");
+        return path[..(exeIdx + 4)];
+    }
+    private static bool IsAmbiguous(string? binPath) {
+        if (string.IsNullOrWhiteSpace(binPath) ||
+                binPath.IndexOfAny(['\0', '\r', '\n']) >= 0) {
+            return true;
+        }
+        string command = binPath.TrimStart(' ', '\t');
+        bool quoted = command[0] == '"';
+        string expectedPath;
+
+        if (quoted) {
+            int closingQuote = command.IndexOf('"', 1);
+            if (closingQuote <= 1) {
+                return true;
+            }
+            int pathEnd = closingQuote + 1;
+            if (pathEnd < command.Length && command[pathEnd] is not (' ' or '\t')) {
+                return true;
+            }
+            expectedPath = command[..pathEnd];
+        } else {
+            MatchCollection matches = AmbiCheck1().Matches(command);
+            if (matches.Count != 1) {
+                return true;
+            }
+            Match candidate = matches[0];
+            expectedPath = command[..(candidate.Index + candidate.Length)];
+            if (!AmbiCheck2().IsMatch(expectedPath)) {
+                return true;
+            }
+        }
+        string extracted = ExtractPath(binPath);
+        bool expectedFlag = !quoted && expectedPath.Contains(' ');
+        return !string.Equals(extracted, expectedPath, StringComparison.Ordinal) ||
+            FlagPath(extracted) != expectedFlag;
     }
     private static bool FlagPath(string binPath) {
         return binPath.IndexOf(' ') > 0 &&
@@ -178,4 +220,10 @@ internal partial class ServiceRemediator : IRemediator {
 
     [GeneratedRegex(@"^[^\s]+\s+$")]
     private static partial Regex FlagCheck2();
+
+    [GeneratedRegex(@"\.exe(?=[ \t]|\z)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex AmbiCheck1();
+
+    [GeneratedRegex(@"\A[A-Za-z]:\\[^:""<>|?*/\x00-\x1F]+\z")]
+    private static partial Regex AmbiCheck2();
 }
