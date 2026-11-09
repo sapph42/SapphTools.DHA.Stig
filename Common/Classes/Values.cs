@@ -363,6 +363,7 @@ public class ServiceValue : IValue<ServiceValue> {
     [JsonInclude]
     public required ServiceType ActionSubtype { get; set; }
     public string? Name { get; set; }
+    public string? BinPath { get; set; }
     public string TargetString => ToString();
     public virtual ServiceValue Clone() {
         return new() {
