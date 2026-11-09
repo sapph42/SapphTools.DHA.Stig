@@ -6,11 +6,11 @@ using static SapphTools.DHA.Stig.Common.WinApi.ScmApi;
 
 namespace SapphTools.DHA.Stig.Common.WinApi;
 public partial class ServiceManager : IDisposable {
+    private readonly object _lock = new();
+    private readonly DisposableDictionary<string, Service> Services = [];
+    private readonly string? _computerName;
     private bool disposedValue;
     private SafeScmHandle? _scmHandle;
-    private object _lock = new();
-    private DisposableDictionary<string, Service> Services = [];
-    private string? _computerName;
 
     public ServiceManager(string? computerName) {
         _computerName = computerName;
