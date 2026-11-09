@@ -4295,7 +4295,7 @@
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters",
-            "Name": "NullSessionShares",
+            "Name": "RestrictNullSessAccess",
             "Data": 1,
             "Kind": "DWord",
             "Overwrite": true
@@ -4503,8 +4503,8 @@
           "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
-            "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa",
-            "Name": "FIPSAlgorithmPolicy",
+            "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy",
+            "Name": "Enabled",
             "Data": 1,
             "Kind": "DWord",
             "Overwrite": true
@@ -5696,7 +5696,7 @@
           "Data": {
             "Action": "RegistryValue",
             "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters",
-            "Name": "NullSessionShares",
+            "Name": "RestrictNullSessAccess",
             "Data": 1,
             "Kind": "DWord",
             "Overwrite": true
@@ -5714,8 +5714,8 @@
           "Dangerous": false,
           "Data": {
             "Action": "RegistryValue",
-            "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa",
-            "Name": "FIPSAlgorithmPolicy",
+            "Target": "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control\\Lsa\\FIPSAlgorithmPolicy",
+            "Name": "Enabled",
             "Data": 1,
             "Kind": "DWord",
             "Overwrite": true
