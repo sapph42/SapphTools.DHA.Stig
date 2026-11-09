@@ -27,7 +27,35 @@ public class Service : IDisposable {
         _name = name;
         GetBinPath();
     }
-    public void SetHandle(SafeScmHandle handle) {
+    public bool SetBinPath(string newBinPath) {
+        OpenService();
+        IntPtr tag = IntPtr.Zero;
+        bool ret = ChangeServiceConfig(
+            _serviceHandle,
+            SERVICE_NO_CHANGE,
+            SERVICE_NO_CHANGE,
+            SERVICE_NO_CHANGE,
+            newBinPath,
+            null,
+            out tag,
+            null,
+            null,
+            null,
+            null
+        );
+        if (!ret) {
+            throw new Win32Exception(Marshal.GetLastPInvokeError());
+        }
+        return ret;
+    }
+    public ServiceValue ToServiceValue() {
+        return new() {
+            ActionSubtype = ServiceType.NoAction,
+            Name = _name,
+            BinPath = _binPath,
+        };
+    }
+    internal void SetHandle(SafeScmHandle handle) {
         _serviceHandle = handle;
     }
     public void SetState(ServiceState state) {
