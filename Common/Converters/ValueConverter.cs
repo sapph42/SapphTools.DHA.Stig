@@ -38,6 +38,11 @@ public sealed class ValueConverter : JsonConverter<IValue> {
                     json, options)
                 ?? throw new JsonException(),
 
+            TargetType.RegistryKey =>
+                JsonSerializer.Deserialize<RegistryKeyValue>(
+                    json, options)
+                ?? throw new JsonException(),
+
             TargetType.RegistryAcl =>
                 JsonSerializer.Deserialize<RegistryAclValue>(
                     json, options)
