@@ -3,6 +3,7 @@ using SapphTools.SecurityDescriptor.Classes;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Text;
 
 namespace SapphTools.DHA.Stig.Common.WinApi;
 
@@ -147,21 +148,16 @@ public partial class LsaConnection : IDisposable {
         }
         LsaObjectAttributes defaultAttributes = new();
         if (computerName is not null && !computerName.Equals(Environment.MachineName)) {
-            using SafeHBuffer systemBuffer = SafeHBuffer.AllocFactory(computerName.Length + 2);
-            systemBuffer.WriteArray(
-                0,
-                System.Text.Encoding.Unicode.GetBytes(computerName),
-                0,
-                computerName.Length
-            );
-            systemBuffer.Write((ulong)computerName.Length, (short)0);
+            byte[] computerNameBytes = Encoding.Unicode.GetBytes(computerName + '\0');
+            using SafeHBuffer systemBuffer = SafeHBuffer.AllocFactory(computerNameBytes.Length);
+            systemBuffer.WriteArray(0, computerNameBytes, 0, computerNameBytes.Length);
             bool success = false;
             try {
                 systemBuffer.DangerousAddRef(ref success);
                 if (success) {
                     LsaUnicodeString systemName = new() {
-                        Length = (ushort)computerName.Length,
-                        MaximumLength = (ushort)(computerName.Length + 2),
+                        Length = checked((ushort)(computerNameBytes.Length - sizeof(char))),
+                        MaximumLength = checked((ushort)computerNameBytes.Length),
                         Buffer = systemBuffer.DangerousGetHandle()
                     };
                     uint remoteResult = LsaOpenPolicy(ref systemName, ref defaultAttributes, (uint)ops, out IntPtr remoteHandle);
