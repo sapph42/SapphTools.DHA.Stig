@@ -12,6 +12,14 @@ public class Service : IDisposable {
     private string? _binPath;
     private ServiceManager _manager;
 
+    public string BinPath {
+        get {
+            if (_binPath is null) {
+                GetBinPath();
+            }
+            return _binPath ?? "";
+        }
+    }
     public string Name => _name;
 
     public Service(ServiceManager manager, string name) {
