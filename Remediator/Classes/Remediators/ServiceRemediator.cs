@@ -77,6 +77,7 @@ internal partial class ServiceRemediator : IRemediator {
             };
             if (dto.WhatIf) {
                 thisRes = logger.LogWhatIf(preAction, TargetType.Service, serviceName, RollbackCapability.NotApplicable, before, null);
+                res ??= thisRes;
                 continue;
             }
             try {
