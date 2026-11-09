@@ -16,7 +16,7 @@ public partial class ServiceManager : IDisposable {
         _computerName = computerName;
         OpenServiceManager();
     }
-    public void FetchServiceData() {
+    public void FetchServiceData(string? serviceName = null) {
         OpenServiceManager();
         int resumeHandle = 0, bytesNeeded = 0, servicesReturned = 0;
         EnumServicesStatusEx(_scmHandle, 0, SERVICE_WIN32, SERVICE_STATE_ALL,
@@ -41,9 +41,11 @@ public partial class ServiceManager : IDisposable {
             int structSize = Marshal.SizeOf<ENUM_SERVICE_STATUS_PROCESS>();
             for (int i = 0; i < servicesReturned; i++, current += structSize) {
                 ENUM_SERVICE_STATUS_PROCESS ssp = Marshal.PtrToStructure<ENUM_SERVICE_STATUS_PROCESS>(current);
-                Service service = new(this, ssp.lpServiceName);
-                service.SetState((ServiceState)ssp.ServiceStatusProcess.dwCurrentState);
-                Services.Add(service.Name, service);
+                if (serviceName is not null && serviceName.Equals(ssp.lpServiceName, StringComparison.OrdinalIgnoreCase)) {
+                    Service service = new(this, ssp.lpServiceName);
+                    service.SetState((ServiceState)ssp.ServiceStatusProcess.dwCurrentState);
+                    Services.Add(service.Name, service);
+                }
             }
         } catch (Exception ex) {
             Console.WriteLine($"ServiceManager.FetchServiceData exception :: {ex.Message}");
