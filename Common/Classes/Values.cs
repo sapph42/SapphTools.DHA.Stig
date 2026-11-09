@@ -416,7 +416,7 @@ public class ServiceSetValue : ServiceValue, IValue<ServiceSetValue> {
             return false;
         }
         foreach (ServiceValue val in Values) {
-            if (!otherRvsv.Values.Contains(val)) {
+            if (!otherRvsv.Values.Any(val.Equals)) {
                 return false;
             }
         }
