@@ -60,7 +60,7 @@ internal partial class ServiceRemediator : IRemediator {
             }
         }
         if (flaggedServices.Count == 0) {
-            logger.LogNoAction(preAction, TargetType.Service, string.Empty, null);
+            return logger.LogNoAction(preAction, TargetType.Service, string.Empty, null);
         }
         RemediationActionResult? res = null;
         foreach (string serviceName in flaggedServices.Keys) {
