@@ -29,7 +29,6 @@ public class Service : IDisposable {
     }
     public bool SetBinPath(string newBinPath) {
         OpenService();
-        IntPtr tag = IntPtr.Zero;
         bool ret = ChangeServiceConfig(
             _serviceHandle,
             SERVICE_NO_CHANGE,
@@ -37,7 +36,7 @@ public class Service : IDisposable {
             SERVICE_NO_CHANGE,
             newBinPath,
             null,
-            out tag,
+            IntPtr.Zero,
             null,
             null,
             null,
