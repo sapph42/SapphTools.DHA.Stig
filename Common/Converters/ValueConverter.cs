@@ -58,6 +58,11 @@ public sealed class ValueConverter : JsonConverter<IValue> {
                     json, options)
                 ?? throw new JsonException(),
 
+            TargetType.Service =>
+                JsonSerializer.Deserialize<ServiceValue>(
+                    json, options)
+                ?? throw new JsonException(),
+
             _ => throw new JsonException(
                 $"Unsupported ActionType '{action}'.")
         };
