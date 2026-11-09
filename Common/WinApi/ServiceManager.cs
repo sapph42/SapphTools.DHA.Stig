@@ -53,6 +53,14 @@ public partial class ServiceManager : IDisposable {
             Marshal.FreeHGlobal(buffer);
         }
     }
+    public IEnumerable<ServiceValue> GetServiceValues() {
+        List<ServiceValue> values = [];
+        foreach (Service service in Services.Values) {
+            values.Add(service.ToServiceValue());
+        }
+        return values;
+    }
+    }
     private void CloseServiceManager(bool dispose) {
         if (dispose) {
             Dispose();
