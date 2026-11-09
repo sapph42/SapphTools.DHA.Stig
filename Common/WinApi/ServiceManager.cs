@@ -1,5 +1,6 @@
 ﻿using SapphTools.IDisposableEnumerable;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using static SapphTools.DHA.Stig.Common.WinApi.ScmApi;
@@ -41,10 +42,15 @@ public partial class ServiceManager : IDisposable {
             int structSize = Marshal.SizeOf<ENUM_SERVICE_STATUS_PROCESS>();
             for (int i = 0; i < servicesReturned; i++, current += structSize) {
                 ENUM_SERVICE_STATUS_PROCESS ssp = Marshal.PtrToStructure<ENUM_SERVICE_STATUS_PROCESS>(current);
+                Debug.WriteLine($"Fetched ENUM_SERVICE_STATUS_PROCESS for \"{ssp.lpServiceName}\"");
                 if (serviceName is null || serviceName.Equals(ssp.lpServiceName, StringComparison.OrdinalIgnoreCase)) {
-                    Service service = new(this, ssp.lpServiceName);
-                    service.SetState((ServiceState)ssp.ServiceStatusProcess.dwCurrentState);
-                    Services.Add(service.Name, service);
+                    try {
+                        Service service = new(this, ssp.lpServiceName);
+                        service.SetState((ServiceState)ssp.ServiceStatusProcess.dwCurrentState);
+                        Services[service.Name] = service;
+                    } catch {
+                        Debug.WriteLine($"Exception thrown creating Service object for {ssp.lpServiceName}");
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -107,6 +113,7 @@ public partial class ServiceManager : IDisposable {
         service.CloseService(false);
         IntPtr? localHandle = OpenService(_scmHandle, service.Name, SERVICE_REMEDIATE_CONFIG);
         if (localHandle is null || localHandle == IntPtr.Zero) {
+            Debug.WriteLine($"Exception thrown opening service handle for {service.Name}");
             throw new Win32Exception(Marshal.GetLastPInvokeError());
         }
         SafeScmHandle handle = new(localHandle.Value, true);
