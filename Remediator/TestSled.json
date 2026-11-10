@@ -1,28 +1,36 @@
 {
-	"arrayVersion": 1,
-	"remoteDevTarget": [
+	"ArrayVersion": 1,
+	"LocalTarget": "EAMCWKGDDM704",
+	"RemoteDevTarget": [
 		"EAMCWS200481",
 		"EAMCAP00074"
 	],
-	"remoteProdTarget": [
+	"RemoteProdTarget": [
 		"EAMCAP015002",
 		"EAMCB600009"
 	],
-	"tests": [
+	"Build": [
+		"10e2817d-0413-4f67-931a-72b7b0fdb551",
+		"f218e634-d441-476d-88e9-392099d4ba39",
+		"20cb6f1e-54dd-4949-9075-4a84210b1a06"
+	],
+	"Tests": [
 		{
-			"testId": 1000,
-			"phase": 1,
-			"order": 1,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1000,
+			"Phase": 1,
+			"Order": 1,
+			"Config": {
+				"Target": "Local",
+				"Elevated": false,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -35,12 +43,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 1,
-					"setting": {
+					"Order": 1,
+					"Setting": {
 						"Order": 1,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -53,12 +63,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 2,
-					"setting": {
+					"Order": 2,
+					"Setting": {
 						"Order": 2,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -71,12 +83,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 3,
-					"setting": {
+					"Order": 3,
+					"Setting": {
 						"Order": 3,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -89,26 +103,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1001,
-			"phase": 1,
-			"order": 2,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1001,
+			"Phase": 1,
+			"Order": 2,
+			"Config": {
+				"Target": "Local",
+				"Elevated": false,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -121,12 +142,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 1,
-					"setting": {
+					"Order": 1,
+					"Setting": {
 						"Order": 1,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -136,19 +159,21 @@
 							"Name": "Multi",
 							"Data": [
 								"new",
-								"日本語",
+								"\u65E5\u672C\u8A9E",
 								"three"
 							],
 							"Kind": "MultiString",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 2,
-					"setting": {
+					"Order": 2,
+					"Setting": {
 						"Order": 2,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -156,31 +181,38 @@
 							"Action": "RegistryValue",
 							"Target": "HKEY_CURRENT_USER\\Software\\SapphTools.DHA.Stig.TestSled.Full20261026\\P01\\T1001",
 							"Name": "Unicode",
-							"Data": "renamed 😀",
+							"Data": "renamed \uD83D\uDE00",
 							"Kind": "String",
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1002,
-			"phase": 1,
-			"order": 3,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1002,
+			"Phase": 1,
+			"Order": 3,
+			"Config": {
+				"Target": "Local",
+				"Elevated": false,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -193,26 +225,33 @@
 							"Overwrite": false
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1003,
-			"phase": 2,
-			"order": 1,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1003,
+			"Phase": 2,
+			"Order": 1,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -225,12 +264,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 1,
-					"setting": {
+					"Order": 1,
+					"Setting": {
 						"Order": 1,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -243,12 +284,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 2,
-					"setting": {
+					"Order": 2,
+					"Setting": {
 						"Order": 2,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -261,26 +304,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1004,
-			"phase": 2,
-			"order": 2,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1004,
+			"Phase": 2,
+			"Order": 2,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -288,31 +338,38 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1005,
-			"phase": 2,
-			"order": 3,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1005,
+			"Phase": 2,
+			"Order": 3,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -325,26 +382,33 @@
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1006,
-			"phase": 2,
-			"order": 4,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1006,
+			"Phase": 2,
+			"Order": 4,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -358,66 +422,81 @@
 							]
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1007,
-			"phase": 2,
-			"order": 5,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1007,
+			"Phase": 2,
+			"Order": 5,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
 						"Data": {
-							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
 								"Duration": 901,
 								"Window": 901,
 								"Threshold": 3
-							}
+							},
+							"Action": "Sam",
+							"TargetString": "AccountLockoutPolicy"
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1066,
-			"phase": 2,
-			"order": 6,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1066,
+			"Phase": 2,
+			"Order": 6,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValuePattern",
 							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"TargetPattern": "^TestSledPattern_[0-9]\u002B$",
 							"SubPath": "Settings",
 							"PathPattern": "^Fixture$",
 							"Name": "PatternProbe",
@@ -427,26 +506,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1008,
-			"phase": 3,
-			"order": 1,
-			"config": {
-				"target": "Local",
-				"elevated": false,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1008,
+			"Phase": 3,
+			"Order": 1,
+			"Config": {
+				"Target": "Local",
+				"Elevated": false,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "None",
 						"Dangerous": false,
@@ -459,26 +545,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1022,
-			"phase": 6,
-			"order": 2,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1022,
+			"Phase": 6,
+			"Order": 2,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -491,26 +584,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1023,
-			"phase": 6,
-			"order": 3,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1023,
+			"Phase": 6,
+			"Order": 3,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -518,31 +618,38 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1024,
-			"phase": 6,
-			"order": 4,
-			"config": {
-				"target": "Local",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1024,
+			"Phase": 6,
+			"Order": 4,
+			"Config": {
+				"Target": "Local",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -556,26 +663,33 @@
 							]
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1025,
-			"phase": 7,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": false,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1025,
+			"Phase": 7,
+			"Order": 1,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": false,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -588,26 +702,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1026,
-			"phase": 7,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1026,
+			"Phase": 7,
+			"Order": 2,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -620,12 +741,14 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				},
 				{
-					"order": 1,
-					"setting": {
+					"Order": 1,
+					"Setting": {
 						"Order": 1,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -638,26 +761,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1027,
-			"phase": 7,
-			"order": 3,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1027,
+			"Phase": 7,
+			"Order": 3,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -670,26 +800,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1028,
-			"phase": 7,
-			"order": 4,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1028,
+			"Phase": 7,
+			"Order": 4,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -697,31 +834,38 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1029,
-			"phase": 7,
-			"order": 5,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1029,
+			"Phase": 7,
+			"Order": 5,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -734,33 +878,40 @@
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1067,
-			"phase": 7,
-			"order": 6,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1067,
+			"Phase": 7,
+			"Order": 6,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValuePattern",
 							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"TargetPattern": "^TestSledPattern_[0-9]\u002B$",
 							"SubPath": "Settings",
 							"PathPattern": "^Fixture$",
 							"Name": "PatternProbe",
@@ -770,26 +921,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1030,
-			"phase": 8,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": true
+			"TestId": 1030,
+			"Phase": 8,
+			"Order": 1,
+			"Config": {
+				"Target": "SingleRemoteDev",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": true
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -802,26 +960,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1039,
-			"phase": 11,
-			"order": 2,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1039,
+			"Phase": 11,
+			"Order": 2,
+			"Config": {
+				"Target": "FullRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -834,26 +999,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1040,
-			"phase": 11,
-			"order": 3,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1040,
+			"Phase": 11,
+			"Order": 3,
+			"Config": {
+				"Target": "FullRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -861,31 +1033,38 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1041,
-			"phase": 11,
-			"order": 4,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1041,
+			"Phase": 11,
+			"Order": 4,
+			"Config": {
+				"Target": "FullRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -899,33 +1078,40 @@
 							]
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1068,
-			"phase": 11,
-			"order": 5,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1068,
+			"Phase": 11,
+			"Order": 5,
+			"Config": {
+				"Target": "FullRemoteDev",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValuePattern",
 							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"TargetPattern": "^TestSledPattern_[0-9]\u002B$",
 							"SubPath": "Settings",
 							"PathPattern": "^Fixture$",
 							"Name": "PatternProbe",
@@ -935,26 +1121,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1042,
-			"phase": 12,
-			"order": 1,
-			"config": {
-				"target": "FullRemoteDev",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1042,
+			"Phase": 12,
+			"Order": 1,
+			"Config": {
+				"Target": "FullRemoteDev",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -967,26 +1160,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1049,
-			"phase": 14,
-			"order": 2,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1049,
+			"Phase": 14,
+			"Order": 2,
+			"Config": {
+				"Target": "SingleRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -999,26 +1199,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1050,
-			"phase": 14,
-			"order": 3,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1050,
+			"Phase": 14,
+			"Order": 3,
+			"Config": {
+				"Target": "SingleRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1031,26 +1238,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1051,
-			"phase": 14,
-			"order": 4,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1051,
+			"Phase": 14,
+			"Order": 4,
+			"Config": {
+				"Target": "SingleRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1058,31 +1272,38 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1052,
-			"phase": 14,
-			"order": 5,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1052,
+			"Phase": 14,
+			"Order": 5,
+			"Config": {
+				"Target": "SingleRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1096,33 +1317,40 @@
 							]
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1069,
-			"phase": 14,
-			"order": 6,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1069,
+			"Phase": 14,
+			"Order": 6,
+			"Config": {
+				"Target": "SingleRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValuePattern",
 							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"TargetPattern": "^TestSledPattern_[0-9]\u002B$",
 							"SubPath": "Settings",
 							"PathPattern": "^Fixture$",
 							"Name": "PatternProbe",
@@ -1132,26 +1360,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1053,
-			"phase": 15,
-			"order": 1,
-			"config": {
-				"target": "SingleRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1053,
+			"Phase": 15,
+			"Order": 1,
+			"Config": {
+				"Target": "SingleRemoteProd",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
@@ -1164,26 +1399,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1059,
-			"phase": 17,
-			"order": 2,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1059,
+			"Phase": 17,
+			"Order": 2,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1191,31 +1433,38 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1060,
-			"phase": 17,
-			"order": 3,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1060,
+			"Phase": 17,
+			"Order": 3,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1229,66 +1478,81 @@
 							]
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1061,
-			"phase": 17,
-			"order": 4,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1061,
+			"Phase": 17,
+			"Order": 4,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
 						"Data": {
-							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
 								"Duration": 901,
 								"Window": 901,
 								"Threshold": 3
-							}
+							},
+							"Action": "Sam",
+							"TargetString": "AccountLockoutPolicy"
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1070,
-			"phase": 17,
-			"order": 5,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": true,
-				"attemptRollback": false
+			"TestId": 1070,
+			"Phase": 17,
+			"Order": 5,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": true,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": false,
 						"Data": {
 							"Action": "RegistryValuePattern",
 							"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\Remote",
-							"TargetPattern": "^TestSledPattern_[0-9]+$",
+							"TargetPattern": "^TestSledPattern_[0-9]\u002B$",
 							"SubPath": "Settings",
 							"PathPattern": "^Fixture$",
 							"Name": "PatternProbe",
@@ -1298,26 +1562,33 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": null,
-					"expectedResult": "WhatIf"
+					"Results": {},
+					"ExpectedAfter": null,
+					"ExpectedResult": "WhatIf",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1062,
-			"phase": 18,
-			"order": 1,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1062,
+			"Phase": 18,
+			"Order": 1,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1330,7 +1601,8 @@
 							"Overwrite": true
 						}
 					},
-					"expectedAfter": {
+					"Results": {},
+					"ExpectedAfter": {
 						"Action": "RegistryValue",
 						"Target": "HKEY_LOCAL_MACHINE\\SOFTWARE\\EAMC\\TestSled\\P18\\T1062",
 						"Name": "TestSled",
@@ -1338,25 +1610,31 @@
 						"Kind": "DWord",
 						"Overwrite": false
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
 			],
-			"recoverySuite": []
+			"RecoverySuite": [],
+			"TestPass": null,
+			"RecoveryPass": null,
+			"Pass": false
 		},
 		{
-			"testId": 1063,
-			"phase": 18,
-			"order": 2,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1063,
+			"Phase": 18,
+			"Order": 2,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1364,26 +1642,28 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
+					"Results": {},
+					"ExpectedAfter": {
 						"Action": "FileSystemAcl",
 						"Target": "C:\\AdminTools\\PowerShell",
 						"Sddl": {
-							"SddlString": "O:SYG:SYD:PAI(A;;0x120089;;;LS)(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+							"SddlString": "O:SYG:SYD:PAI(A;;0x00120089;;;LS)(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 							"SddlType": "File"
 						}
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
 			],
-			"recoverySuite": [
+			"RecoverySuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1391,37 +1671,44 @@
 							"Action": "FileSystemAcl",
 							"Target": "C:\\AdminTools\\PowerShell",
 							"Sddl": {
-								"SddlString": "O:SYG:SYD:PAI(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+								"SddlString": "O:SYG:SYD:PAI(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 								"SddlType": "File"
 							}
 						}
 					},
-					"expectedAfter": {
+					"Results": {},
+					"ExpectedAfter": {
 						"Action": "FileSystemAcl",
 						"Target": "C:\\AdminTools\\PowerShell",
 						"Sddl": {
-							"SddlString": "O:SYG:SYD:PAI(A;OICIIO;FA;;;CO)(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;0x1200a9;;;AC)",
+							"SddlString": "O:SYG:SYD:PAI(A;CIOIIO;FA;;;CO)(A;CIOI;FA;;;SY)(A;CIOI;FA;;;BA)(A;CIOI;0x001200A9;;;AC)",
 							"SddlType": "File"
 						}
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
-			]
+			],
+			"TestPass": null,
+			"RecoveryPass": false,
+			"Pass": false
 		},
 		{
-			"testId": 1064,
-			"phase": 18,
-			"order": 3,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1064,
+			"Phase": 18,
+			"Order": 3,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1435,7 +1722,8 @@
 							]
 						}
 					},
-					"expectedAfter": {
+					"Results": {},
+					"ExpectedAfter": {
 						"Action": "SeRight",
 						"Target": "SeIncreaseWorkingSetPrivilege",
 						"AccountNames": [
@@ -1444,13 +1732,14 @@
 							}
 						]
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
 			],
-			"recoverySuite": [
+			"RecoverySuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
@@ -1464,7 +1753,8 @@
 							]
 						}
 					},
-					"expectedAfter": {
+					"Results": {},
+					"ExpectedAfter": {
 						"Action": "SeRight",
 						"Target": "SeIncreaseWorkingSetPrivilege",
 						"AccountNames": [
@@ -1473,78 +1763,99 @@
 							}
 						]
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
-			]
+			],
+			"TestPass": null,
+			"RecoveryPass": false,
+			"Pass": false
 		},
 		{
-			"testId": 1065,
-			"phase": 18,
-			"order": 4,
-			"config": {
-				"target": "FullRemoteProd",
-				"elevated": true,
-				"whatIf": false,
-				"attemptRollback": false
+			"TestId": 1065,
+			"Phase": 18,
+			"Order": 4,
+			"Config": {
+				"Target": "FullRemoteProd",
+				"Elevated": true,
+				"WhatIf": false,
+				"AttemptRollback": false
 			},
-			"testSuite": [
+			"TestRun": false,
+			"RunTargets": [],
+			"TestSuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
 						"Data": {
-							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
 								"Duration": 901,
 								"Window": 901,
 								"Threshold": 3
-							}
+							},
+							"Action": "Sam",
+							"TargetString": "AccountLockoutPolicy"
 						}
 					},
-					"expectedAfter": {
-						"Action": "Sam",
+					"Results": {},
+					"ExpectedAfter": {
 						"Target": "AccountLockoutPolicy",
 						"SamStruct": {
 							"Duration": 901,
 							"Window": 901,
 							"Threshold": 3
-						}
+						},
+						"Action": "Sam",
+						"TargetString": "AccountLockoutPolicy"
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
 			],
-			"recoverySuite": [
+			"RecoverySuite": [
 				{
-					"order": 0,
-					"setting": {
+					"Order": 0,
+					"Setting": {
 						"Order": 0,
 						"RequiredContext": "Administrator",
 						"Dangerous": true,
 						"Data": {
-							"Action": "Sam",
 							"Target": "AccountLockoutPolicy",
 							"SamStruct": {
 								"Duration": 900,
 								"Window": 900,
 								"Threshold": 3
-							}
+							},
+							"Action": "Sam",
+							"TargetString": "AccountLockoutPolicy"
 						}
 					},
-					"expectedAfter": {
-						"Action": "Sam",
+					"Results": {},
+					"ExpectedAfter": {
 						"Target": "AccountLockoutPolicy",
 						"SamStruct": {
 							"Duration": 900,
 							"Window": 900,
 							"Threshold": 3
-						}
+						},
+						"Action": "Sam",
+						"TargetString": "AccountLockoutPolicy"
 					},
-					"expectedResult": "ActionSuccess"
+					"ExpectedResult": "ActionSuccess",
+					"Pass": null
 				}
-			]
+			],
+			"TestPass": null,
+			"RecoveryPass": false,
+			"Pass": false
 		}
-	]
+	],
+	"SledRunDate": "2026-11-02T11:41:51.1950421-05:00",
+	"Success": false,
+	"LastRunTest": null,
+	"BuildsMatchCurrent": true
 }
