@@ -56,7 +56,11 @@ public class TestCaseConverter : JsonConverter<TestCase> {
                 if (verboseDebug) { Debug.WriteLine($"      TokenType: {reader.TokenType}"); }
                 if (verboseDebug) { Debug.WriteLine($"      ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
                 ValueConverter conv = new();
-                expectedAfter = conv.Read(ref reader, typeof(IValue), options);
+                if (reader.TokenType == JsonTokenType.Null) {
+                    expectedAfter = null;
+                } else {
+                    expectedAfter = conv.Read(ref reader, typeof(IValue), options);
+                }
             } else if (reader.ValueTextEquals(nameof(TestCase.Results))) {
                 reader.Read();
                 results = JsonSerializer.Deserialize<Dictionary<string, TestResult?>>(ref reader, options) ?? [];

@@ -35,7 +35,11 @@ public class TestResultConverter : JsonConverter<TestResult> {
                 if (verboseDebug) { Debug.WriteLine($"      TokenType: {reader.TokenType}"); }
                 if (verboseDebug) { Debug.WriteLine($"      ValueText: {System.Text.Encoding.UTF8.GetString(reader.ValueSpan.ToArray())}"); }
                 ValueConverter conv = new();
-                actualAfter = conv.Read(ref reader, typeof(IValue), options);
+                if (reader.TokenType == JsonTokenType.Null) {
+                    actualAfter = null;
+                } else {
+                    actualAfter = conv.Read(ref reader, typeof(IValue), options);
+                }
             } else if (reader.ValueTextEquals(nameof(TestResult.RemediationAction))) {
 
             } else if (reader.ValueTextEquals(nameof(TestResult.RollbackPass))) {
