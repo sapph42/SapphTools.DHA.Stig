@@ -11,6 +11,7 @@ public static class ConverterOptions {
         new SeRightsValueConverter(),
         new SettingConverter(),
         new ValueConverter(),
+        new RemediationActionConverter(),
         new SecurityDescriptor.Converters.TrusteeConverter(),
         new JsonStringEnumConverter()
     ];
