@@ -7,5 +7,7 @@ internal static class GlobalConstants {
     static GlobalConstants() {
         JsonSerializerOptions.Converters.Add(new AssertionObjectConverter());
         JsonSerializerOptions.Converters.Add(new IAssertionObjectTypeConverter());
+        JsonSerializerOptions.Converters.Add(new TestCaseConverter());
+        JsonSerializerOptions.Converters.Add(new TestResultConverter());
     }
 }
