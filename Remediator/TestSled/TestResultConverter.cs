@@ -41,10 +41,11 @@ public class TestResultConverter : JsonConverter<TestResult> {
                     actualAfter = conv.Read(ref reader, typeof(IValue), options);
                 }
             } else if (reader.ValueTextEquals(nameof(TestResult.RemediationAction))) {
-
+                reader.Read();
+                action = JsonSerializer.Deserialize<RemediationAction>(ref reader, options);
             } else if (reader.ValueTextEquals(nameof(TestResult.RollbackPass))) {
                 reader.Read();
-                rollbackPass = reader.GetBoolean();
+                rollbackPass = JsonSerializer.Deserialize<bool?>(ref reader, options);
             } else if (reader.ValueTextEquals(nameof(TestResult.Error))) {
                 reader.Read();
                 error = reader.GetString();
