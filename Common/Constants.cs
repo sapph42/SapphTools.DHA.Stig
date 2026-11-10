@@ -1,6 +1,6 @@
 ﻿namespace SapphTools.DHA.Stig.Common; 
 public static class Constants {
-    public static string[] RootCertsBase64 = [
+    public static readonly string[] RootCertsBase64 = [
         Properties.Resources.RootCert_21D77E4B5D18A5170CAC8926FBE89F54F9EBD041,
         Properties.Resources.RootCert_4ECB5CC3095670454DA1CBD410FC921F46B8564B,
         Properties.Resources.RootCert_8C941B34EA1EA6ED9AE2BC54CF687252B4C9B561,

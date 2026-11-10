@@ -197,7 +197,7 @@ public class RemediationActionConverter : JsonConverter<RemediationAction> {
         writer.WritePropertyName(nameof(RemediationAction.FailureMessage));
         writer.NullWriter(value.FailureMessage, writer.WriteStringValue);
         writer.WritePropertyName(nameof(RemediationAction.RemediationTimestamp));
-        writer.WriteStringValue(value.RemediationTimestamp.ToString("O"))
+        writer.WriteStringValue(value.RemediationTimestamp.ToString("O"));
         writer.WriteEndObject();
     }
 }
