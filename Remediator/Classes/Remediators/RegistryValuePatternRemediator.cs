@@ -48,10 +48,12 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         Guid settingBatch = Guid.NewGuid();
         string targetHost = dto.ComputerName ?? Environment.MachineName;
         RemediationPreAction pre = new(dto, settingBatch, targetHost);
-        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(val.Target, targetHost, pre, out RegKey? targetKey, dto.WhatIf, logger);
+        RemediationActionResult createRes = RegistryKeyRemediator.SubRemediate(
+            val.Target, targetHost, pre, out RegKey? targetKey, dto.WhatIf, logger, logExistingKey: false);
         if (!createRes.IsSuccess || targetKey is null) {
             return createRes;
         }
+        RemediationActionResult? keyResult = createRes.HasValue ? createRes : null;
         DisposableList<RegKey>? keys = null;
         DisposableList<RegKey>? firstRoundKeys = null;
         DisposableList<RegKey>? secondRoundKeys = null;
@@ -59,7 +61,7 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
         try {
             keys = [targetKey];
             firstRoundKeys = ExpandMatchingSubKeys(keys, val.TargetPattern);
-            secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, logger, dto.WhatIf);
+            secondRoundKeys = OpenSubkeys(pre, firstRoundKeys, val.SubPath, targetHost, logger, dto.WhatIf, ref keyResult);
             thirdRoundKeys = ExpandMatchingSubKeys(secondRoundKeys, val.PathPattern);
             RemediationActionResult? res = null;
             foreach (RegKey key in thirdRoundKeys) {
@@ -76,14 +78,10 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
                     ResolvedTarget = resolvedBefore
                 };
                 RemediationActionResult thisRes = RegistryValueRemediator.SubRemediate(pre, before, key, resolvedTarget, logger, dto.WhatIf);
-                if (res is null || !thisRes.IsSuccess) {
-                    res = thisRes;
-                }
+                res = PreferResult(res, thisRes);
             }
-            if (res is null) {
-                return logger.LogNoAction(pre, TargetType.RegistryValuePattern, targetKey.ToString(), null);
-            }
-            return res;
+            return PreferResult(res, keyResult) ??
+                logger.LogNoAction(pre, TargetType.RegistryValuePattern, val.TargetString, null);
         } finally {
             thirdRoundKeys?.Dispose();
             secondRoundKeys?.Dispose();
@@ -142,7 +140,18 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
             throw;
         }
     }
-    private static DisposableList<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, Logger logger, bool whatIf = true) {
+    private static RemediationActionResult? PreferResult(RemediationActionResult? current, RemediationActionResult? candidate) {
+        if (candidate is null) {
+            return current;
+        }
+        if (current is null || (current.IsSuccess && (!candidate.IsSuccess ||
+                (current.Value?.Result == ActionResult.NoActionTaken &&
+                 candidate.Value?.Result is ActionResult.ActionSuccess or ActionResult.WhatIf)))) {
+            return candidate;
+        }
+        return current;
+    }
+    private static DisposableList<RegKey> OpenSubkeys(RemediationPreAction preAction, IEnumerable<RegKey>? keys, string? subPath, string targetHost, Logger logger, bool whatIf, ref RemediationActionResult? keyResult) {
         DisposableList<RegKey> returnList = [];
         try { 
             if (keys is null) {
@@ -158,7 +167,13 @@ internal partial class RegistryValuePatternRemediator : IRemediator {
                 if (key.OpenSubKey(subPath) is RegKey subKey) {
                     returnList.Add(subKey);
                 } else {
-                    if (RegistryKeyRemediator.SubRemediate(key, subPath, preAction, out RegKey? newKey, whatIf, logger).IsSuccess && newKey is not null) {
+                    string targetPath = key.FullName + '\\' + subPath.TrimStart('\\');
+                    RemediationActionResult createResult = RegistryKeyRemediator.SubRemediate(
+                        targetPath, targetHost, preAction, out RegKey? newKey, whatIf, logger, logExistingKey: false);
+                    if (!createResult.IsSuccess || createResult.HasValue) {
+                        keyResult = PreferResult(keyResult, createResult);
+                    }
+                    if (newKey is not null) {
                         returnList.Add(newKey);
                     }
                 }
