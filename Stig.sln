@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityDescriptor", "..\..\SecurityDescriptor\SecurityDescriptor.csproj", "{A2E86094-CE90-46BC-A57A-86FEF357C613}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remediator", "Remediator\Remediator.csproj", "{9A054EC0-7659-4E6A-80CD-E4A23403A9BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JOSHUA", "Remediator\JOSHUA.csproj", "{9A054EC0-7659-4E6A-80CD-E4A23403A9BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{22D8F318-F26F-4A60-B3C1-9CCAD31B4DA8}"
 EndProject
