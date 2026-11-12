@@ -381,6 +381,9 @@ public partial class TestSled : Form {
         if (testArrayDefinition is null || testSledDefinitionFI is null) {
             return;
         }
+        testArrayDefinition.UpdateBuilds();
+        string json = JsonSerializer.Serialize(testArrayResults, GlobalConstants.JsonSerializerOptions);
+        File.WriteAllText(testSledDefinitionFI.FullName, json);
         string cdfPath = Path.Combine(AppContext.BaseDirectory, "TestSled", "SledCatalog", "TestSled.cdf");
         if (!File.Exists(cdfPath)) {
             return;
