@@ -88,6 +88,7 @@ public class RemediationActionConverter : JsonConverter<RemediationAction> {
                     TargetType = type,
                     Target = target,
                     RollbackCapability = rollback,
+                    Result = result,
                     Before = before,
                     After = after,
                     FailureMessage = failureMessage,
