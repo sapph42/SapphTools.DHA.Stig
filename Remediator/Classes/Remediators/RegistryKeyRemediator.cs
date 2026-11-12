@@ -46,7 +46,7 @@ internal class RegistryKeyRemediator : IRemediator {
             key?.Dispose();
         }
     }
-    public static RemediationActionResult SubRemediate(string targetPath, string targetHost, RemediationPreAction pre, out RegKey? key, bool whatIf, Logger logger) {
+    public static RemediationActionResult SubRemediate(string targetPath, string targetHost, RemediationPreAction pre, out RegKey? key, bool whatIf, Logger logger, bool logExistingKey = true) {
         key = null;
         RegKey? ancestor = null;
         try {
@@ -54,7 +54,7 @@ internal class RegistryKeyRemediator : IRemediator {
             if (ancestor is null) {
                 return logger.LogError(pre, TargetType.RegistryKey, targetPath, "Could not find any valid ancestor keys", whatIf);
             }
-            return CreateRegistryPath(ancestor, targetPath, pre, out key, whatIf, logger);
+            return CreateRegistryPath(ancestor, targetPath, pre, out key, whatIf, logger, logExistingKey);
         } catch (RegKeyException rkEx) {
             return logger.LogError(pre, TargetType.RegistryKey, targetPath, rkEx.ReasonToString(), whatIf);
         } catch (Exception ex) {
@@ -63,17 +63,6 @@ internal class RegistryKeyRemediator : IRemediator {
             if (!ReferenceEquals(ancestor, key)) {
                 ancestor?.Dispose();
             }
-        }
-    }
-    public static RemediationActionResult SubRemediate(RegKey parentKey, string branchName, RemediationPreAction pre, out RegKey? key, bool whatIf, Logger logger) {
-        key = parentKey;
-        try {
-            string targetPath = parentKey.FullName + '\\' + branchName.TrimStart('\\');
-            return CreateRegistryPath(parentKey, targetPath, pre, out key, whatIf, logger);
-        } catch (RegKeyException rkEx) {
-            return logger.LogError(pre, TargetType.RegistryKey, parentKey.FullName + '\\' + branchName, rkEx.ReasonToString(), whatIf);
-        } catch (Exception ex) {
-            return logger.LogError(pre, TargetType.RegistryKey, parentKey.FullName + '\\' + branchName, ex.Message, whatIf);
         }
     }
     public static RemediationActionResult Rollback(Guid remBatch, Guid ruleBatch, RemediationAction logEntry, Logger? logger = null) {
@@ -134,7 +123,7 @@ internal class RegistryKeyRemediator : IRemediator {
             target?.Dispose();
         }
     }
-    public static RemediationActionResult CreateRegistryPath(RegKey existingParent, string targetPath, RemediationPreAction preAction, out RegKey? key, bool whatIf, Logger logger) {
+    private static RemediationActionResult CreateRegistryPath(RegKey existingParent, string targetPath, RemediationPreAction preAction, out RegKey? key, bool whatIf, Logger logger, bool logExistingKey) {
         RegistryKeyValue before = new() {
             Target = RegKey.SplitPath(existingParent.FullName, true) ?? string.Empty,
             Name = existingParent.Name,
@@ -143,21 +132,27 @@ internal class RegistryKeyRemediator : IRemediator {
         key = null;
         if (existingParent.FullName.TrimEnd('\\').Equals(targetPath.TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) {
             key = existingParent;
+            if (!logExistingKey) {
+                return RemediationActionResult.IntermediateSuccessFactory();
+            }
             try {
                 return logger.LogNoAction(preAction, TargetType.RegistryKey, targetPath, before);
             } finally {
                 preAction.ActionNumber++;
             }
         }
+        if (whatIf) {
+            try {
+                return logger.LogWhatIf(preAction, TargetType.RegistryKey, targetPath, RollbackCapability.NotApplicable, before, null);
+            } finally {
+                preAction.ActionNumber++;
+            }
+        }
         RemediationActionResult? final = null;
-        using (existingParent) {
-            RegKey nextChild = existingParent.Clone();
+        RegKey nextChild = existingParent.Clone();
+        try {
             while (!nextChild.FullName.Equals(targetPath, StringComparison.OrdinalIgnoreCase)) {
                 try {
-                    if (whatIf) {
-                        key = nextChild;
-                        return logger.LogWhatIf(preAction, TargetType.RegistryKey, targetPath, RollbackCapability.NotApplicable, before, null);
-                    }
                     nextChild = RegKey.CreateKey(nextChild, targetPath, recurse: false, transferOwnership: true);
                     after = new() {
                         Target = RegKey.SplitPath(nextChild.FullName, true) ?? string.Empty,
@@ -180,6 +175,10 @@ internal class RegistryKeyRemediator : IRemediator {
             }
             key = nextChild;
             return final!;
+        } finally {
+            if (key is null) {
+                nextChild.Dispose();
+            }
         }
     }
     private static RemediationActionResult TryRemoveRegistryKey(RegKey key, RemediationPreAction preAction, Logger logger) {
