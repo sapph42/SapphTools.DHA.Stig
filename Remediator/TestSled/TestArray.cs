@@ -89,7 +89,7 @@ public class TestArray {
         return build;
     }
     public static TestArray? LoadFromJson(string? path) {
-        if (path is null) {
+        if (string.IsNullOrWhiteSpace(path)) {
             return null;
         }
         try {
