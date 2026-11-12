@@ -8,6 +8,7 @@ public static class ConverterOptions {
         new RegistryAclValueConverter(),
         new RegistryValuePatternValueConverter(),
         new RegistryValueValueConverter(),
+        new RegistryValueSetValueConverter(),
         new SeRightsValueConverter(),
         new SettingConverter(),
         new ValueConverter(),

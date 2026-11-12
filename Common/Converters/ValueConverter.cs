@@ -9,13 +9,16 @@ public sealed class ValueConverter : JsonConverter<IValue> {
 
         JsonElement root = document.RootElement;
         string actionName = nameof(IValue.Action);
+        string valuesName = nameof(RegistryValueSetValue.Values);
         if (options.PropertyNamingPolicy is JsonNamingPolicy pol) {
             actionName = pol.ConvertName(actionName);
+            valuesName = pol.ConvertName(valuesName);
         }
         if (!root.TryGetProperty(nameof(IValue.Action), out JsonElement actionElement) &&
                 !root.TryGetProperty(actionName, out actionElement)) {
             throw new JsonException("IValue is missing Action.");
         }
+        bool hasValues = root.TryGetProperty(nameof(RegistryValueSetValue.Values), out _) || root.TryGetProperty(valuesName, out _);
 
         if (!Enum.TryParse(
                 actionElement.GetString(),
@@ -29,9 +32,10 @@ public sealed class ValueConverter : JsonConverter<IValue> {
 
         return action switch {
             TargetType.RegistryValuePattern =>
-                JsonSerializer.Deserialize<RegistryValuePatternValue>(
-                    json, options)
-                ?? throw new JsonException(),
+                (hasValues ?
+                    JsonSerializer.Deserialize<RegistryValueSetValue>(json, options) :
+                    JsonSerializer.Deserialize<RegistryValuePatternValue>(json, options)
+                ) ?? throw new JsonException(),
 
             TargetType.RegistryValue =>
                 JsonSerializer.Deserialize<RegistryValueValue>(
