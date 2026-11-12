@@ -615,16 +615,13 @@ public partial class Main : Form {
     }
 
     private async Task LazyInitTestSled() {
-        string? procPath = Environment.ProcessPath;
-        string? procDir = Settings.Default.TestSledDefinitionPath;
-        if (procPath is not null) {
-            procDir ??= Path.GetDirectoryName(procPath);
-        }
+        string defPath = Settings.Default.TestSledDefinitionPath;
+        string resPath = Settings.Default.TestSledResultsPath;
         try {
             await Task.Run(() => {
-                testArrayDefinition = TestArray.LoadFromJson(procDir);
+                testArrayDefinition = TestArray.LoadFromJson(defPath);
                 Debug.WriteLine($"testArrayDefinition set: {testArrayDefinition is not null}");
-                testArrayResults = TestArray.LoadFromJson(procDir);
+                testArrayResults = TestArray.LoadFromJson(resPath);
                 Debug.WriteLine($"testArrayResults set: {testArrayResults is not null}");
             });
         } catch (Exception ex) { Debug.WriteLine($"Exception preloading testsled: {ex.Message}");  }
