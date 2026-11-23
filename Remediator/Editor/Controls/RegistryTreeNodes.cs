@@ -33,7 +33,7 @@ public abstract class RegistryTreeNode : TreeNode, IRegistryTreeNode {
                 if (_key.IsValueCreated) {
                     Key?.Dispose();
                 }
-                Parent.Nodes.Remove(this);
+                Parent?.Nodes.Remove(this);
             }
             disposedValue = true;
         }

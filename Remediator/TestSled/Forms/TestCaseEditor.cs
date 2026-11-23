@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.ComponentModel;
+using System.Data;
 
 namespace SapphTools.DHA.Stig.Remediator.TestSled.Forms;
 public partial class TestCaseEditor : Form {
@@ -10,6 +11,9 @@ public partial class TestCaseEditor : Form {
     private IValue? ActiveExpectedAfter;
     private TargetType? ActiveEaType => ActiveSetting?.Data.Action;
     private ActionResult? ActiveExpectedResult;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DefaultValue("")]
     public required string SimulatedRuleId { get; set; }
     public TestCase? TestCase;
     public TestCaseEditor() {

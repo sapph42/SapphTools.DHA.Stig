@@ -1,8 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Forms.Common;
 public partial class SettingEditor : Form {
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DefaultValue("")]
     public required string RuleId { get; set; }
     public Setting? Setting { get; private set; }
     public SettingEditor() {

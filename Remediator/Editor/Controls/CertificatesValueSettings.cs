@@ -1,8 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Controls;
 public partial class CertificatesValueSettings : ValueSettings, IValueSettings<CertificatesValue> {
     private IArtifact? _artifact;
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DefaultValue("")]
     public required string RuleId { get; set; }
     public override bool IsValid =>
         !string.IsNullOrWhiteSpace(Target.Text) &&

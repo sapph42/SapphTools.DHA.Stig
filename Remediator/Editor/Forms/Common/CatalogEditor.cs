@@ -127,8 +127,8 @@ public partial class CatalogEditor : Form {
                 .Cast<DataGridViewRow>()
                 .Where(r => r.Cells[0].Value is not null)
                 .Select(r => new KeyValuePair<string, string>(
-                    r.Cells["RuleId"].Value.ToString()!,
-                    r.Cells["Reason"].Value.ToString()!
+                    r.Cells["RuleId"].Value!.ToString()!,
+                    r.Cells["Reason"].Value!.ToString()!
                 ))
                 .ToDictionary();
             if (check.TryGetValue(rule.RuleId, out string? reason)) {
@@ -152,7 +152,7 @@ public partial class CatalogEditor : Form {
         if (GetSelectedRow() is not DataGridViewRow row || RulesTable.Rows.Find(row.Cells["RuleId"].Value) is not DataRow dRow) {
             return;
         }
-        Rule rule = ((Rule)row.Cells["Rule"].Value).Clone();
+        Rule rule = ((Rule)row.Cells["Rule"].Value!).Clone();
         RuleEditor ruleEditor = new(rule);
         if (ruleEditor.ShowDialog() == DialogResult.OK && ruleEditor.ActiveRule is not null) {
             rule = ruleEditor.ActiveRule.Clone();
@@ -167,7 +167,7 @@ public partial class CatalogEditor : Form {
         if (GetSelectedRow() is not DataGridViewRow row) {
             return;
         }
-        Rule toRemove = (Rule)row.Cells["Rule"].Value;
+        Rule toRemove = (Rule)row.Cells["Rule"].Value!;
         if (RulesTable.Rows.Find(toRemove.RuleId) is DataRow dataRow) {
             RulesTable.Rows.Remove(dataRow);
         }
@@ -182,8 +182,8 @@ public partial class CatalogEditor : Form {
                 .Where(r => r.Cells[0].Value is not null)
                 .Select(r =>
                     new BlacklistedPlugin() {
-                        RuleId = r.Cells["RuleId"].Value.ToString()!,
-                        Reason = r.Cells["Reason"].Value.ToString()!
+                        RuleId = r.Cells["RuleId"].Value!.ToString()!,
+                        Reason = r.Cells["Reason"].Value!.ToString()!
                     })
         );
         ActiveCatalog.Rules.Clear();

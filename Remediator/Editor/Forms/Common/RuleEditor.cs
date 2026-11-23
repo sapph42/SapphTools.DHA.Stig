@@ -22,9 +22,9 @@ public partial class RuleEditor : Form {
         };
         Settings.Columns.Add(settingDgv);
         Settings.AutoGenerateColumns = false;
-        Settings.Columns["OrderDgv"].DataPropertyName = "Order";
-        Settings.Columns["TargetTypeDgv"].DataPropertyName = "Type";
-        Settings.Columns["TargetDgv"].DataPropertyName = "Target";
+        Settings.Columns["OrderDgv"]!.DataPropertyName = "Order";
+        Settings.Columns["TargetTypeDgv"]!.DataPropertyName = "Type";
+        Settings.Columns["TargetDgv"]!.DataPropertyName = "Target";
         DataColumn order = new("Order", typeof(int));
         DataColumn type = new("Type", typeof(TargetType));
         DataColumn target = new("Target", typeof(IValue));
@@ -93,7 +93,7 @@ public partial class RuleEditor : Form {
         if (GetSelectedRow() is not DataGridViewRow row || SettingsTable.Rows.Find(row.Cells["OrderDgv"].Value) is not DataRow dRow) {
             return;
         }
-        Setting setting = ((Setting)row.Cells["Setting"].Value).Clone();
+        Setting setting = ((Setting)row.Cells["Setting"].Value!).Clone();
         SettingEditor editor = new(setting, RuleId.Text);
         if (editor.ShowDialog() == DialogResult.OK && editor.Setting is not null) {
             setting = editor.Setting.Clone();
@@ -107,7 +107,7 @@ public partial class RuleEditor : Form {
         if (GetSelectedRow() is not DataGridViewRow row) {
             return;
         }
-        Setting toRemove = (Setting)row.Cells["Setting"].Value;
+        Setting toRemove = (Setting)row.Cells["Setting"].Value!;
         if (SettingsTable.Rows.Find(toRemove.Order) is DataRow dataRow) {
             SettingsTable.Rows.Remove(dataRow);
         }
@@ -177,7 +177,7 @@ public partial class RuleEditor : Form {
         if (!canMove) {
             return;
         }
-        int thisOrder = (int)thisRow.Cells["OrderDgv"].Value;
+        int thisOrder = (int)thisRow.Cells["OrderDgv"].Value!;
         int targetOrder = thisOrder + direction;
         DataRow thisDataRow = SettingsTable.Rows.Find(thisOrder)!;
         DataRow targetDataRow = SettingsTable.Rows.Find(targetOrder)!;

@@ -34,7 +34,7 @@
             RuleCount = new Label();
             FindingsCount = new Label();
             WhatIf = new CheckBox();
-            Menu = new MenuStrip();
+            FormMenu = new MenuStrip();
             remediatorToolStripMenuItem = new ToolStripMenuItem();
             SetCatalogPathMenu = new ToolStripMenuItem();
             EditCatalogMenu = new ToolStripMenuItem();
@@ -52,7 +52,7 @@
             label4 = new Label();
             ((System.ComponentModel.ISupportInitialize)Catalog).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Findings).BeginInit();
-            Menu.SuspendLayout();
+            FormMenu.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -172,12 +172,12 @@
             // 
             // Menu
             // 
-            Menu.Items.AddRange(new ToolStripItem[] { remediatorToolStripMenuItem });
-            Menu.Location = new Point(0, 0);
-            Menu.Name = "Menu";
-            Menu.Size = new Size(1209, 24);
-            Menu.TabIndex = 14;
-            Menu.Text = "menuStrip1";
+            FormMenu.Items.AddRange(new ToolStripItem[] { remediatorToolStripMenuItem });
+            FormMenu.Location = new Point(0, 0);
+            FormMenu.Name = "Menu";
+            FormMenu.Size = new Size(1209, 24);
+            FormMenu.TabIndex = 14;
+            FormMenu.Text = "menuStrip1";
             // 
             // remediatorToolStripMenuItem
             // 
@@ -318,16 +318,16 @@
             Controls.Add(label2);
             Controls.Add(Catalog);
             Controls.Add(label1);
-            Controls.Add(Menu);
-            MainMenuStrip = Menu;
+            Controls.Add(FormMenu);
+            MainMenuStrip = FormMenu;
             Name = "Main";
             Text = "Joint Operational STIG Heuristic Update/Analysis";
             FormClosing += Main_FormClosing;
             Load += Main_Load;
             ((System.ComponentModel.ISupportInitialize)Catalog).EndInit();
             ((System.ComponentModel.ISupportInitialize)Findings).EndInit();
-            Menu.ResumeLayout(false);
-            Menu.PerformLayout();
+            FormMenu.ResumeLayout(false);
+            FormMenu.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
@@ -347,7 +347,7 @@
         private Label RuleCount;
         private Label FindingsCount;
         private CheckBox WhatIf;
-        private MenuStrip Menu;
+        private MenuStrip FormMenu;
         private ToolStripMenuItem remediatorToolStripMenuItem;
         private ToolStripMenuItem SetCatalogPathMenu;
         private ToolStripMenuItem EditCatalogMenu;

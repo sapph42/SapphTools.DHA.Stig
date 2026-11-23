@@ -99,14 +99,14 @@ public partial class Logs : Form {
         }
         _preventCascade = true;
         foreach (DataGridViewRow selected in LogsView.SelectedRows.Cast<DataGridViewRow>()) {
-            if ((RollbackCapability)selected.Cells["RollbackCapability"].Value != RollbackCapability.Automatic) {
+            if ((RollbackCapability)selected.Cells["RollbackCapability"].Value! != RollbackCapability.Automatic) {
                 selected.Selected = false;
                 continue;
             }
             foreach (DataGridViewRow sibling in LogsView.Rows.Cast<DataGridViewRow>().Where(
-                        r => r.Cells["RemediationBatch"].Value.Equals(selected.Cells["RemediationBatch"].Value) &&
-                        r.Cells["RuleBatch"].Value.Equals(selected.Cells["RuleBatch"].Value) &&
-                        r.Cells["SettingBatch"].Value.Equals(selected.Cells["SettingBatch"].Value)
+                        r => r.Cells["RemediationBatch"].Value!.Equals(selected.Cells["RemediationBatch"].Value) &&
+                        r.Cells["RuleBatch"].Value!.Equals(selected.Cells["RuleBatch"].Value) &&
+                        r.Cells["SettingBatch"].Value!.Equals(selected.Cells["SettingBatch"].Value)
                     )) {
                 sibling.Selected = true;
             }

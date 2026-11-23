@@ -1,4 +1,5 @@
 ﻿using SapphTools.SecurityDescriptor.Classes;
+using System.ComponentModel;
 using System.Data;
 using System.Security.Principal;
 
@@ -7,7 +8,11 @@ public partial class PrincipalPicker : Form {
     private bool _dirty = false;
     private string _cleanText = string.Empty;
     private SecurityIdentifier? _resolved;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DefaultValue(null)]
     public Trustee? Principal { get; internal set; }
+
     public PrincipalPicker() {
         InitializeComponent();
     }

@@ -63,7 +63,7 @@ public partial class Main : Form {
                     Findings.Rows[e.RowIndex].Cells["Remediate"].ReadOnly = true;
                 }
                 if (AppContext >= SettingContext.System) {
-                    string rowHost = (string)Findings.Rows[e.RowIndex].Cells["Hostname"].Value;
+                    string rowHost = (string)Findings.Rows[e.RowIndex].Cells["Hostname"].Value!;
                     if (!rowHost.Equals(Environment.MachineName, StringComparison.OrdinalIgnoreCase)) {
                         Findings.Rows[e.RowIndex].Cells["Remediate"].ReadOnly = true;
                     }

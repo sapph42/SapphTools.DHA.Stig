@@ -11,9 +11,9 @@ internal class DataGridViewPrincipalCell : DataGridViewTextBoxCell {
             Rectangle cellBounds, 
             int rowIndex, 
             DataGridViewElementStates cellState, 
-            object value, 
-            object formattedValue, 
-            string errorText, 
+            object? value, 
+            object? formattedValue, 
+            string? errorText, 
             DataGridViewCellStyle cellStyle, 
             DataGridViewAdvancedBorderStyle advancedBorderStyle, 
             DataGridViewPaintParts paintParts) {

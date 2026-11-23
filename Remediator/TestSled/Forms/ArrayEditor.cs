@@ -144,7 +144,7 @@ public partial class ArrayEditor : Form {
         if (GetSelectedRow() is not DataGridViewRow row) {
             return;
         }
-        Test toRemove = (Test)row.Cells["Test"].Value;
+        Test toRemove = (Test)row.Cells["Test"].Value!;
         if (TestTable.Rows.Find(toRemove.TestId) is DataRow dataRow) {
             TestTable.Rows.Remove(dataRow);
             RenumberPhase(toRemove.Phase);

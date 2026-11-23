@@ -1,9 +1,13 @@
 ﻿using Microsoft.Win32;
+using System.ComponentModel;
 
 namespace SapphTools.DHA.Stig.Remediator.Editor.Forms.Registry;
 public partial class RegistryBrowserDialog : Form {
     private readonly string? _originalKey;
     private bool _closing = false;
+
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    [DefaultValue("")]
     public string? SelectedKey { get; protected set; }
     public RegistryBrowserDialog() {
         InitializeComponent();
