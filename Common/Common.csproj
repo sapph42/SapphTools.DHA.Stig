@@ -6,16 +6,10 @@
     <Nullable>enable</Nullable>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <TargetFramework>net10.0-windows8.0</TargetFramework>
     <RootNamespace>SapphTools.DHA.Stig.Common</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="10.0.11" />
-  </ItemGroup>
 
   <ItemGroup>
     <Using Include="SapphTools.DHA.Stig.Common.Converters" />
