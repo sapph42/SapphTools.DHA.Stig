@@ -101,6 +101,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Properties\VersionAutoIncrement.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>VersionAutoIncrement.tt</DependentUpon>
+    </Compile>
     <Compile Update="TestSled\Forms\ArrayEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,11 +135,15 @@
     </None>
   </ItemGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' != 'Debug' ">
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <TransformOnBuild>true</TransformOnBuild>
     <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
     <TransformOutOfDateOnly>true</TransformOutOfDateOnly>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug' ">
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <TransformOnBuild>false</TransformOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Properties\VersionAutoIncrement.cs">
