@@ -76,10 +76,10 @@ public class TestCase : IComparable<TestCase>, IEquatable<TestCase> {
             if (Results.Values.Any(r => r!.RemediationAction!.Result != ExpectedResult)) {
                 return false;
             }
-            if (Results.Values.All(r => r!.RemediationAction!.Result == ActionResult.WhatIf)) {
-                return Results.Values.All(r => IValue.Equals(r!.ActualAfter, r.RemediationAction!.Before));
-            }
-            if (Results.Values.Any(r => !IValue.Equals(ExpectedAfter, r?.ActualAfter))) { 
+            //if (Results.Values.All(r => r!.RemediationAction!.Result == ActionResult.WhatIf)) {
+            //    return Results.Values.All(r => IValue.Equals(r!.ActualAfter, r.RemediationAction!.Before));
+            //}
+            if (ExpectedResult != ActionResult.WhatIf && Results.Values.Any(r => !IValue.Equals(ExpectedAfter, r?.ActualAfter))) { 
                 return false;
             }
             return true;
