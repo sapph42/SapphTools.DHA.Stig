@@ -137,7 +137,7 @@ public partial class Logs : Form {
             },
         ]);
         foreach (DataGridViewRow row in LogsView.SelectedRows.Cast<DataGridViewRow>()) {
-            if ((RollbackCapability)row.Cells["RollbackCapability"].Value == RollbackCapability.Automatic) {
+            if ((RollbackCapability)row.Cells["RollbackCapability"].Value! == RollbackCapability.Automatic) {
                 if (row.Cells["RuleId"].Value is string plugin &&
                         row.Cells["RemediationBatch"].Value is Guid remBatch &&
                         row.Cells["RuleBatch"].Value is Guid ruleBatch &&
