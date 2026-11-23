@@ -54,6 +54,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\IDisposableEnumerable\SapphTools.IDisposableEnumerable.csproj" />
+    <ProjectReference Include="..\..\..\ResultWrapper\ResultWrapper.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 

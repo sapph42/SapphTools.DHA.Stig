@@ -1,3 +1,5 @@
+using SapphTools.ResultWrapper;
+
 namespace UnitTests;
 [TestClass, TestCategory("Pure")]
 public sealed class ResultTests {
@@ -9,9 +11,9 @@ public sealed class ResultTests {
     [TestMethod] public void NullSentinelIsNotARealPayload() {
         using Result result = new();
         Assert.IsTrue(result.IsSuccess); Assert.IsFalse(result.HasValue);
-        Assert.AreSame(Null.Instance, result.Value);
-        using Result<Null> generic = new();
-        Assert.AreSame(Null.Instance, generic.Value); Assert.IsFalse(generic.HasValue);
+        Assert.AreSame(ResultNull.Instance, result.Value);
+        using Result<ResultNull> generic = new();
+        Assert.AreSame(ResultNull.Instance, generic.Value); Assert.IsFalse(generic.HasValue);
     }
     [TestMethod] public void ZeroIsAValidValueTypePayload() {
         using Result<int> result = Result<int>.Success(0);
